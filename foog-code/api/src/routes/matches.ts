@@ -81,7 +81,7 @@ matchesRouter.get('/teams', ah(async (req, res) => {
     items: rows.map((t) => {
       const games = [...t.homeGames.map((g) => ({ d: g.booking.date, f: g.homeScore ?? 0, a: g.awayScore ?? 0 })), ...t.awayGames.map((g) => ({ d: g.booking.date, f: g.awayScore ?? 0, a: g.homeScore ?? 0 }))].sort((a, b) => b.d.getTime() - a.d.getTime());
       const res1 = games.map((g) => (g.f > g.a ? 'W' : g.f === g.a ? 'D' : 'L'));
-      return { id: t.id, name: t.name, short: t.short, district: t.district, level: t.level, lookingFor: t.lookingFor, plays: t.plays, members: t._count.members, isMember: Array.isArray(t.members) && t.members.length > 0, chatId: t.chats[0]?.id ?? null, wins: res1.filter((x) => x === 'W').length, draws: res1.filter((x) => x === 'D').length, losses: res1.filter((x) => x === 'L').length, form: res1.slice(0, 5) };
+      return { id: t.id, name: t.name, short: t.short, captainId: t.captainId, district: t.district, level: t.level, lookingFor: t.lookingFor, plays: t.plays, members: t._count.members, isMember: Array.isArray(t.members) && t.members.length > 0, chatId: t.chats[0]?.id ?? null, wins: res1.filter((x) => x === 'W').length, draws: res1.filter((x) => x === 'D').length, losses: res1.filter((x) => x === 'L').length, form: res1.slice(0, 5) };
     }).sort((a, b) => b.members - a.members),
   });
 }));

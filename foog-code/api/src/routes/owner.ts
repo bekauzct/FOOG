@@ -30,6 +30,11 @@ async function pickStadium(req: import('express').Request) {
 
 const bInclude = { pitch: { include: { stadium: true } }, user: true } as const;
 
+ownerRouter.get('/badges', ah(async (req, res) => {
+  const pending = await prisma.booking.count({ where: { status: 'pending', pitch: { stadium: { OR: [{ ownerId: req.user!.id }, { staff: { some: { userId: req.user!.id } } }] } } } });
+  res.json({ pending });
+}));
+
 ownerRouter.get('/stadiums', ah(async (req, res) => {
   const list = await myStadiums(req.user!.id);
   const ratings = await ratingOf(list.map((s) => s.id));

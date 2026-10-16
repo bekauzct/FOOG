@@ -21,6 +21,11 @@ export const CHECKS = [
 ];
 export const REASONS = ['Rasmlar yetarli emas', 'Manzil noto‘g‘ri', 'Narx ko‘rsatilmagan', 'Takroriy ariza'];
 
+adminRouter.get('/badges', ah(async (_req, res) => {
+  const [mod, reports] = await Promise.all([prisma.stadium.count({ where: { status: 'mod' } }), prisma.report.groupBy({ by: ['targetType', 'targetId'], where: { status: 'open' } })]);
+  res.json({ mod, reports: reports.length });
+}));
+
 adminRouter.get('/overview', ah(async (req, res) => {
   const today = tashkentParts().date;
   const weekAgo = new Date(Date.now() - 7 * 864e5);
