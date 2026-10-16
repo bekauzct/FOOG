@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:#050815;-webkit-font-smoothing:antialiased}a{color:#629BFF;text-decoration:none}a:hover{color:#8DB5FF}</style>
+</helmet>
+<div data-screen-label="System architecture" style="width:1680px;box-sizing:border-box;padding:56px 64px 64px;background:#050815;color:#F3F5F9;font-family:Archivo,system-ui,sans-serif;display:flex;flex-direction:column;gap:32px">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <dc-import name="FoogMark" ink="#F3F5F9" primary="#C8F53A" accent="#F3F5F9" style="width:120px" hint-size="120px,30px"></dc-import>
+      <h1 style="margin:0;font-size:52px;line-height:56px;font-weight:800;letter-spacing:-.03em">Tizim arxitekturasi · Web</h1>
+      <p style="margin:0;max-width:820px;font-size:18px;line-height:1.5;color:#A5ABB8">Frontend, API, Backend, Database va servislar qanday bog‘langan. Kirish – Telegram orqali, to‘lov – stadionda.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:#A5ABB8">
+      <span style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:2px;background:#C8F53A"></span>So‘rov / javob</span>
+      <span style="display:flex;align-items:center;gap:10px"><span style="width:28px;height:0;border-top:2px dashed #629BFF"></span>Real vaqt (WebSocket)</span>
+      <span style="display:flex;align-items:center;gap:10px"><span style="width:14px;height:14px;border-radius:4px;box-shadow:inset 0 0 0 1.5px #3B4253"></span>Tashqi servis</span>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,0.9fr) 96px minmax(0,1.35fr) 96px minmax(0,1fr);align-items:stretch">
+
+    <section style="padding:20px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;flex-direction:column;gap:12px">
+      <span style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#C8F53A">01 · Frontend</span>
+      <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:800">Web sayt</span><span style="font:400 13px 'JetBrains Mono',monospace;color:#7A808D">Next.js · React · TypeScript</span></div>
+      <sc-for list="{{ fe }}" as="x" hint-placeholder-count="4">
+        <div style="padding:14px;border-radius:16px;background:#151B2C;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A">{{ x.icon }}</span><span style="font-size:16px;font-weight:700;flex:1">{{ x.t }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:#7A808D">{{ x.path }}</span></div>
+          <span style="font-size:13px;line-height:1.45;color:#A5ABB8">{{ x.d }}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:28px;padding:0 8px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font:500 11px 'JetBrains Mono',monospace;color:#C8F53A;text-align:center">HTTPS<br>REST · JSON</span><div style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:#C8F53A"></span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A;margin-left:-6px">arrow_forward_ios</span></div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font:500 11px 'JetBrains Mono',monospace;color:#629BFF;text-align:center">WebSocket<br>chat · holat</span><div style="width:100%;display:flex;align-items:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#629BFF;margin-right:-6px">arrow_back_ios_new</span><span style="flex:1;height:0;border-top:2px dashed #629BFF"></span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#629BFF;margin-left:-6px">arrow_forward_ios</span></div></div>
+    </div>
+
+    <section style="padding:20px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;flex-direction:column;gap:12px">
+      <span style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#C8F53A">02 · API</span>
+      <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:800">Kirish qatlami</span><span style="font:400 13px 'JetBrains Mono',monospace;color:#7A808D">/api/v1 · /ws</span></div>
+      <sc-for list="{{ api }}" as="x" hint-placeholder-count="4">
+        <div style="padding:14px;border-radius:16px;background:#151B2C;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#A5ABB8">{{ x.icon }}</span><span style="font-size:16px;font-weight:700">{{ x.t }}</span></div>
+          <span style="font-size:13px;line-height:1.45;color:#A5ABB8">{{ x.d }}</span>
+        </div>
+      </sc-for>
+    </section>
+
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:6px;align-items:center;padding:0 8px">
+      <span style="font:500 11px 'JetBrains Mono',monospace;color:#C8F53A;text-align:center">foydalanuvchi<br>+ rol</span>
+      <div style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:#C8F53A"></span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A;margin-left:-6px">arrow_forward_ios</span></div>
+    </div>
+
+    <section style="padding:20px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 2px #C8F53A;display:flex;flex-direction:column;gap:12px">
+      <span style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#C8F53A">03 · Backend</span>
+      <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:800">Servislar (modullar)</span><span style="font:400 13px 'JetBrains Mono',monospace;color:#7A808D">Node.js · NestJS · TypeScript</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <sc-for list="{{ be }}" as="m" hint-placeholder-count="10">
+          <div style="padding:12px 14px;border-radius:14px;background:#151B2C;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;color:#C8F53A">{{ m.icon }}</span><span style="font-size:15px;font-weight:700">{{ m.t }}</span></div>
+            <span style="font-size:12px;line-height:1.4;color:#A5ABB8">{{ m.d }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:28px;padding:0 8px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font:500 11px 'JetBrains Mono',monospace;color:#C8F53A;text-align:center">SQL</span><div style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:#C8F53A"></span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A;margin-left:-6px">arrow_forward_ios</span></div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font:500 11px 'JetBrains Mono',monospace;color:#C8F53A;text-align:center">kesh</span><div style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:#C8F53A"></span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A;margin-left:-6px">arrow_forward_ios</span></div></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span style="font:500 11px 'JetBrains Mono',monospace;color:#C8F53A;text-align:center">fayl</span><div style="width:100%;display:flex;align-items:center"><span style="flex:1;height:2px;background:#C8F53A"></span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A;margin-left:-6px">arrow_forward_ios</span></div></div>
+    </div>
+
+    <section style="padding:20px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;flex-direction:column;gap:12px">
+      <span style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#C8F53A">04 · Database</span>
+      <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:22px;font-weight:800">Ma’lumotlar</span><span style="font:400 13px 'JetBrains Mono',monospace;color:#7A808D">saqlash qatlami</span></div>
+      <sc-for list="{{ db }}" as="x" hint-placeholder-count="3">
+        <div style="padding:14px;border-radius:16px;background:#151B2C;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#A5ABB8">{{ x.icon }}</span><span style="font-size:16px;font-weight:700">{{ x.t }}</span></div>
+          <span style="font-size:13px;line-height:1.45;color:#A5ABB8">{{ x.d }}</span>
+          <div style="display:{{ x.tablesD }};flex-wrap:wrap;gap:4px"><sc-for list="{{ x.tables }}" as="tb" hint-placeholder-count="6"><span style="height:22px;padding:0 8px;border-radius:6px;box-shadow:inset 0 0 0 1px #3B4253;font:400 11px/22px 'JetBrains Mono',monospace;color:#A5ABB8">{{ tb }}</span></sc-for></div>
+        </div>
+      </sc-for>
+    </section>
+  </div>
+
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,0.9fr) 96px minmax(0,1.35fr) 96px minmax(0,1fr)">
+    <div></div><div></div><div></div><div></div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;margin-top:-16px">
+      <span style="width:2px;height:22px;background:#C8F53A"></span>
+      <span style="font:500 11px 'JetBrains Mono',monospace;color:#C8F53A">HTTPS · webhook</span>
+      <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A;margin-top:-2px">south</span>
+    </div>
+  </div>
+
+  <section style="padding:20px;border-radius:24px;box-shadow:inset 0 0 0 1.5px #3B4253;display:flex;flex-direction:column;gap:14px;margin-top:-16px">
+    <span style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#A5ABB8">05 · Tashqi servislar</span>
+    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+      <sc-for list="{{ ext }}" as="x" hint-placeholder-count="3">
+        <div style="padding:16px;border-radius:16px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;gap:12px;align-items:flex-start">
+          <span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">{{ x.icon }}</span>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:700">{{ x.t }}</span><span style="font-size:13px;line-height:1.45;color:#A5ABB8">{{ x.d }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:#7A808D">{{ x.who }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;overflow:hidden">
+    <div style="padding:20px 24px 14px;display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em">Sahifa → API → Servis → Jadval</h2><span style="font-size:14px;color:#A5ABB8">Har bir sahifa qaysi yo‘l bilan ma’lumot oladi</span></div>
+    <div style="display:grid;grid-template-columns:220px minmax(0,1.6fr) 200px minmax(0,1fr);gap:20px;padding:12px 24px;border-top:1px solid #222838;border-bottom:1px solid #222838;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#7A808D"><span>Sahifa</span><span>API</span><span>Servis</span><span>Jadvallar</span></div>
+    <sc-for list="{{ map }}" as="r" hint-placeholder-count="12">
+      <div style="display:grid;grid-template-columns:220px minmax(0,1.6fr) 200px minmax(0,1fr);gap:20px;padding:12px 24px;border-bottom:1px solid #222838;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:700">{{ r.page }}</span><span style="font:400 11px 'JetBrains Mono',monospace;color:{{ r.areaC }}">{{ r.area }}</span></div>
+        <span style="font:400 13px/1.6 'JetBrains Mono',monospace;color:#F3F5F9">{{ r.api }}</span>
+        <span style="font-size:14px;color:#A5ABB8">{{ r.svc }}</span>
+        <span style="font:400 12px/1.6 'JetBrains Mono',monospace;color:#A5ABB8">{{ r.tables }}</span>
+      </div>
+    </sc-for>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const area = { s:['Sayt','#C8F53A'], o:['Stadion egasi','#FABB41'], a:['Admin','#629BFF'] };
+    const row = (a, page, api, svc, tables) => ({ page, api, svc, tables, area: area[a][0], areaC: area[a][1] });
+    return {
+      fe: [
+        { icon:'web', t:'Landing', path:'/', d:'Erta kirish, “Stadioningizni qo‘shing”.' },
+        { icon:'sports_soccer', t:'Futbolchi sayti', path:'/home …', d:'Home, Stadionlar, Stadion sahifasi + bron, Discover, Reels, Profil, Chat, Bildirishnomalar.' },
+        { icon:'storefront', t:'Stadion egasi paneli', path:'/owner', d:'Bronlar, Jadval, Stadionlarim, Reels, Hisobot, Profil.' },
+        { icon:'admin_panel_settings', t:'Admin panel', path:'/admin', d:'Umumiy, Stadionlar moderatsiyasi, Foydalanuvchilar, Kontent, Bronlar.' }
+      ],
+      api: [
+        { icon:'alt_route', t:'REST API', d:'Barcha sahifalar ma’lumotni shu yerdan oladi va yuboradi.' },
+        { icon:'key', t:'Auth tekshiruvi', d:'Har so‘rovda token tekshiriladi va rol aniqlanadi: futbolchi, egasi, admin.' },
+        { icon:'lock', t:'Ruxsatlar', d:'/owner – faqat stadion egasi, /admin – faqat admin.' },
+        { icon:'hub', t:'WebSocket server', d:'Chat xabarlari, yangi bron va bildirishnoma real vaqtda.' }
+      ],
+      be: [
+        { icon:'key', t:'Auth', d:'Telegram orqali kirish, token' },
+        { icon:'person', t:'Foydalanuvchilar', d:'Profil, statistika, kuzatish' },
+        { icon:'stadium', t:'Stadionlar', d:'Maydon, narx, ish vaqti, yopiq soat' },
+        { icon:'event_available', t:'Bron', d:'Bo‘sh soat, tasdiq, keldi/kelmadi' },
+        { icon:'groups', t:'O‘yinlar va jamoalar', d:'Ochiq o‘yin, qo‘shilish, natija' },
+        { icon:'smart_display', t:'Postlar va Reels', d:'Joylash, like, izoh, saqlash' },
+        { icon:'chat', t:'Chat', d:'Shaxsiy, jamoa, o‘yin chatlari' },
+        { icon:'notifications', t:'Bildirishnomalar', d:'Sayt ichida + Telegram' },
+        { icon:'flag', t:'Moderatsiya', d:'Ariza, shikoyat, bloklash' },
+        { icon:'monitoring', t:'Hisobot', d:'Daromad, bandlik, statistika' }
+      ],
+      db: [
+        { icon:'database', t:'PostgreSQL', d:'Asosiy baza – barcha yozuvlar.', tablesD:'flex', tables:['users','stadiums','pitches','schedule','bookings','matches','teams','posts','reels','comments','likes','follows','chats','messages','notifications','reports'] },
+        { icon:'memory', t:'Redis', d:'Kesh, sessiya, bir soatni ikki kishi bir vaqtda bron qilmasligi uchun qulf.', tablesD:'none', tables:[] },
+        { icon:'cloud', t:'Fayl saqlash', d:'Stadion rasmlari, post rasmlari, reels videolari, avatarlar.', tablesD:'none', tables:[] }
+      ],
+      ext: [
+        { icon:'send', t:'Telegram Bot', d:'Kirish: foydalanuvchi botda raqamini ulashadi. Egasiga yangi bron xabari.', who:'Auth · Bildirishnomalar' },
+        { icon:'map', t:'Xarita servisi', d:'Stadionlar sahifasidagi xarita, manzil va masofa.', who:'Frontend · Stadionlar' },
+        { icon:'movie', t:'Video qayta ishlash', d:'Yuklangan reelni saytda ko‘rish formatiga o‘tkazish.', who:'Postlar va Reels · Fayl saqlash' }
+      ],
+      map: [
+        row('s', 'Kirish', 'POST /auth/telegram · GET /auth/me', 'Auth', 'users'),
+        row('s', 'Home', 'GET /feed · GET /bookings/my · GET /matches/upcoming', 'Postlar, Bron, O‘yinlar', 'posts, bookings, matches'),
+        row('s', 'Stadionlar', 'GET /stadiums?sana&vaqt&narx&o‘lcham', 'Stadionlar', 'stadiums, pitches, schedule'),
+        row('s', 'Stadion sahifasi + bron', 'GET /stadiums/:id/slots · POST /bookings', 'Stadionlar, Bron', 'schedule, bookings'),
+        row('s', 'Discover', 'GET /players · /teams · /matches · POST /matches/:id/join', 'Foydalanuvchilar, O‘yinlar', 'users, teams, matches'),
+        row('s', 'Reels', 'GET /reels · POST /reels · POST /reels/:id/like', 'Postlar va Reels', 'reels, likes, comments'),
+        row('s', 'Profil', 'GET /users/:id · POST /users/:id/follow', 'Foydalanuvchilar', 'users, follows'),
+        row('s', 'Chat', 'GET /chats · GET /chats/:id/messages · WS message', 'Chat', 'chats, messages'),
+        row('s', 'Bildirishnomalar', 'GET /notifications · PATCH /notifications/read', 'Bildirishnomalar', 'notifications'),
+        row('o', 'Bronlar', 'GET /owner/bookings · PATCH /bookings/:id (tasdiq, rad, keldi)', 'Bron', 'bookings'),
+        row('o', 'Jadval va Stadionlarim', 'PUT /owner/schedule · PUT /stadiums/:id', 'Stadionlar', 'stadiums, pitches, schedule'),
+        row('o', 'Hisobot', 'GET /owner/reports?davr', 'Hisobot', 'bookings'),
+        row('a', 'Stadionlar moderatsiyasi', 'GET /admin/stadiums · PATCH /admin/stadiums/:id', 'Moderatsiya', 'stadiums'),
+        row('a', 'Foydalanuvchilar, Kontent', 'PATCH /admin/users/:id · GET/PATCH /admin/reports', 'Moderatsiya', 'users, reports, posts, reels')
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

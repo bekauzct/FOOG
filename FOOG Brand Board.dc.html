@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.955 0.004 260);-webkit-font-smoothing:antialiased}a{color:oklch(0.45 0.2 262)}a:hover{color:oklch(0.3 0.15 262)}</style>
+</helmet>
+<div style="font-family:Archivo,system-ui,sans-serif;color:oklch(0.18 0.03 265);padding:48px 32px 96px;display:flex;flex-direction:column;align-items:center">
+<div style="width:100%;max-width:1440px;display:flex;flex-direction:column;gap:28px">
+
+  <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid oklch(0.85 0.006 260)">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">Identity System · v1.0 · Oct 2026</div>
+      <h1 style="margin:0;font-size:44px;font-weight:800;letter-spacing:-.02em">FOOG Brand Board</h1>
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.5 0.02 265);text-align:right">Football Ecosystem for Everyone</div>
+  </header>
+
+  <section data-screen-label="01 Hero" style="position:relative;overflow:hidden;border-radius:20px;background:{{ F.dark.bg }};min-height:560px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:36px;padding:80px 32px">
+    <div style="position:absolute;inset:40px;border:1px solid {{ F.lineColor }};border-radius:14px;pointer-events:none"></div>
+    <div style="position:absolute;top:40px;bottom:40px;left:50%;width:1px;background:{{ F.lineColor }};pointer-events:none"></div>
+    <div style="position:absolute;top:50%;left:50%;width:300px;height:300px;margin:-150px 0 0 -150px;border:1px solid {{ F.lineColor }};border-radius:50%;pointer-events:none"></div>
+    <div style="position:absolute;top:50%;left:40px;width:120px;height:240px;margin-top:-120px;border:1px solid {{ F.lineColor }};border-left:none;pointer-events:none"></div>
+    <div style="position:absolute;top:50%;right:40px;width:120px;height:240px;margin-top:-120px;border:1px solid {{ F.lineColor }};border-right:none;pointer-events:none"></div>
+    <dc-import name="FoogMark" ink="{{ F.dark.ink }}" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="position:relative;width:100%;max-width:760px" hint-size="760px,190px"></dc-import>
+    <div style="position:relative;font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:.42em;text-transform:uppercase;color:{{ F.dark.ink }};opacity:.8;text-align:center">Football Ecosystem for Everyone</div>
+  </section>
+
+  <section data-screen-label="02 Concept" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:28px;background:oklch(0.99 0.002 260);border-radius:20px;padding:48px">
+    <div style="display:flex;flex-direction:column;gap:18px;max-width:460px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">02 — The OO Signature</div>
+      <h2 style="margin:0;font-size:34px;line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:pretty">Two O's. One pitch, seen from above.</h2>
+      <p style="margin:0;font-size:17px;line-height:1.55;color:oklch(0.38 0.02 265);text-wrap:pretty">The OO is a single stadium-shaped boundary split by the halfway line. A center circle is cut through both halves, and the kick-off spot sits in the middle — part ball, part network node, part eye. Two halves meeting at one point: everyone, connected through football.</p>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:10px 14px;font-size:15px;margin-top:6px">
+        <div style="width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center">1</div><div style="align-self:center">Pitch boundary — the outer stadium form</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center">2</div><div style="align-self:center">Halfway line — the gap between the O's</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center">3</div><div style="align-self:center">Center circle — negative-space ring</div>
+        <div style="width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center">4</div><div style="align-self:center">Kick-off spot — ball, node, pupil</div>
+      </div>
+    </div>
+    <div style="position:relative;display:flex;align-items:center;justify-content:center;padding:56px 24px;background-image:linear-gradient(oklch(0.92 0.005 260) 1px,transparent 1px),linear-gradient(90deg,oklch(0.92 0.005 260) 1px,transparent 1px);background-size:24px 24px;border-radius:14px">
+      <div style="position:relative;width:100%;max-width:560px">
+        <dc-import name="FoogMark" kind="symbol" ink="{{ F.light.ink }}" primary="{{ F.light.o }}" accent="{{ F.light.dot }}" dot="{{ dot }}" hint-size="100%,280px"></dc-import>
+        <div style="position:absolute;left:-14px;top:50%;margin-top:-12px;width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px white">1</div>
+        <div style="position:absolute;left:50%;top:-14px;margin-left:-12px;width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px white">2</div>
+        <div style="position:absolute;left:58.3%;top:22%;margin-left:-4px;width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px white">3</div>
+        <div style="position:absolute;left:50%;bottom:-14px;margin-left:-12px;width:24px;height:24px;border-radius:50%;background:oklch(0.18 0.03 265);color:white;font:500 12px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px white">4</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="03 Color directions" style="display:flex;flex-direction:column;gap:20px;background:oklch(0.99 0.002 260);border-radius:20px;padding:48px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">03 — Color Exploration</div>
+        <h2 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.02em">Four directions</h2>
+      </div>
+      <div style="font-size:14px;color:oklch(0.45 0.02 265)">Selected direction drives the rest of the board.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
+      <sc-for list="{{ palettes }}" as="p" hint-placeholder-count="4">
+        <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:{{ p.border }};background:white">
+          <div style="position:relative;background:{{ p.dark.bg }};height:200px;display:flex;align-items:center;justify-content:center;padding:0 32px">
+            <dc-import name="FoogMark" ink="{{ p.dark.ink }}" primary="{{ p.dark.o }}" accent="{{ p.dark.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:100%;max-width:260px" hint-size="260px,65px"></dc-import>
+            <div style="position:absolute;top:14px;left:14px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;color:{{ p.dark.ink }};opacity:.75">{{ p.code }}</div>
+            <div style="position:absolute;top:12px;right:12px;display:{{ p.badge }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;background:{{ p.dark.o }};color:{{ p.dark.bg }};padding:5px 9px;border-radius:999px">Selected</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr)">
+            <sc-for list="{{ p.swatches }}" as="s" hint-placeholder-count="3">
+              <div style="background:{{ s.value }};color:{{ s.text }};padding:14px 12px 12px;min-height:72px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px">
+                <div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;opacity:.8">{{ s.role }}</div>
+                <div style="font-size:14px;font-weight:600">{{ s.name }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:20px 20px 24px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:20px;font-weight:800;letter-spacing:-.01em">{{ p.name }}</div>
+            <p style="margin:0;font-size:14px;line-height:1.55;color:oklch(0.4 0.02 265);text-wrap:pretty">{{ p.why }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="04 Final palette" style="display:flex;flex-direction:column;gap:20px;background:oklch(0.99 0.002 260);border-radius:20px;padding:48px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">04 — Final Palette</div>
+      <h2 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.02em">{{ F.name }}</h2>
+      <p style="margin:0;max-width:760px;font-size:16px;line-height:1.55;color:oklch(0.4 0.02 265);text-wrap:pretty">{{ F.verdict }}</p>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px;min-height:220px">
+      <sc-for list="{{ F.full }}" as="s" hint-placeholder-count="4">
+        <div style="background:{{ s.value }};color:{{ s.text }};border-radius:14px;padding:20px;display:flex;flex-direction:column;justify-content:space-between;gap:24px;border:1px solid oklch(0.9 0.005 260)">
+          <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;opacity:.8">{{ s.role }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:22px;font-weight:800">{{ s.name }}</div>
+            <div style="font:400 12px 'JetBrains Mono',monospace;opacity:.8">{{ s.value }}</div>
+            <div style="font:400 12px 'JetBrains Mono',monospace;opacity:.8">{{ s.hex }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="05 Logo suite" style="display:flex;flex-direction:column;gap:20px;background:oklch(0.99 0.002 260);border-radius:20px;padding:48px">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">05 — Logo Suite</div>
+      <h2 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.02em">Variations</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:{{ F.light.bg }};border:1px solid oklch(0.9 0.005 260);border-radius:14px;height:280px;display:flex;align-items:center;justify-content:center;padding:0 48px">
+          <dc-import name="FoogMark" ink="{{ F.light.ink }}" primary="{{ F.light.o }}" accent="{{ F.light.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:100%;max-width:400px" hint-size="400px,100px"></dc-import>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">01 Horizontal wordmark · Light background</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:{{ F.dark.bg }};border-radius:14px;height:280px;display:flex;align-items:center;justify-content:center;padding:0 48px">
+          <dc-import name="FoogMark" ink="{{ F.dark.ink }}" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:100%;max-width:400px" hint-size="400px,100px"></dc-import>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">02 Horizontal wordmark · Dark background</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:{{ F.light.bg }};border:1px solid oklch(0.9 0.005 260);border-radius:14px;height:260px;display:flex;align-items:center;justify-content:center;padding:0 40px">
+          <dc-import name="FoogMark" kind="symbol" ink="{{ F.light.ink }}" primary="{{ F.light.o }}" accent="{{ F.light.dot }}" dot="{{ dot }}" style="width:100%;max-width:220px" hint-size="220px,110px"></dc-import>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">03 Standalone OO symbol</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:oklch(0.93 0.005 260);border-radius:14px;height:260px;display:flex;align-items:center;justify-content:center;gap:28px">
+          <div style="width:140px;height:140px;border-radius:32px;background:{{ F.icon.bg }};display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px -16px oklch(0.2 0.05 265 / .5)">
+            <dc-import name="FoogMark" kind="symbol" primary="{{ F.icon.o }}" accent="{{ F.icon.dot }}" dot="{{ dot }}" style="width:94px" hint-size="94px,47px"></dc-import>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:18px;align-items:center">
+            <div style="width:72px;height:72px;border-radius:17px;background:{{ F.icon.bg }};display:flex;align-items:center;justify-content:center">
+              <dc-import name="FoogMark" kind="symbol" primary="{{ F.icon.o }}" accent="{{ F.icon.dot }}" dot="{{ dot }}" style="width:50px" hint-size="50px,25px"></dc-import>
+            </div>
+            <div style="width:44px;height:44px;border-radius:10px;background:{{ F.icon.bg }};display:flex;align-items:center;justify-content:center">
+              <dc-import name="FoogMark" kind="symbol" primary="{{ F.icon.o }}" accent="{{ F.icon.dot }}" dot="{{ dot }}" style="width:31px" hint-size="31px,16px"></dc-import>
+            </div>
+          </div>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">04 App icon · 1024 / 180 / 120</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:grid;grid-template-rows:1fr 1fr;height:260px;border-radius:14px;overflow:hidden;border:1px solid oklch(0.9 0.005 260)">
+          <div style="background:white;display:flex;align-items:center;justify-content:center;padding:0 40px">
+            <dc-import name="FoogMark" ink="oklch(0.12 0 0)" primary="oklch(0.12 0 0)" accent="oklch(0.12 0 0)" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:100%;max-width:220px" hint-size="220px,55px"></dc-import>
+          </div>
+          <div style="background:oklch(0.12 0 0);display:flex;align-items:center;justify-content:center;padding:0 40px">
+            <dc-import name="FoogMark" ink="white" primary="white" accent="white" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:100%;max-width:220px" hint-size="220px,55px"></dc-import>
+          </div>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">05 Monochrome · Positive / Reverse</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="06 Presentation" style="display:flex;flex-direction:column;gap:16px;background:oklch(0.99 0.002 260);border-radius:20px;padding:48px">
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">06 — Premium Presentation</div>
+      <h2 style="margin:0;font-size:34px;font-weight:800;letter-spacing:-.02em">In the world</h2>
+    </div>
+    <div style="background:{{ F.dark.bg }};border-radius:14px;height:132px;overflow:hidden;display:flex;align-items:center;gap:56px;padding:0 40px;box-shadow:inset 0 0 0 6px oklch(0.1 0.02 265)">
+      <dc-import name="FoogMark" ink="{{ F.dark.ink }}" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:220px;flex-shrink:0" hint-size="220px,55px"></dc-import>
+      <div style="flex-shrink:0;font:500 14px 'JetBrains Mono',monospace;letter-spacing:.32em;text-transform:uppercase;color:{{ F.dark.o }}">Football Ecosystem for Everyone</div>
+      <dc-import name="FoogMark" kind="symbol" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" dot="{{ dot }}" style="width:110px;flex-shrink:0" hint-size="110px,55px"></dc-import>
+      <dc-import name="FoogMark" ink="{{ F.dark.ink }}" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:220px;flex-shrink:0" hint-size="220px,55px"></dc-import>
+      <div style="flex-shrink:0;font:500 14px 'JetBrains Mono',monospace;letter-spacing:.32em;text-transform:uppercase;color:{{ F.dark.o }}">Football Ecosystem for Everyone</div>
+    </div>
+    <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">Stadium LED perimeter board</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:8px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:oklch(0.93 0.005 260);border-radius:14px;height:520px;display:flex;align-items:center;justify-content:center">
+          <div style="width:240px;height:480px;border-radius:38px;background:{{ F.dark.bg }};box-shadow:0 0 0 8px oklch(0.12 0.01 265),0 30px 60px -20px oklch(0.2 0.05 265 / .5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;position:relative">
+            <dc-import name="FoogMark" kind="symbol" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" dot="{{ dot }}" style="width:112px" hint-size="112px,56px"></dc-import>
+            <div style="position:absolute;bottom:40px;display:flex;flex-direction:column;align-items:center;gap:10px">
+              <dc-import name="FoogMark" ink="{{ F.dark.ink }}" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" f-corner="{{ fCorner }}" dot="{{ dot }}" style="width:80px" hint-size="80px,20px"></dc-import>
+              <div style="font:500 8px 'JetBrains Mono',monospace;letter-spacing:.24em;text-transform:uppercase;color:{{ F.dark.ink }};opacity:.7">Ecosystem for everyone</div>
+            </div>
+          </div>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">App launch screen</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="position:relative;border-radius:14px;height:520px;overflow:hidden;background:repeating-linear-gradient(135deg,oklch(0.9 0.005 260) 0 2px,oklch(0.95 0.004 260) 2px 14px);display:flex;align-items:flex-start;justify-content:center">
+          <div style="position:absolute;bottom:16px;left:16px;font:400 11px 'JetBrains Mono',monospace;color:oklch(0.45 0.02 265)">jersey photo — front, chest placement</div>
+          <div style="margin-top:150px;display:flex;flex-direction:column;align-items:center;gap:14px;background:{{ F.dark.bg }};padding:28px 36px;border-radius:12px">
+            <dc-import name="FoogMark" kind="symbol" primary="{{ F.dark.o }}" accent="{{ F.dark.dot }}" dot="{{ dot }}" style="width:96px" hint-size="96px,48px"></dc-import>
+          </div>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">Jersey chest mark</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:{{ F.light.bg }};border:1px solid oklch(0.9 0.005 260);border-radius:14px;height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px">
+          <div style="width:180px;height:180px;border-radius:50%;background:{{ F.icon.bg }};display:flex;align-items:center;justify-content:center;box-shadow:0 18px 40px -18px oklch(0.2 0.05 265 / .5)">
+            <dc-import name="FoogMark" kind="symbol" primary="{{ F.icon.o }}" accent="{{ F.icon.dot }}" dot="{{ dot }}" style="width:116px" hint-size="116px,58px"></dc-import>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:18px;font-weight:800">FOOG</div>
+            <div style="font:400 13px 'JetBrains Mono',monospace;color:oklch(0.45 0.02 265)">@foog</div>
+          </div>
+        </div>
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:oklch(0.45 0.02 265)">Social avatar</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;hyper&quot;,&quot;floodlight&quot;,&quot;turf&quot;,&quot;pulse&quot;],&quot;default&quot;:&quot;hyper&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Identity&quot;},&quot;fCorner&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;curved&quot;,&quot;sharp&quot;],&quot;default&quot;:&quot;curved&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Identity&quot;},&quot;kickoffDot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Identity&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const chalk = 'oklch(0.975 0.006 120)';
+    const P = [
+      { id: 'hyper', code: 'DIR 01', name: 'Hyper Volt',
+        why: 'Volt is the colour of match-day energy and floodlit pitches; deep midnight gives it a premium, broadcast-tech base. Signal blue adds a digital, data-driven layer. Loud on a phone screen, unmissable on an LED board.',
+        verdict: 'Hyper Volt wins: the highest-visibility combination across screens, kits and stadium LED; youthful without being childish; and volt on midnight reads as technology first, club second.',
+        sw: [['Primary', 'Volt', 'oklch(0.91 0.2 124)', '#C8F53A', 'oklch(0.18 0.045 268)'], ['Secondary', 'Midnight', 'oklch(0.18 0.045 268)', '#0D1226', chalk], ['Accent', 'Signal Blue', 'oklch(0.6 0.21 262)', '#3D6BFF', 'white']],
+        extra: ['Neutral', 'Chalk', chalk, '#F7F8F1', 'oklch(0.18 0.045 268)'],
+        dark: { bg: 'oklch(0.18 0.045 268)', ink: chalk, o: 'oklch(0.91 0.2 124)', dot: chalk },
+        light: { bg: chalk, ink: 'oklch(0.18 0.045 268)', o: 'oklch(0.6 0.21 262)', dot: 'oklch(0.18 0.045 268)' },
+        icon: { bg: 'oklch(0.18 0.045 268)', o: 'oklch(0.91 0.2 124)', dot: chalk } },
+      { id: 'floodlight', code: 'DIR 02', name: 'Floodlight',
+        why: 'Ultramarine is confident, global and trustworthy — the hue of tech platforms and night skies over stadiums. A flare-orange kick-off spot is a tiny, ownable spark of matchday heat.',
+        verdict: 'Floodlight: corporate-grade trust with a single spark of heat — strongest for B2B and partners, slightly less youth energy.',
+        sw: [['Primary', 'Ultramarine', 'oklch(0.46 0.24 266)', '#2F3FE0', 'white'], ['Secondary', 'Chalk', 'oklch(0.97 0.006 260)', '#F5F6FA', 'oklch(0.2 0.04 266)'], ['Accent', 'Flare', 'oklch(0.72 0.19 45)', '#FF7A2E', 'oklch(0.2 0.04 266)']],
+        extra: ['Neutral', 'Navy Ink', 'oklch(0.2 0.04 266)', '#121733', 'white'],
+        dark: { bg: 'oklch(0.46 0.24 266)', ink: 'oklch(0.97 0.006 260)', o: 'oklch(0.97 0.006 260)', dot: 'oklch(0.72 0.19 45)' },
+        light: { bg: 'oklch(0.97 0.006 260)', ink: 'oklch(0.2 0.04 266)', o: 'oklch(0.46 0.24 266)', dot: 'oklch(0.72 0.19 45)' },
+        icon: { bg: 'oklch(0.46 0.24 266)', o: 'oklch(0.97 0.006 260)', dot: 'oklch(0.72 0.19 45)' } },
+      { id: 'turf', code: 'DIR 03', name: 'Night Turf',
+        why: 'A reinvention of pitch green: deep turf for the base, luminous mint for the mark, hot coral for the ball. Rooted in the grass, but reads as fresh and digital rather than traditional.',
+        verdict: 'Night Turf: the most football-native direction, with mint keeping it modern and coral adding warmth.',
+        sw: [['Primary', 'Mint', 'oklch(0.86 0.15 165)', '#5FEBB8', 'oklch(0.22 0.05 165)'], ['Secondary', 'Deep Turf', 'oklch(0.22 0.05 165)', '#0B2A20', 'white'], ['Accent', 'Coral', 'oklch(0.7 0.19 25)', '#FF5F57', 'oklch(0.22 0.05 165)']],
+        extra: ['Neutral', 'Mist', 'oklch(0.97 0.008 165)', '#F1F8F4', 'oklch(0.22 0.05 165)'],
+        dark: { bg: 'oklch(0.22 0.05 165)', ink: 'oklch(0.97 0.008 165)', o: 'oklch(0.86 0.15 165)', dot: 'oklch(0.7 0.19 25)' },
+        light: { bg: 'oklch(0.97 0.008 165)', ink: 'oklch(0.22 0.05 165)', o: 'oklch(0.55 0.13 165)', dot: 'oklch(0.7 0.19 25)' },
+        icon: { bg: 'oklch(0.22 0.05 165)', o: 'oklch(0.86 0.15 165)', dot: 'oklch(0.7 0.19 25)' } },
+      { id: 'pulse', code: 'DIR 04', name: 'Pulse Violet',
+        why: 'Electric violet sits outside football’s usual reds, blues and greens — instantly ownable and native to gaming and creator culture. Near-black grounds it; aqua is the cool tech highlight.',
+        verdict: 'Pulse Violet: the most distinctive and youth-coded direction, built for gaming, creators and Gen Z fans.',
+        sw: [['Primary', 'Electric Violet', 'oklch(0.55 0.25 292)', '#7B3BF0', 'white'], ['Secondary', 'Ink Black', 'oklch(0.15 0.02 290)', '#110E18', 'white'], ['Accent', 'Aqua', 'oklch(0.86 0.13 195)', '#5FE3EA', 'oklch(0.15 0.02 290)']],
+        extra: ['Neutral', 'Chalk', 'oklch(0.97 0.006 290)', '#F6F5FA', 'oklch(0.15 0.02 290)'],
+        dark: { bg: 'oklch(0.15 0.02 290)', ink: 'oklch(0.97 0.006 290)', o: 'oklch(0.55 0.25 292)', dot: 'oklch(0.86 0.13 195)' },
+        light: { bg: 'oklch(0.97 0.006 290)', ink: 'oklch(0.15 0.02 290)', o: 'oklch(0.55 0.25 292)', dot: 'oklch(0.15 0.02 290)' },
+        icon: { bg: 'oklch(0.55 0.25 292)', o: 'white', dot: 'oklch(0.86 0.13 195)' } }
+    ];
+    const selId = this.props.palette ?? 'hyper';
+    const toSw = ([role, name, value, hex, text]) => ({ role, name, value, hex, text });
+    const palettes = P.map(p => ({ ...p, swatches: p.sw.map(toSw),
+      badge: p.id === selId ? 'block' : 'none',
+      border: p.id === selId ? '2px solid oklch(0.18 0.03 265)' : '1px solid oklch(0.9 0.005 260)' }));
+    const sel = palettes.find(p => p.id === selId) || palettes[0];
+    const F = { ...sel, full: [...sel.swatches, toSw(sel.extra)], lineColor: 'color-mix(in oklch, ' + sel.dark.ink + ' 12%, transparent)' };
+    return { palettes, F, fCorner: this.props.fCorner ?? 'curved', dot: this.props.kickoffDot ?? true };
+  }
+}
+</script>
+</body>
+</html>

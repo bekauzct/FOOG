@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:#050815;-webkit-font-smoothing:antialiased}a{color:#629BFF;text-decoration:none}a:hover{color:#8DB5FF}</style>
+</helmet>
+<div data-screen-label="Admin panel" style="--bg:{{ c.bg }};--surface:{{ c.surface }};--surface-2:{{ c.surface2 }};--border:{{ c.border }};--border-strong:{{ c.borderStrong }};--text-1:{{ c.text1 }};--text-2:{{ c.text2 }};--text-3:{{ c.text3 }};--primary:#C8F53A;--on-primary:#091025;--brand-ink:{{ c.brandInk }};--accent:{{ c.accent }};--success:{{ c.success }};--warning:{{ c.warning }};--error:{{ c.error }};--inverse:{{ c.inverse }};--on-inverse:{{ c.onInverse }};min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif">
+  <dc-import name="FoogTopBar" mode="admin" active="{{ view }}" light="{{ isLight }}" pending="{{ modCount }}" reports="{{ repCount }}" on-nav="{{ onNav }}" on-toggle-theme="{{ toggleTheme }}" style="position:sticky;top:0;z-index:20;display:block" hint-size="100%,68px"></dc-import>
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:28px 32px 0;max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto">
+    <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+      <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">FOOG Admin · Toshkent · 15-oktabr</span>
+      <h1 style="margin:0;font-size:32px;line-height:38px;font-weight:800;letter-spacing:-.02em">{{ pageTitle }}</h1>
+    </div>
+    <span style="display:flex;align-items:center;gap:8px;height:36px;padding:0 12px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);font-size:13px;color:var(--text-2);white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:var(--success)"></span>Nodira Azimova · Bosh moderator</span>
+  </div>
+
+  <div style="padding:24px 32px 48px;display:flex;flex-direction:column;gap:24px;max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto">
+
+    <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,{{ kpiMin }}),1fr));gap:16px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="padding:20px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">{{ k.label }}</span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-3)">{{ k.icon }}</span></div>
+            <div style="font:500 30px/34px 'JetBrains Mono',monospace;letter-spacing:-.02em;color:{{ k.color }}">{{ k.value }}</div>
+            <div style="font-size:13px;color:var(--text-2)">{{ k.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ twoCols }};gap:16px;align-items:start">
+        <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:18px;min-width:0">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px"><h2 style="margin:0;font-size:18px;font-weight:700">Bronlar · so‘nggi 14 kun</h2><span style="font:500 26px 'JetBrains Mono',monospace;letter-spacing:-.02em">4 186</span></div>
+            <span style="display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;background:color-mix(in oklab,var(--success) 16%,transparent);color:var(--success);font:500 12px 'JetBrains Mono',monospace;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">trending_up</span>+22%</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:end;height:180px">
+            <sc-for list="{{ bars }}" as="b" hint-placeholder-count="14"><div title="{{ b.t }}" style="flex:1;min-width:0;height:{{ b.h }};border-radius:6px 6px 3px 3px;background:{{ b.bg }}"></div></sc-for>
+          </div>
+          <div style="display:flex;justify-content:space-between;font:400 11px 'JetBrains Mono',monospace;color:var(--text-3)"><span>2-okt</span><span>8-okt</span><span>15-okt</span></div>
+        </section>
+        <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0 0 4px;font-size:18px;font-weight:700">Navbatdagi ishlar</h2>
+          <sc-for list="{{ queue }}" as="q" hint-placeholder-count="4">
+            <button onClick="{{ q.onClick }}" style="display:flex;align-items:center;gap:12px;min-height:60px;padding:8px 14px;border-radius:14px;border:none;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border);color:var(--text-1);font-family:inherit;text-align:left;cursor:pointer" style-hover="background:var(--surface-2)">
+              <span style="width:36px;height:36px;border-radius:10px;background:{{ q.tint }};color:{{ q.fg }};display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ q.icon }}</span></span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:700">{{ q.title }}</span><span style="font-size:12px;color:var(--text-2)">{{ q.sub }}</span></span>
+              <span style="font:500 18px 'JetBrains Mono',monospace;color:{{ q.fg }}">{{ q.n }}</span>
+              <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-3)">chevron_right</span>
+            </button>
+          </sc-for>
+        </section>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ twoCols }};gap:16px;align-items:start">
+        <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:18px;font-weight:700">Tumanlar bo‘yicha</h2><span style="font-size:13px;color:var(--text-2)">Faol stadionlar va bugungi bandlik</span></div>
+          <sc-for list="{{ districts }}" as="d" hint-placeholder-count="6">
+            <div style="display:grid;grid-template-columns:150px minmax(0,1fr) 92px;gap:12px;align-items:center">
+              <span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.name }}</span>
+              <div style="height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ d.occ }};border-radius:4px;background:var(--brand-ink)"></div></div>
+              <span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-2);text-align:right;white-space:nowrap">{{ d.n }} · {{ d.occ }}</span>
+            </div>
+          </sc-for>
+        </section>
+        <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:4px;min-width:0">
+          <h2 style="margin:0 0 10px;font-size:18px;font-weight:700">Faoliyat jurnali</h2>
+          <sc-for list="{{ log }}" as="l" hint-placeholder-count="6">
+            <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);width:44px;flex-shrink:0;padding-top:2px">{{ l.t }}</span>
+              <span style="font-size:14px;line-height:1.45;color:var(--text-2)"><b style="color:var(--text-1);font-weight:700">{{ l.who }}</b> {{ l.what }}</span>
+            </div>
+          </sc-for>
+        </section>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isStad }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);align-self:flex-start">
+        <sc-for list="{{ sSegs }}" as="g" hint-placeholder-count="3"><button onClick="{{ g.onClick }}" style="display:flex;align-items:center;gap:6px;height:40px;padding:0 16px;border:none;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ g.label }}<span style="display:{{ g.countD }};min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--on-primary);font:500 10px 'JetBrains Mono',monospace;align-items:center;justify-content:center">{{ g.count }}</span></button></sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:{{ listCols }};gap:16px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-if value="{{ sEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="padding:40px 20px;border-radius:20px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span style="font-family:'Material Symbols Rounded';font-size:36px;line-height:1;color:var(--success)">task_alt</span><span style="font-size:16px;font-weight:700">Navbat bo‘sh</span><span style="font-size:13px;color:var(--text-2)">Yangi ariza kelsa, shu yerda chiqadi.</span></div>
+          </sc-if>
+          <sc-for list="{{ sList }}" as="s" hint-placeholder-count="4">
+            <button onClick="{{ s.onClick }}" style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;border:none;background:var(--surface);box-shadow:{{ s.ring }};color:var(--text-1);font-family:inherit;text-align:left;cursor:pointer">
+              <div style="width:56px;height:56px;border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--border) 6px 7px);flex-shrink:0"></div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</span><span style="font-size:12px;color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.district }} · {{ s.owner }}</span><span style="font:400 11px 'JetBrains Mono',monospace;color:var(--text-3)">{{ s.when }}</span></div>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ true }}">
+          <section style="padding:24px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:20px;min-width:0">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">{{ sel.id }} · ariza {{ sel.when }}</span><h2 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em">{{ sel.name }}</h2><span style="font-size:14px;color:var(--text-2)">{{ sel.address }}</span></div>
+              <span style="display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;background:{{ sel.tagBg }};color:{{ sel.tagFg }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">{{ sel.tag }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:96px 96px;gap:8px">
+              <div style="grid-row:span 2;border-radius:16px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 10px,var(--border) 10px 11px);display:flex;align-items:flex-end;padding:10px;box-sizing:border-box;font:400 11px 'JetBrains Mono',monospace;color:var(--text-2)">{{ sel.photos }} ta rasm yuklangan</div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:13px;font-weight:700;margin-bottom:6px">Egasi</span>
+                <sc-for list="{{ sel.ownerInfo }}" as="o" hint-placeholder-count="4"><div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px"><span style="color:var(--text-2)">{{ o.l }}</span><span style="font-weight:600;text-align:right">{{ o.v }}</span></div></sc-for>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:13px;font-weight:700;margin-bottom:6px">Maydonlar</span>
+                <sc-for list="{{ sel.pitches }}" as="p" hint-placeholder-count="2"><div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px"><span>{{ p.name }} <span style="color:var(--text-2)">· {{ p.meta }}</span></span><span style="font-family:'JetBrains Mono',monospace;white-space:nowrap">{{ p.price }}</span></div></sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:13px;font-weight:700">Tekshiruv ro‘yxati</span>
+              <sc-for list="{{ checks }}" as="k" hint-placeholder-count="5">
+                <button onClick="{{ k.onClick }}" style="display:flex;align-items:center;gap:12px;min-height:44px;padding:0 12px;border-radius:12px;border:none;background:var(--bg);color:var(--text-1);font:400 14px Archivo;text-align:left;cursor:pointer">
+                  <span style="width:22px;height:22px;border-radius:6px;background:{{ k.bg }};box-shadow:{{ k.ring }};display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="display:{{ k.tickD }};font-family:'Material Symbols Rounded';font-size:18px;line-height:1;color:#091025">check</span></span>
+                  <span style="flex:1">{{ k.label }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3)">{{ k.auto }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ showReasons }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:16px;background:color-mix(in oklab,var(--error) 8%,transparent);box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--error) 30%,transparent)">
+                <span style="font-size:14px;font-weight:700">Rad etish sababi – egasiga Telegram orqali yuboriladi</span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ reasons }}" as="r" hint-placeholder-count="4"><button onClick="{{ r.onClick }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:{{ r.bg }};color:{{ r.fg }};box-shadow:{{ r.ring }};font:600 13px Archivo;cursor:pointer;white-space:nowrap">{{ r.label }}</button></sc-for></div>
+              </div>
+            </sc-if>
+            <div style="display:{{ actD }};justify-content:flex-end;align-items:center;gap:10px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap">
+              <span style="flex:1;min-width:200px;font-size:13px;color:var(--text-2)">{{ checkHint }}</span>
+              <button onClick="{{ onReject }}" style="height:48px;padding:0 20px;border-radius:999px;border:none;background:{{ rejBg }};color:{{ rejFg }};box-shadow:{{ rejRing }};font:600 15px Archivo;cursor:pointer;white-space:nowrap">{{ rejTxt }}</button>
+              <button onClick="{{ onApprove }}" disabled="{{ apDisabled }}" style="height:48px;padding:0 24px;border-radius:999px;border:none;background:{{ apBg }};color:{{ apFg }};font:600 15px Archivo;cursor:{{ apCur }};white-space:nowrap">Tasdiqlash va chiqarish</button>
+            </div>
+            <div style="display:{{ liveActD }};justify-content:flex-end;gap:10px;padding-top:18px;border-top:1px solid var(--border)">
+              <button onClick="{{ onToggleSuspend }}" style="height:48px;padding:0 20px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 15px Archivo;cursor:pointer;white-space:nowrap">{{ suspTxt }}</button>
+            </div>
+          </section>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isUsers }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+          <sc-for list="{{ uSegs }}" as="g" hint-placeholder-count="4"><button onClick="{{ g.onClick }}" style="height:40px;padding:0 16px;border:none;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ g.label }}</button></sc-for>
+        </div>
+        <span style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">12 480 foydalanuvchi · 214 stadion egasi</span>
+      </div>
+      <section style="border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);overflow:hidden">
+        <div style="overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent"><div style="min-width:940px">
+          <div style="display:grid;grid-template-columns:minmax(220px,1.6fr) 140px 150px 110px 110px 130px 120px;gap:16px;padding:14px 20px;border-bottom:1px solid var(--border);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)"><span>Foydalanuvchi</span><span>Roli</span><span>Tuman</span><span>Bronlar</span><span>Kelmagan</span><span>Holat</span><span style="text-align:right">Amal</span></div>
+          <sc-for list="{{ users }}" as="u" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:minmax(220px,1.6fr) 140px 150px 110px 110px 130px 120px;gap:16px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--border)" style-hover="background:var(--surface-2)">
+              <div style="display:flex;gap:12px;align-items:center;min-width:0"><div style="width:40px;height:40px;border-radius:50%;background:{{ u.av }};color:#091025;font:800 14px Archivo;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ u.ini }}</div><div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.name }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);white-space:nowrap">{{ u.tg }} · {{ u.joined }}</span></div></div>
+              <span style="font-size:14px">{{ u.role }}</span>
+              <span style="font-size:14px;color:var(--text-2)">{{ u.district }}</span>
+              <span style="font:500 14px 'JetBrains Mono',monospace">{{ u.books }}</span>
+              <span style="font:500 14px 'JetBrains Mono',monospace;color:{{ u.nsFg }}">{{ u.ns }}</span>
+              <span style="justify-self:start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:{{ u.tagBg }};color:{{ u.tagFg }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">{{ u.tag }}</span>
+              <button onClick="{{ u.onToggle }}" style="justify-self:end;height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:{{ u.btnFg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ u.btn }}</button>
+            </div>
+          </sc-for>
+        </div></div>
+      </section>
+    </sc-if>
+
+    <sc-if value="{{ isContent }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <span style="font-size:14px;color:var(--text-2)">Foydalanuvchilar shikoyat qilgan postlar, reellar va izohlar. 3+ shikoyat – avtomatik yashiriladi.</span>
+        <span style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">{{ repLine }}</span>
+      </div>
+      <sc-if value="{{ cEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:56px 24px;border-radius:20px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:var(--success)">verified_user</span><span style="font-size:18px;font-weight:700">Shikoyatlar yo‘q</span><span style="font-size:15px;color:var(--text-2)">Hamma kontent ko‘rib chiqildi.</span></div>
+      </sc-if>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,380px),1fr));gap:16px">
+        <sc-for list="{{ reports }}" as="r" hint-placeholder-count="4">
+          <article style="display:flex;gap:16px;padding:16px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+            <div style="position:relative;width:110px;aspect-ratio:{{ r.ar }};flex-shrink:0;align-self:flex-start;border-radius:14px;overflow:hidden;background:repeating-linear-gradient(135deg,#151B2C 0 8px,#1C2334 8px 9px);display:flex;align-items:center;justify-content:center;font:400 10px 'JetBrains Mono',monospace;color:#7A808D;text-align:center;padding:8px;box-sizing:border-box">{{ r.media }}<span style="display:{{ r.hiddenD }};position:absolute;inset:0;background:rgba(5,8,21,.7);color:#fff;align-items:center;justify-content:center;font:500 10px 'JetBrains Mono',monospace;text-transform:uppercase">Yashirilgan</span></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:color-mix(in oklab,var(--error) 16%,transparent);color:var(--error);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">{{ r.reason }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);white-space:nowrap">{{ r.count }} shikoyat</span></div>
+              <span style="font-size:14px;font-weight:700">{{ r.kind }} · {{ r.author }}</span>
+              <span style="font-size:14px;line-height:1.45;color:var(--text-2);text-wrap:pretty">{{ r.text }}</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:auto">
+                <button onClick="{{ r.onKeep }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 13px Archivo;cursor:pointer;white-space:nowrap">Qoldirish</button>
+                <button onClick="{{ r.onWarn }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 13px Archivo;cursor:pointer;white-space:nowrap">Ogohlantirish</button>
+                <button onClick="{{ r.onRemove }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:var(--error);color:#fff;font:600 13px Archivo;cursor:pointer;white-space:nowrap">O‘chirish</button>
+              </div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBook }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+          <sc-for list="{{ bSegs }}" as="g" hint-placeholder-count="3"><button onClick="{{ g.onClick }}" style="display:flex;align-items:center;gap:6px;height:40px;padding:0 16px;border:none;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ g.label }}<span style="display:{{ g.countD }};min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--on-primary);font:500 10px 'JetBrains Mono',monospace;align-items:center;justify-content:center">{{ g.count }}</span></button></sc-for>
+        </div>
+        <span style="font-size:13px;color:var(--text-2)">To‘lov stadionda bo‘lgani uchun nizolar faqat «kelmadi» va bekor qilish holatlarida.</span>
+      </div>
+      <section style="border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);overflow:hidden">
+        <div style="overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent"><div style="min-width:940px">
+          <div style="display:grid;grid-template-columns:110px minmax(180px,1.2fr) minmax(180px,1.2fr) 140px 140px 140px;gap:16px;padding:14px 20px;border-bottom:1px solid var(--border);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)"><span>ID</span><span>Futbolchi</span><span>Stadion</span><span>Vaqt</span><span>Summa</span><span>Holat</span></div>
+          <sc-for list="{{ bookings }}" as="b" hint-placeholder-count="8">
+            <div style="display:grid;grid-template-columns:110px minmax(180px,1.2fr) minmax(180px,1.2fr) 140px 140px 140px;gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border)" style-hover="background:var(--surface-2)">
+              <span style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">{{ b.id }}</span>
+              <span style="font-size:14px;font-weight:600">{{ b.player }}</span>
+              <span style="font-size:14px">{{ b.stadium }}</span>
+              <span style="font:400 13px 'JetBrains Mono',monospace">{{ b.time }}</span>
+              <span style="font:400 13px 'JetBrains Mono',monospace">{{ b.price }}</span>
+              <span style="justify-self:start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:{{ b.tagBg }};color:{{ b.tagFg }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">{{ b.tag }}</span>
+            </div>
+          </sc-for>
+        </div></div>
+      </section>
+    </sc-if>
+  </div>
+
+  <div style="display:{{ toastD }};position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:50;align-items:center;gap:10px;min-height:48px;padding:0 16px;border-radius:16px;background:var(--inverse);color:var(--on-inverse);font:500 14px Archivo;box-shadow:0 12px 24px rgba(0,0,0,.3)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:{{ toastIc }};font-variation-settings:'FILL' 1">check_circle</span>{{ toastText }}</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;}}">
+const COL = {
+  dark: { bg:'#050815', surface:'#0D1221', surface2:'#151B2C', border:'#222838', borderStrong:'#3B4253', text1:'#F3F5F9', text2:'#A5ABB8', text3:'#7A808D', brandInk:'#C8F53A', accent:'#629BFF', success:'#48CD8C', warning:'#FABB41', error:'#FF645F', inverse:'#F3F5F9', onInverse:'#091025' },
+  light: { bg:'#F4F5F8', surface:'#FFFFFF', surface2:'#EEF0F3', border:'#E0E2E7', borderStrong:'#C3C7CE', text1:'#091025', text2:'#4B5262', text3:'#6F7583', brandInk:'#091025', accent:'#2366E9', success:'#0F8A5A', warning:'#A86509', error:'#D3302F', inverse:'#091025', onInverse:'#F3F5F9' }
+};
+const sum = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '\u00A0so‘m';
+const av = s => `oklch(0.78 0.1 ${[...s].reduce((a, ch) => a + ch.charCodeAt(0), 0) * 37 % 360})`;
+const ini = s => s.split(' ').map(w => w[0]).join('').slice(0, 2);
+const STADS = [
+  { id:'ST-0071', name:'Sergeli Arena', district:'Sergeli', owner:'Rustam Qodirov', when:'2 soat oldin', status:'mod', address:'Toshkent, Sergeli tumani, Yangi Sergeli ko‘chasi 12', photos:8, tg:'@rustam_arena', phone:'+998 90 555 12 40', stir:'307 441 902', pitches:[['Maydon 1','5×5 · sun’iy o‘t',280000],['Maydon 2','5×5 · sun’iy o‘t',280000]] },
+  { id:'ST-0070', name:'Chilonzor Sport', district:'Chilonzor', owner:'Jasur Karimov', when:'5 soat oldin', status:'mod', address:'Toshkent, Chilonzor tumani, Bunyodkor shoh ko‘chasi 41', photos:6, tg:'@jasur_arena', phone:'+998 90 123 45 67', stir:'305 123 456', pitches:[['Maydon B','7×7 · ochiq',420000]] },
+  { id:'ST-0069', name:'Olmazor Futzal', district:'Olmazor', owner:'Shohruh Ergashev', when:'kecha', status:'mod', address:'Toshkent, Olmazor tumani, Qorasaroy ko‘chasi 7', photos:3, tg:'@shohruh_e', phone:'+998 93 210 77 15', stir:'—', pitches:[['Zal','futzal · yopiq',230000]] },
+  { id:'ST-0012', name:'Arena Yunusobod', district:'Yunusobod', owner:'Jasur Karimov', when:'2025-mart', status:'live', address:'Toshkent, Yunusobod tumani, Amir Temur ko‘chasi 108', photos:24, tg:'@jasur_arena', phone:'+998 90 123 45 67', stir:'305 123 456', pitches:[['Maydon A','5×5 · yopiq',300000],['Maydon B','7×7 · ochiq',420000],['Maydon C','futzal',250000]] },
+  { id:'ST-0031', name:'Mirzo Ulug‘bek Futbol markazi', district:'Mirzo Ulug‘bek', owner:'Akbar Nazarov', when:'2025-iyun', status:'live', address:'Toshkent, Mirzo Ulug‘bek tumani, Buyuk Ipak yo‘li 154', photos:15, tg:'@akbar_fm', phone:'+998 97 400 11 22', stir:'306 778 120', pitches:[['Maydon 1','11×11 · tabiiy o‘t',900000]] },
+  { id:'ST-0044', name:'Yashnobod Mini', district:'Yashnobod', owner:'Bobur Hamidov', when:'2025-sentabr', status:'off', address:'Toshkent, Yashnobod tumani, Mahtumquli ko‘chasi 3', photos:9, tg:'@bobur_h', phone:'+998 99 300 40 50', stir:'308 002 311', pitches:[['Maydon','5×5',240000]] }
+];
+const CHECKS = ['Rasmlar haqiqiy va sifatli (kamida 5 ta)','Manzil xaritada to‘g‘ri belgilangan','Narxlar va ish vaqti kiritilgan','Egasi telefonini Telegram orqali tasdiqlagan','Stadion bilan qo‘ng‘iroq orqali bog‘lanildi'];
+const REASONS = ['Rasmlar yetarli emas','Manzil noto‘g‘ri','Narx ko‘rsatilmagan','Takroriy ariza'];
+const USERS = [
+  ['Sardor Aliyev','@sardor_a','Futbolchi','Yunusobod','2026-yan',48,0],['Jasur Karimov','@jasur_arena','Stadion egasi','Yunusobod','2025-mar',0,0],['Diyor Mahmudov','@diyor10','Futbolchi','Chilonzor','2025-noy',112,1],['Navro‘z Ismoilov','@navroz_i','Futbolchi','Sergeli','2026-iyl',9,4],['Akbar Nazarov','@akbar_fm','Stadion egasi','Mirzo Ulug‘bek','2025-iyn',0,0],['Timur Sultonov','@timur_gk','Futbolchi','Olmazor','2026-fev',31,0],['Kamol Yo‘ldoshev','@kamol_y','Futbolchi','Yashnobod','2026-sen',6,3],['Malika Saidova','@malika_s','Administrator','Yunusobod','2026-may',0,0]
+];
+const REPORTS = [
+  { kind:'Reel', author:'@kamol_y', reason:'Haqorat', count:4, text:'Izohlarda raqib jamoaga nisbatan haqoratli so‘zlar bor.', media:'reel · o‘yin lavhasi', ar:'9/16', hidden:true },
+  { kind:'Post', author:'@stadion_arzon', reason:'Spam / reklama', count:6, text:'«Eng arzon stadion – faqat bizda» degan bir xil post 12 ta hamjamiyatda.', media:'rasm · reklama banneri', ar:'4/5', hidden:true },
+  { kind:'Izoh', author:'@navroz_i', reason:'Yolg‘on ma’lumot', count:2, text:'«Arena Yunusobod yopilgan» deb yozgan. Stadion faol ishlayapti.', media:'izoh', ar:'1/1', hidden:false },
+  { kind:'Reel', author:'@diyor10', reason:'Mualliflik huquqi', count:1, text:'Fonda litsenziyasiz musiqa ishlatilgan bo‘lishi mumkin.', media:'reel · skill mashqi', ar:'9/16', hidden:false }
+];
+const BOOKS = [
+  ['FG-2481','Sardor Aliyev','Arena Yunusobod','Bugun 21:00',380000,'pending'],['FG-2468','IT Park jamoasi','Arena Yunusobod','Bugun 20:00',1000000,'confirmed'],['FG-2466','Timur Sultonov','Mirzo Ulug‘bek FM','Bugun 19:00',900000,'confirmed'],['FG-2449','Navro‘z Ismoilov','Arena Yunusobod','13-okt 21:00',500000,'dispute'],['FG-2431','Kamol Yo‘ldoshev','Yashnobod Mini','11-okt 18:00',240000,'dispute'],['FG-2420','Diyor Mahmudov','Chilonzor Sport','10-okt 20:00',420000,'arrived'],['FG-2411','Oqtepa Boys','Arena Yunusobod','9-okt 09:00',300000,'cancelled']
+];
+class Component extends DCLogic {
+  state = { view:'dash', theme:null, stads:STADS, sFilter:'mod', selId:'ST-0071', checks:{ 'ST-0071':{0:1,1:1,2:1,3:1}, 'ST-0070':{0:1,1:1,2:1,3:1,4:1} }, rejecting:false, reason:null, blocked:{ '@kamol_y':1 }, uFilter:'all', reports:REPORTS, bFilter:'all', toast:null, w:1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); this.onR(); window.addEventListener('resize', this.onR); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); clearTimeout(this.tt); }
+  toast(text, warn) { clearTimeout(this.tt); this.setState({ toast:{ text, warn } }); this.tt = setTimeout(() => this.setState({ toast:null }), 3000); }
+  renderVals() {
+    const s = this.state, themeName = s.theme ?? this.props.theme ?? 'dark', c = COL[themeName], mid = s.w >= 980;
+    const tint = k => `color-mix(in oklab, ${c[k]} 16%, transparent)`;
+    const go = v => { this.setState({ view: v }); window.scrollTo(0, 0); };
+    const mod = s.stads.filter(x => x.status === 'mod');
+    const seg = (list, cur, key) => list.map(([k, label, count]) => ({ label, count, countD: count ? 'flex' : 'none', bg: cur === k ? c.inverse : 'transparent', fg: cur === k ? c.onInverse : c.text2, onClick: () => this.setState({ [key]: k, rejecting:false, reason:null }) }));
+    const sList = s.stads.filter(x => x.status === s.sFilter);
+    const sel = sList.find(x => x.id === s.selId) || sList[0];
+    const chk = sel ? (s.checks[sel.id] || {}) : {};
+    const allChecked = CHECKS.every((_, i) => chk[i]);
+    const stTag = { mod:['Moderatsiyada','warning'], live:['Faol','success'], off:['To‘xtatilgan','error'] };
+    const setStatus = (id, status, msg, warn) => { this.setState({ stads: s.stads.map(x => x.id === id ? { ...x, status } : x), rejecting:false, reason:null, selId:null }); this.toast(msg, warn); };
+    const uMatch = { all: () => true, player: u => u[2] === 'Futbolchi', owner: u => u[2] === 'Stadion egasi', blocked: u => s.blocked[u[1]] };
+    const users = USERS.filter(uMatch[s.uFilter]).map(([name, tg, role, district, joined, books, ns]) => { const bl = s.blocked[tg]; return { name, tg, role, district, joined, books: String(books), ns: String(ns), nsFg: ns >= 3 ? c.error : c.text1, ini: ini(name), av: av(name), tag: bl ? 'Bloklangan' : 'Faol', tagBg: tint(bl ? 'error' : 'success'), tagFg: bl ? c.error : c.success, btn: bl ? 'Blokdan chiqarish' : 'Bloklash', btnFg: bl ? c.text1 : c.error,
+      onToggle: () => { this.setState({ blocked: { ...s.blocked, [tg]: !bl } }); this.toast(bl ? `${tg} blokdan chiqarildi` : `${tg} bloklandi · bronlar to‘xtatildi`, !bl); } }; });
+    const rmv = (i, msg, warn) => { this.setState({ reports: s.reports.filter((_, j) => j !== i) }); this.toast(msg, warn); };
+    const reports = s.reports.map((r, i) => ({ ...r, hiddenD: r.hidden ? 'flex' : 'none', onKeep: () => rmv(i, 'Kontent qoldirildi · shikoyat yopildi'), onWarn: () => rmv(i, `${r.author} ga ogohlantirish yuborildi`), onRemove: () => rmv(i, `${r.kind} o‘chirildi`, true) }));
+    const bTag = { pending:['Kutilmoqda','warning'], confirmed:['Tasdiqlangan','success'], arrived:['Keldi','accent'], dispute:['Nizo','error'], cancelled:['Bekor','text3'] };
+    const disputes = BOOKS.filter(b => b[5] === 'dispute').length;
+    const bookings = BOOKS.filter(b => s.bFilter === 'all' || (s.bFilter === 'dispute' ? b[5] === 'dispute' : b[3].startsWith('Bugun'))).map(([id, player, stadium, time, amt, st]) => ({ id, player, stadium, time, price: sum(amt), tag: bTag[st][0], tagBg: tint(bTag[st][1]), tagFg: c[bTag[st][1]] }));
+    const bv = [212, 238, 254, 241, 276, 331, 352, 268, 281, 290, 302, 318, 367, 342], bmax = 367;
+    const t = s.toast;
+    return {
+      c, view: s.view, isLight: themeName === 'light', onNav: go, toggleTheme: () => this.setState({ theme: themeName === 'dark' ? 'light' : 'dark' }),
+      modCount: mod.length, repCount: s.reports.length,
+      pageTitle: { dash:'Umumiy ko‘rinish', stad:'Stadionlar', users:'Foydalanuvchilar', content:'Kontent moderatsiyasi', book:'Bronlar' }[s.view],
+      isDash: s.view === 'dash', isStad: s.view === 'stad', isUsers: s.view === 'users', isContent: s.view === 'content', isBook: s.view === 'book',
+      kpiMin: s.w >= 1180 ? '200px' : '320px', twoCols: mid ? 'minmax(0,1.5fr) minmax(0,1fr)' : 'minmax(0,1fr)', listCols: mid ? '340px minmax(0,1fr)' : 'minmax(0,1fr)',
+      kpis: [
+        { label:'Foydalanuvchilar', icon:'group', value:'12 480', sub:'+386 shu hafta', color:c.text1 },
+        { label:'Faol stadionlar', icon:'stadium', value: String(61 + s.stads.filter(x => x.status === 'live').length - 2), sub:`${mod.length} ta moderatsiyada`, color:c.brandInk },
+        { label:'Bugungi bronlar', icon:'event', value:'342', sub:'86% tasdiqlangan', color:c.text1 },
+        { label:'Ochiq shikoyatlar', icon:'flag', value: String(s.reports.length + disputes), sub:`${s.reports.length} kontent · ${disputes} nizo`, color: s.reports.length ? c.error : c.success }
+      ],
+      bars: bv.map((v, i) => ({ h: Math.round(v / bmax * 100) + '%', t: `${2 + i}-okt · ${v} bron`, bg: i === bv.length - 1 ? (themeName === 'dark' ? '#C8F53A' : c.text1) : tint('brandInk') })),
+      queue: [
+        { icon:'stadium', title:'Stadion arizalari', sub:'Tasdiqlash yoki rad etish', n: String(mod.length), tint: tint('warning'), fg: c.warning, onClick: () => { this.setState({ view:'stad', sFilter:'mod' }); } },
+        { icon:'flag', title:'Kontent shikoyatlari', sub:'Post, reel, izoh', n: String(s.reports.length), tint: tint('error'), fg: c.error, onClick: () => go('content') },
+        { icon:'gavel', title:'Bron nizolari', sub:'«Kelmadi» bahslari', n: String(disputes), tint: tint('accent'), fg: c.accent, onClick: () => { this.setState({ view:'book', bFilter:'dispute' }); } },
+        { icon:'person_alert', title:'Ko‘p kelmaganlar', sub:'3+ marta kelmagan futbolchilar', n:'2', tint: tint('text3'), fg: c.text2, onClick: () => go('users') }
+      ],
+      districts: [['Yunusobod',14,'78%'],['Chilonzor',11,'71%'],['Mirzo Ulug‘bek',9,'66%'],['Yakkasaroy',7,'62%'],['Sergeli',6,'54%'],['Olmazor',5,'49%'],['Yashnobod',4,'41%']].map(([name, n, occ]) => ({ name, n: n + ' ta', occ })),
+      log: [['21:04','Malika S.','Chilonzor Sport arizasini tekshirishni boshladi'],['20:47','Tizim','@stadion_arzon postini 6 shikoyatdan keyin yashirdi'],['20:15','Nodira A.','Arena Yunusobod narx o‘zgarishini tasdiqladi'],['19:52','Tizim','@kamol_y ni 3-marta kelmagani uchun 7 kunga blokladi'],['18:30','Otabek Y.','FG-2431 nizosini egasi foydasiga yopdi'],['17:05','Nodira A.','Yangi tuman qo‘shildi: Bektemir']].map(([tt, who, what]) => ({ t: tt, who, what })),
+      sSegs: seg([['mod','Moderatsiyada',mod.length],['live','Faol'],['off','To‘xtatilgan']], s.sFilter, 'sFilter'),
+      sList: sList.map(x => ({ ...x, ring: sel && x.id === sel.id ? `inset 0 0 0 2px ${c.brandInk}` : `inset 0 0 0 1px ${c.border}`, onClick: () => this.setState({ selId: x.id, rejecting:false, reason:null }) })),
+      sEmpty: !sList.length, hasSel: !!sel,
+      sel: sel ? { ...sel, tag: stTag[sel.status][0], tagBg: tint(stTag[sel.status][1]), tagFg: c[stTag[sel.status][1]], ownerInfo: [{ l:'Ism', v: sel.owner }, { l:'Telegram', v: sel.tg }, { l:'Telefon', v: sel.phone }, { l:'STIR', v: sel.stir }], pitches: sel.pitches.map(([name, meta, p]) => ({ name, meta, price: sum(p) })) } : { ownerInfo:[], pitches:[] },
+      checks: CHECKS.map((label, i) => { const on = !!chk[i]; return { label, auto: i === 3 ? 'avto' : '', bg: on ? '#C8F53A' : 'transparent', ring: on ? 'none' : `inset 0 0 0 1.5px ${c.borderStrong}`, tickD: on ? 'block' : 'none', onClick: () => sel && this.setState({ checks: { ...s.checks, [sel.id]: { ...chk, [i]: !on } } }) }; }),
+      actD: sel && sel.status === 'mod' ? 'flex' : 'none', liveActD: sel && sel.status !== 'mod' ? 'flex' : 'none',
+      checkHint: allChecked ? 'Hammasi tekshirildi. Tasdiqlangach stadion futbolchilarga ko‘rinadi.' : `${CHECKS.filter((_, i) => chk[i]).length} / ${CHECKS.length} tekshirildi – tasdiqlash uchun hammasini belgilang.`,
+      apDisabled: !allChecked, apBg: allChecked ? '#C8F53A' : c.surface2, apFg: allChecked ? '#091025' : c.text3, apCur: allChecked ? 'pointer' : 'not-allowed',
+      onApprove: () => allChecked && setStatus(sel.id, 'live', `${sel.name} tasdiqlandi · egasiga Telegram xabar ketdi`),
+      showReasons: s.rejecting,
+      reasons: REASONS.map(label => ({ label, onClick: () => this.setState({ reason: label }), bg: s.reason === label ? c.error : 'transparent', fg: s.reason === label ? '#fff' : c.text1, ring: s.reason === label ? 'none' : `inset 0 0 0 1px ${c.borderStrong}` })),
+      rejTxt: s.rejecting ? (s.reason ? 'Rad etishni yuborish' : 'Sababni tanlang') : 'Rad etish',
+      rejBg: s.rejecting && s.reason ? c.error : 'transparent', rejFg: s.rejecting && s.reason ? '#fff' : c.text1, rejRing: s.rejecting && s.reason ? 'none' : `inset 0 0 0 1.5px ${c.borderStrong}`,
+      onReject: () => { if (!s.rejecting) return this.setState({ rejecting:true }); if (s.reason) setStatus(sel.id, 'off', `${sel.name} rad etildi: ${s.reason}`, true); },
+      suspTxt: sel && sel.status === 'live' ? 'Vaqtincha to‘xtatish' : 'Qayta faollashtirish',
+      onToggleSuspend: () => sel && setStatus(sel.id, sel.status === 'live' ? 'off' : 'live', sel.status === 'live' ? `${sel.name} to‘xtatildi · yangi bronlar yopildi` : `${sel.name} qayta faol`, sel.status === 'live'),
+      uSegs: seg([['all','Hammasi'],['player','Futbolchilar'],['owner','Stadion egalari'],['blocked','Bloklangan']], s.uFilter, 'uFilter'), users,
+      reports, cEmpty: !s.reports.length, repLine: `${s.reports.length} ta ochiq`,
+      bSegs: seg([['all','Hammasi'],['today','Bugun'],['dispute','Nizolar',disputes]], s.bFilter, 'bFilter'), bookings,
+      toastD: t ? 'flex' : 'none', toastText: t ? t.text : '', toastIc: t && t.warn ? c.warning : (themeName === 'dark' ? '#0F8A5A' : '#48CD8C')
+    };
+  }
+}
+</script>
+</body>
+</html>

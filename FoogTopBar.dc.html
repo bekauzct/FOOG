@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<header style="height:68px;display:flex;align-items:center;gap:20px;padding:0 24px;background:color-mix(in oklch,var(--bg) 92%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);box-sizing:border-box;font-family:Archivo,system-ui,sans-serif">
+  <a href="{{ homeHref }}" onClick="{{ onHome }}" style="display:flex;align-items:center;gap:10px;flex-shrink:0"><dc-import name="FoogMark" ink="{{ markInk }}" primary="{{ markO }}" accent="{{ markInk }}" style="width:104px" hint-size="104px,26px"></dc-import><span style="display:{{ bizD }};padding:3px 8px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--border-strong);font:500 10px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">{{ bizTxt }}</span></a>
+  <nav style="display:{{ navD }};flex:1 1 auto;gap:4px;margin-left:8px;min-width:0;overflow-x:auto;scrollbar-width:none">
+    <sc-for list="{{ items }}" as="n" hint-placeholder-count="5">
+      <a href="{{ n.href }}" onClick="{{ n.onClick }}" title="{{ n.label }}" style="flex-shrink:0;height:40px;padding:0 14px;border-radius:999px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;white-space:nowrap;color:{{ n.fg }};background:{{ n.bg }}" style-hover="color:var(--text-1)"><span style="display:{{ iconD }};font-family:'Material Symbols Rounded';font-size:20px;line-height:1;font-variation-settings:{{ n.fill }}">{{ n.icon }}</span><span style="display:{{ labelD }}">{{ n.label }}</span><span style="display:{{ n.badgeD }};min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 10px 'JetBrains Mono',monospace;align-items:center;justify-content:center">{{ n.badge }}</span></a>
+    </sc-for>
+  </nav>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0">
+    <a href="{{ searchHref }}" title="Search" style="display:{{ searchD }};height:44px;width:240px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);align-items:center;gap:8px;padding:0 14px;box-sizing:border-box;color:var(--text-3);font-size:14px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-2)">search</span>{{ searchLabel }}</a>
+    <button onClick="{{ onToggleTheme }}" title="{{ themeTitle }}" style="width:44px;height:44px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:var(--surface-2)"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">{{ themeIcon }}</span></button>
+    <a href="{{ bellHref }}" onClick="{{ onBell }}" title="Notifications" style="position:relative;width:44px;height:44px;border-radius:999px;background:{{ bellBg }};color:{{ bellFg }};display:flex;align-items:center;justify-content:center" style-hover="background:var(--surface-2)"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;font-variation-settings:{{ bellFill }}">notifications</span><span style="display:{{ bellBadgeD }};position:absolute;top:6px;right:5px;min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--error);color:white;font:600 10px 'JetBrains Mono',monospace;align-items:center;justify-content:center">{{ unread }}</span></a>
+    <a href="{{ profHref }}" onClick="{{ onProf }}" title="Profile" style="width:40px;height:40px;border-radius:50%;padding:2px;box-sizing:border-box;background:{{ avRing }};margin-left:4px;display:block"><span style="display:block;width:100%;height:100%;border-radius:50%;border:2px solid var(--bg);box-sizing:border-box;background:{{ avBg }};display:flex;align-items:center;justify-content:center;font:800 12px Archivo;color:#091025">{{ avTxt }}</span></a>
+  </div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:68},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home&quot;,&quot;stadiums&quot;,&quot;discover&quot;,&quot;reels&quot;,&quot;messages&quot;,&quot;notifications&quot;,&quot;profile&quot;],&quot;default&quot;:&quot;home&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;light&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;unread&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:4,&quot;tsType&quot;:&quot;number&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;player&quot;,&quot;owner&quot;,&quot;admin&quot;],&quot;default&quot;:&quot;player&quot;,&quot;tsType&quot;:&quot;'player'|'owner'&quot;},&quot;pending&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;},&quot;reports&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;},&quot;onNav&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(id: string) =&gt; void&quot;},&quot;onToggleTheme&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;() =&gt; void&quot;}}">
+class Component extends DCLogic {
+  state = { w: typeof window !== 'undefined' ? window.innerWidth : 1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onR(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
+  renderVals() {
+    const p = this.props, light = !!p.light, act = p.active ?? 'home', w = this.state.w;
+    const unread = p.mode === 'admin' ? (p.reports ?? 0) : p.mode === 'owner' ? (p.pending ?? 0) : p.unread ?? (typeof localStorage !== 'undefined' && localStorage.getItem('foog-notif-read') ? 0 : 4);
+    const admin = p.mode === 'admin', owner = p.mode === 'owner' || admin, click = id => p.onNav ? (e => { e.preventDefault(); p.onNav(id); }) : undefined;
+    const defs = admin ? [['dash', 'space_dashboard', 'Umumiy', '#'], ['stad', 'stadium', 'Stadionlar', '#', p.pending ? String(p.pending) : ''], ['users', 'group', 'Foydalanuvchilar', '#'], ['content', 'flag', 'Kontent', '#', p.reports ? String(p.reports) : ''], ['book', 'event_note', 'Bronlar', '#']] : owner ? [['dash', 'space_dashboard', 'Bosh sahifa', '#'], ['book', 'event_note', 'Bronlar', '#', p.pending ? String(p.pending) : ''], ['sched', 'calendar_view_week', 'Jadval', '#'], ['stad', 'stadium', 'Stadionlarim', '#'], ['reels', 'smart_display', 'Reels', '#'], ['rep', 'monitoring', 'Hisobot', '#']] : [['home', 'home', 'Home', 'FOOG Home.dc.html'], ['stadiums', 'stadium', 'Stadiums', 'FOOG Stadiums.dc.html'], ['discover', 'explore', 'Discover', 'FOOG Discover.dc.html'], ['reels', 'smart_display', 'Reels', 'FOOG Reels.dc.html'], ['messages', 'chat_bubble', 'Messages', 'FOOG Chat.dc.html', '3']];
+    return {
+      markInk: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)', markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)',
+      navD: owner || w >= 760 ? 'flex' : 'none', iconD: owner ? (w < 1180 || w >= 1280 ? 'inline' : 'none') : w >= 1180 ? 'inline' : 'none', labelD: owner && w < 1180 ? 'none' : 'inline', searchD: w >= (owner ? 1500 : 1360) ? 'flex' : 'none',
+      homeHref: owner ? '#' : 'FOOG Home.dc.html', onHome: owner ? click('dash') : undefined, bizD: owner ? 'inline-block' : 'none', bizTxt: admin ? 'Admin' : 'Biznes',
+      searchHref: owner ? '#' : 'FOOG Discover.dc.html', searchLabel: admin ? 'Foydalanuvchi, stadion, ID' : owner ? 'Mijoz yoki bron raqami' : 'Search FOOG',
+      bellHref: owner ? '#' : 'FOOG Notifications.dc.html', onBell: owner ? click(admin ? 'content' : 'book') : undefined,
+      profHref: owner ? '#' : 'FOOG Profile.dc.html', onProf: owner ? click('prof') : undefined,
+      avBg: admin ? 'oklch(0.75 0.12 200)' : owner ? 'oklch(0.72 0.1 40)' : 'oklch(0.75 0.12 262)', avTxt: admin ? 'NA' : owner ? 'JK' : '',
+      items: defs.map(([id, icon, label, href, badge]) => { const on = id === act; return { icon, label, href, onClick: owner ? click(id) : undefined, fg: on ? 'var(--on-inverse)' : 'var(--text-2)', bg: on ? 'var(--inverse)' : 'transparent', fill: on ? "'FILL' 1" : "'FILL' 0", badge: badge || '', badgeD: badge && !on ? 'inline-flex' : 'none' }; }),
+      onToggleTheme: p.onToggleTheme, themeIcon: light ? 'dark_mode' : 'light_mode', themeTitle: p.mode === 'owner' || p.mode === 'admin' ? (light ? 'Tungi rejim' : 'Kunduzgi rejim') : light ? 'Night mode' : 'Day mode',
+      bellBg: act === 'notifications' ? 'var(--inverse)' : 'var(--surface)', bellFg: act === 'notifications' ? 'var(--on-inverse)' : 'var(--text-1)', bellFill: act === 'notifications' ? "'FILL' 1" : "'FILL' 0",
+      unread, bellBadgeD: unread && act !== 'notifications' ? 'flex' : 'none',
+      avRing: act === 'profile' ? 'var(--primary)' : 'var(--border-strong)'
+    };
+  }
+}
+</script>
+</body>
+</html>

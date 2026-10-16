@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.1 0.02 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}@keyframes foogpop{0%{transform:scale(.4);opacity:0}40%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:0}}</style>
+</helmet>
+<div style="--primary:oklch(0.91 0.2 124);--on-primary:oklch(0.18 0.045 268);--error:oklch(0.7 0.19 25);min-height:100vh;padding:{{ pagePad }};box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:24px;background:{{ pageBg }};font-family:Archivo,system-ui,sans-serif;color:white;position:relative;overflow:hidden" data-screen-label="Reels">
+
+  <div style="display:{{ chromeD }};position:absolute;top:20px;left:24px;right:24px;justify-content:space-between;align-items:center;z-index:5">
+    <a href="FOOG Home.dc.html" style="height:40px;padding:0 14px 0 10px;border-radius:999px;display:flex;align-items:center;gap:6px;font:600 15px Archivo;color:{{ chromeFg }};background:{{ chromeBg }}"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">arrow_back</span>Home</a>
+    <dc-import name="FoogMark" kind="symbol" primary="{{ markO }}" accent="{{ markDot }}" style="width:52px" hint-size="52px,26px"></dc-import>
+    <button onClick="{{ toggleTheme }}" style="width:40px;height:40px;border-radius:999px;border:none;background:{{ chromeBg }};color:{{ chromeFg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ themeIcon }}</span></button>
+  </div>
+
+  <div onClick="{{ onTap }}" onWheel="{{ onWheel }}" onTouchStart="{{ onTouchStart }}" onTouchEnd="{{ onTouchEnd }}" style="position:relative;height:{{ stageH }};aspect-ratio:{{ stageAR }};width:{{ stageW }};border-radius:{{ stageR }};overflow:hidden;background:oklch(0.16 0.03 268);flex-shrink:0;cursor:pointer;user-select:none">
+    <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,oklch(0.22 0.034 268) 0 2px,oklch(0.18 0.03 268) 2px 14px);display:flex;align-items:flex-start;justify-content:center;padding-top:30%;box-sizing:border-box;font:400 12px 'JetBrains Mono',monospace;color:oklch(0.6 0.02 265);opacity:.7">{{ r.media }}</div>
+    <div style="position:absolute;inset:0 0 auto 0;height:22%;background:linear-gradient(to bottom,oklch(0.1 0.03 268 / .6),transparent)"></div>
+    <div style="position:absolute;inset:auto 0 0 0;height:55%;background:linear-gradient(to top,oklch(0.1 0.03 268 / .88),transparent)"></div>
+
+    <div style="position:absolute;top:12px;left:12px;right:12px;display:grid;grid-template-columns:repeat({{ count }},1fr);gap:4px">
+      <sc-for list="{{ progress }}" as="p" hint-placeholder-count="4"><div style="height:3px;border-radius:999px;background:{{ p }}"></div></sc-for>
+    </div>
+    <div style="position:absolute;top:26px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;gap:18px;font:700 16px Archivo;white-space:nowrap"><span style="opacity:.6">Following</span><span style="box-shadow:inset 0 -2px 0 white;padding-bottom:4px">For you</span></div>
+      <div style="display:flex;align-items:center;gap:4px;font:500 12px 'JetBrains Mono',monospace;opacity:.85"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1;font-variation-settings:'FILL' 1">play_arrow</span>{{ r.views }}</div>
+    </div>
+
+    <sc-if value="{{ paused }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72px;height:72px;border-radius:50%;background:oklch(0 0 0 / .45);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:44px;line-height:1;font-variation-settings:'FILL' 1">play_arrow</span></div>
+    </sc-if>
+    {{ heartBurst }}
+
+    <div style="position:absolute;right:10px;bottom:168px;display:flex;flex-direction:column;align-items:center;gap:12px">
+      <sc-for list="{{ actions }}" as="a" hint-placeholder-count="4">
+        <button onClick="{{ a.onClick }}" style="background:none;border:none;color:{{ a.color }};display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:0;min-width:44px">
+          <span style="width:44px;height:44px;border-radius:50%;background:oklch(0 0 0 / .3);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;font-variation-settings:{{ a.fill }}">{{ a.icon }}</span></span>
+          <span style="font:500 12px 'JetBrains Mono',monospace;color:white">{{ a.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="position:absolute;left:16px;right:16px;bottom:20px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0">
+        <a href="FOOG Profile.dc.html" onClick="{{ stop }}" style="display:flex;align-items:center;gap:10px;color:white;min-width:0">
+          <span style="width:40px;height:40px;border-radius:50%;background:{{ r.av }};box-shadow:0 0 0 2px white;flex-shrink:0"></span>
+          <span style="display:flex;flex-direction:column;min-width:0"><span style="display:flex;align-items:center;gap:4px;font:700 15px Archivo;white-space:nowrap">{{ r.handle }}<span style="display:{{ r.verD }};font-family:'Material Symbols Rounded';font-size:16px;line-height:1;color:oklch(0.75 0.15 262);font-variation-settings:'FILL' 1">verified</span></span><span style="font-size:12px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.meta }}</span></span>
+        </a>
+        <button onClick="{{ onFollow }}" style="flex-shrink:0;height:32px;padding:0 14px;border-radius:999px;border:none;font:600 13px Archivo;cursor:pointer;white-space:nowrap;background:{{ followBg }};color:{{ followFg }};box-shadow:{{ followRing }}">{{ followLabel }}</button>
+      </div>
+      <div style="font-size:15px;line-height:1.4;text-wrap:pretty;padding-right:56px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ r.caption }}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font:600 14px Archivo;color:oklch(0.91 0.2 124)"><sc-for list="{{ r.tags }}" as="t" hint-placeholder-count="3"><span>{{ t }}</span></sc-for></div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;opacity:.85;white-space:nowrap;overflow:hidden"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">{{ r.typeIcon }}</span>{{ r.type }}<span style="opacity:.6">·</span><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">location_on</span>{{ r.place }}</div>
+    </div>
+  </div>
+
+  <div style="display:{{ navColD }};flex-direction:column;gap:10px">
+    <button onClick="{{ prev }}" disabled="{{ atStart }}" style="width:48px;height:48px;border-radius:50%;border:none;background:{{ chromeBg }};color:{{ chromeFg }};opacity:{{ prevOp }};display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1">keyboard_arrow_up</span></button>
+    <button onClick="{{ next }}" disabled="{{ atEnd }}" style="width:48px;height:48px;border-radius:50%;border:none;background:{{ chromeBg }};color:{{ chromeFg }};opacity:{{ nextOp }};display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1">keyboard_arrow_down</span></button>
+  </div>
+
+  <sc-if value="{{ commentsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeComments }}" style="position:fixed;inset:0;z-index:30;background:oklch(0.05 0.02 268 / .5);display:flex;align-items:flex-end;justify-content:center">
+      <div onClick="{{ stop }}" style="width:100%;max-width:440px;max-height:62vh;background:oklch(0.185 0.032 268);border-radius:28px 28px 0 0;padding:10px 20px 20px;display:flex;flex-direction:column;gap:14px;box-sizing:border-box">
+        <div style="width:40px;height:5px;border-radius:999px;background:oklch(0.38 0.03 268);align-self:center"></div>
+        <div style="font-size:17px;font-weight:700;text-align:center">{{ r.comments }} comments</div>
+        <div style="display:flex;flex-direction:column;gap:14px;overflow-y:auto">
+          <sc-for list="{{ commentList }}" as="c" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px"><span style="width:32px;height:32px;border-radius:50%;background:{{ c.av }};flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:13px;color:oklch(0.74 0.02 265)">{{ c.name }} · {{ c.t }}</div><div style="font-size:15px;line-height:1.4">{{ c.text }}</div></div><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;color:oklch(0.6 0.02 265)">favorite</span></div>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;padding-top:6px;border-top:1px solid oklch(0.28 0.03 268)">
+          <div style="flex:1;height:44px;border-radius:999px;background:oklch(0.14 0.028 268);display:flex;align-items:center;padding:0 16px;font-size:15px;color:oklch(0.6 0.02 265)">Add a comment…</div>
+          <button style="width:44px;height:44px;border-radius:50%;border:none;background:var(--primary);color:var(--on-primary);font-family:'Material Symbols Rounded';font-size:22px">send</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ shareOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeShare }}" style="position:fixed;inset:0;z-index:30;background:oklch(0.05 0.02 268 / .5);display:flex;align-items:flex-end;justify-content:center">
+      <div onClick="{{ stop }}" style="width:100%;max-width:440px;max-height:80vh;overflow-y:auto;background:oklch(0.185 0.032 268);border-radius:28px 28px 0 0;padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px;box-sizing:border-box">
+        <div style="width:40px;height:5px;border-radius:999px;background:oklch(0.38 0.03 268);align-self:center"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:18px;font-weight:700">Share reel</div>
+          <button onClick="{{ closeShare }}" style="width:36px;height:36px;border-radius:999px;border:none;background:oklch(0.225 0.034 268);color:white;font-family:'Material Symbols Rounded';font-size:20px;cursor:pointer">close</button>
+        </div>
+        <div style="height:44px;border-radius:999px;background:oklch(0.14 0.028 268);display:flex;align-items:center;gap:10px;padding:0 16px">
+          <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:oklch(0.74 0.02 265)">search</span>
+          <input value="{{ shareQuery }}" onChange="{{ onShareQuery }}" placeholder="Search friends, teams, groups" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:white;font:400 15px Archivo">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.74 0.02 265)">Send to friends</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px 8px">
+            <sc-for list="{{ friends }}" as="f" hint-placeholder-count="8">
+              <button onClick="{{ f.onClick }}" style="background:none;border:none;color:white;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:0">
+                <span style="position:relative;width:56px;height:56px;border-radius:{{ f.rad }};background:{{ f.av }};box-shadow:{{ f.ring }};display:flex;align-items:center;justify-content:center;font:800 14px Archivo;color:oklch(0.18 0.045 268)">{{ f.init }}
+                  <span style="display:{{ f.checkD }};position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--primary);color:var(--on-primary);box-shadow:0 0 0 3px oklch(0.185 0.032 268);align-items:center;justify-content:center;font-family:'Material Symbols Rounded';font-size:16px">check</span>
+                </span>
+                <span style="font-size:12px;max-width:72px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasPicked }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;align-items:center;padding-top:4px">
+              <div style="flex:1;height:44px;border-radius:999px;background:oklch(0.14 0.028 268);display:flex;align-items:center;padding:0 16px;font-size:15px;color:oklch(0.6 0.02 265)">Add a message…</div>
+              <button onClick="{{ sendShare }}" style="height:44px;padding:0 18px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 15px Archivo;white-space:nowrap;cursor:pointer">{{ sendLabel }}</button>
+            </div>
+          </sc-if>
+        </div>
+        <div style="height:1px;background:oklch(0.28 0.03 268)"></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.74 0.02 265)">Share to apps</div>
+          <div style="display:flex;gap:14px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none">
+            <sc-for list="{{ apps }}" as="a" hint-placeholder-count="8">
+              <button onClick="{{ a.onClick }}" style="background:none;border:none;color:white;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:0;flex-shrink:0;width:64px">
+                <span style="width:56px;height:56px;border-radius:16px;background:{{ a.bg }};color:{{ a.fg }};display:flex;align-items:center;justify-content:center;font:800 15px Archivo">{{ a.mono }}</span>
+                <span style="font-size:12px;white-space:nowrap">{{ a.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+          <sc-for list="{{ shareActions }}" as="a" hint-placeholder-count="4">
+            <button onClick="{{ a.onClick }}" style="height:64px;border-radius:14px;border:none;background:oklch(0.225 0.034 268);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font:500 12px Archivo"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">{{ a.icon }}</span>{{ a.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:50%;bottom:32px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:16px;background:oklch(0.97 0.005 265);color:oklch(0.18 0.045 268);font:500 15px Archivo;box-shadow:0 12px 32px -8px oklch(0 0 0 / .5);white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:oklch(0.55 0.14 158);font-variation-settings:'FILL' 1">check_circle</span>{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || 'dark', i: 0, paused: false, liked: {}, saved: {}, follow: JSON.parse((typeof localStorage !== 'undefined' && localStorage.getItem('foog-follow')) || '{}'), burst: 0, comments: false, toast: '', w: typeof window !== 'undefined' ? window.innerWidth : 1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onK = e => { if (e.key === 'ArrowDown') this.go(1); if (e.key === 'ArrowUp') this.go(-1); }; window.addEventListener('keydown', this.onK); this.onR(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); window.removeEventListener('keydown', this.onK); clearTimeout(this.tt); clearTimeout(this.tap); }
+  reels = [
+    { handle: 'lea.wing', name: 'Lea Wing', ver: true, meta: 'LW · Northside FC', caption: 'Rabona assist in the 89th. Didn’t think it would actually work.', tags: ['#skills', '#rabona', '#5aside'], type: 'Match moment', typeIcon: 'sports_soccer', place: 'Arena Yunusobod', views: '48.2k', likes: 6120, comments: 214, av: 'oklch(0.8 0.12 40)', media: 'reel video · 9:16 · match moment' },
+    { handle: 'amara.9', name: 'Amara Diallo', ver: true, meta: 'ST · Shayxontohur United', caption: 'Top bins from 25 yards. Week 3 of finishing drills paying off.', tags: ['#goal', '#training', '#finishing'], type: 'Goal', typeIcon: 'target', place: 'Anhor Indoor', views: '112k', likes: 14300, comments: 530, av: 'oklch(0.82 0.1 80)', media: 'reel video · 9:16 · goal' },
+    { handle: 'jonas.gk', name: 'Jonas Keller', ver: false, meta: 'GK · Kreuz Rovers', caption: 'Triple save, then the post did the rest. Keepers deserve reels too.', tags: ['#goalkeeper', '#saves'], type: 'Highlight', typeIcon: 'bolt', place: 'Yakkasaroy Hall', views: '21.7k', likes: 2890, comments: 96, av: 'oklch(0.72 0.12 200)', media: 'reel video · 9:16 · highlight' },
+    { handle: 'foog.challenges', name: 'FOOG', ver: true, meta: 'Weekly challenge', caption: 'Crossbar challenge: one touch, one shot. Tag your 5-a-side crew.', tags: ['#FOOGchallenge', '#crossbar'], type: 'Challenge', typeIcon: 'emoji_events', place: 'Anywhere', views: '304k', likes: 41200, comments: 1980, av: 'oklch(0.91 0.2 124)', media: 'reel video · 9:16 · challenge' }
+  ];
+  shareVals(s, r) {
+    const q = (s.shareQuery || '').toLowerCase(), picked = s.picked || {};
+    const F = [['Marco Ruiz', 'MR', 'oklch(0.78 0.12 320)', '50%'], ['Yara Haddad', 'YH', 'oklch(0.8 0.12 160)', '50%'], ['Northside FC', 'NS', 'oklch(0.97 0.005 265)', '16px'], ['Teo Brandt', 'TB', 'oklch(0.78 0.1 10)', '50%'], ['Thursday 5v5', '5v5', 'oklch(0.91 0.2 124)', '16px'], ['Amara Diallo', 'AD', 'oklch(0.82 0.1 80)', '50%'], ['Jonas Keller', 'JK', 'oklch(0.72 0.12 200)', '50%'], ['Mum', 'M', 'oklch(0.8 0.08 60)', '50%']];
+    const n = Object.values(picked).filter(Boolean).length;
+    const ext = (name, msg) => () => { this.setState({ share: false }); this.flash(msg || 'Opening ' + name + '…'); };
+    return {
+      shareOpen: !!s.share, closeShare: () => this.setState({ share: false }), shareQuery: s.shareQuery || '', onShareQuery: e => this.setState({ shareQuery: e.target.value }),
+      friends: F.filter(f => !q || f[0].toLowerCase().includes(q)).map(([name, init, av, rad]) => { const on = !!picked[name]; return { name, init, av, rad, ring: on ? '0 0 0 3px oklch(0.185 0.032 268), 0 0 0 5px oklch(0.91 0.2 124)' : 'none', checkD: on ? 'flex' : 'none', onClick: () => this.setState(st => ({ picked: { ...st.picked, [name]: !(st.picked || {})[name] } })) }; }),
+      hasPicked: n > 0, sendLabel: n > 1 ? 'Send to ' + n : 'Send',
+      sendShare: () => { this.setState({ share: false }); this.flash('Sent to ' + n + (n > 1 ? ' chats' : ' chat')); },
+      apps: [['Instagram', 'IG', 'oklch(0.62 0.22 350)', 'white'], ['TikTok', 'TT', 'oklch(0.12 0 0)', 'white'], ['WhatsApp', 'WA', 'oklch(0.7 0.17 150)', 'white'], ['Telegram', 'TG', 'oklch(0.66 0.14 235)', 'white'], ['YouTube', 'YT', 'oklch(0.6 0.23 27)', 'white'], ['X', 'X', 'oklch(0.97 0 0)', 'oklch(0.12 0 0)'], ['Facebook', 'f', 'oklch(0.55 0.19 260)', 'white'], ['Snapchat', 'SC', 'oklch(0.93 0.18 105)', 'oklch(0.12 0 0)'], ['Messenger', 'M', 'oklch(0.6 0.2 285)', 'white'], ['SMS', 'SMS', 'oklch(0.72 0.17 145)', 'white']].map(([name, mono, bg, fg]) => ({ name, mono, bg, fg, onClick: ext(name) })),
+      shareActions: [['link', 'Copy link', 'Link copied'], ['download', 'Save video', 'Saved to device'], ['amp_stories', 'Add to story', 'Added to your story'], ['more_horiz', 'More', 'Opening share menu…']].map(([icon, label, msg]) => ({ icon, label, onClick: ext(label, msg) }))
+    };
+  }
+  go(d) { this.setState(s => ({ i: Math.max(0, Math.min(this.reels.length - 1, s.i + d)), paused: false, comments: false })); }
+  flash(t) { clearTimeout(this.tt); this.setState({ toast: t }); this.tt = setTimeout(() => this.setState({ toast: '' }), 1800); }
+  renderVals() {
+    const s = this.state, r = this.reels[s.i], light = s.theme === 'light', mob = s.w < 640, id = r.handle;
+    const liked = !!s.liked[id], saved = !!s.saved[id], fol = !!s.follow[id];
+    const fmt = n => n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k' : String(n);
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    const like = () => this.setState(st => ({ liked: { ...st.liked, [id]: !st.liked[id] } }));
+    const onTap = () => { if (this.tap) { clearTimeout(this.tap); this.tap = null; this.setState(st => ({ liked: { ...st.liked, [id]: true }, burst: st.burst + 1, paused: false })); } else { this.tap = setTimeout(() => { this.tap = null; this.setState(st => ({ paused: !st.paused })); }, 260); } };
+    const stopP = fn => e => { e.stopPropagation(); fn(); };
+    const heartBurst = s.burst ? React.createElement('span', { key: s.burst, style: { position: 'absolute', left: '50%', top: '42%', marginLeft: -50, fontFamily: "'Material Symbols Rounded'", fontSize: 100, lineHeight: 1, color: 'oklch(0.91 0.2 124)', fontVariationSettings: "'FILL' 1", animation: 'foogpop .8s ease-out both', pointerEvents: 'none' } }, 'favorite') : null;
+    return {
+      r: { ...r, verD: r.ver ? 'inline' : 'none', comments: fmt(r.comments) },
+      count: this.reels.length, progress: this.reels.map((_, k) => k < s.i ? 'white' : k === s.i ? 'oklch(0.91 0.2 124)' : 'oklch(1 0 0 / .3)'),
+      paused: s.paused, heartBurst, onTap, stop: e => e.stopPropagation(),
+      onWheel: e => { if (this.lockW) return; this.lockW = true; setTimeout(() => this.lockW = false, 500); this.go(e.deltaY > 0 ? 1 : -1); },
+      onTouchStart: e => { this.ty = e.touches[0].clientY; }, onTouchEnd: e => { const dy = e.changedTouches[0].clientY - this.ty; if (Math.abs(dy) > 50) this.go(dy < 0 ? 1 : -1); },
+      actions: [
+        { icon: 'favorite', label: fmt(r.likes + (liked ? 1 : 0)), fill: liked ? "'FILL' 1" : "'FILL' 0", color: liked ? 'var(--error)' : 'white', onClick: stopP(like) },
+        { icon: 'chat_bubble', label: fmt(r.comments), fill: "'FILL' 0", color: 'white', onClick: stopP(() => this.setState({ comments: true })) },
+        { icon: 'bookmark', label: saved ? 'Saved' : 'Save', fill: saved ? "'FILL' 1" : "'FILL' 0", color: saved ? 'oklch(0.91 0.2 124)' : 'white', onClick: stopP(() => { this.setState(st => ({ saved: { ...st.saved, [id]: !st.saved[id] } })); if (!saved) this.flash('Saved to your collection'); }) },
+        { icon: 'send', label: 'Share', fill: "'FILL' 0", color: 'white', onClick: stopP(() => this.setState({ share: true, picked: {}, shareQuery: '' })) }
+      ],
+      onFollow: stopP(() => { const f = { ...s.follow, [id]: !fol }; localStorage.setItem('foog-follow', JSON.stringify(f)); this.setState({ follow: f }); if (!fol) this.flash('Following @' + id); }),
+      followLabel: fol ? 'Following' : 'Follow', followBg: fol ? 'transparent' : 'white', followFg: fol ? 'white' : 'oklch(0.18 0.045 268)', followRing: fol ? 'inset 0 0 0 1.5px oklch(1 0 0 / .6)' : 'none',
+      commentsOpen: s.comments, closeComments: () => this.setState({ comments: false }),
+      commentList: [['Marco Ruiz', '2h', 'Disgusting. Teach me this on Thursday', 'oklch(0.78 0.12 320)'], ['Yara Haddad', '1h', 'The keeper’s face', 'oklch(0.8 0.12 160)'], ['Teo Brandt', '24m', 'Weak foot too?? Unreal', 'oklch(0.78 0.1 10)']].map(([name, t, text, av]) => ({ name, t, text: text.replace('', ''), av })),
+      toast: s.toast, ...this.shareVals(s, r),
+      prev: () => this.go(-1), next: () => this.go(1), atStart: s.i === 0, atEnd: s.i === this.reels.length - 1, prevOp: s.i === 0 ? .35 : 1, nextOp: s.i === this.reels.length - 1 ? .35 : 1,
+      pageBg: mob ? 'black' : light ? 'oklch(0.94 0.005 265)' : 'oklch(0.1 0.02 268)',
+      pagePad: mob ? '0' : '76px 24px 24px', chromeD: mob ? 'none' : 'flex', navColD: mob ? 'none' : 'flex',
+      chromeBg: light ? 'white' : 'oklch(0.185 0.032 268)', chromeFg: light ? 'oklch(0.18 0.045 268)' : 'white',
+      markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)', markDot: light ? 'oklch(0.6 0.21 262)' : 'white', themeIcon: light ? 'dark_mode' : 'light_mode', toggleTheme,
+      stageH: mob ? '100vh' : 'max(600px, calc(100vh - 120px))', stageW: mob ? '100vw' : 'auto', stageAR: mob ? 'auto' : '9/16', stageR: mob ? '0' : '24px'
+    };
+  }
+}
+</script>
+</body>
+</html>

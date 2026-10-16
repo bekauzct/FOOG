@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.14 0.028 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}html{scroll-behavior:smooth}</style>
+</helmet>
+<div style="--bg:oklch(0.14 0.028 268);--surface:oklch(0.185 0.032 268);--surface-2:oklch(0.225 0.034 268);--border:oklch(0.28 0.03 268);--border-strong:oklch(0.38 0.03 268);--text-1:oklch(0.97 0.005 265);--text-2:oklch(0.74 0.02 265);--text-3:oklch(0.6 0.02 265);--primary:oklch(0.91 0.2 124);--primary-hover:oklch(0.95 0.17 124);--on-primary:oklch(0.18 0.045 268);--brand-ink:oklch(0.91 0.2 124);--accent:oklch(0.7 0.17 262);--success:oklch(0.76 0.15 158);--error:oklch(0.7 0.19 25);--inverse:oklch(0.97 0.005 265);--on-inverse:oklch(0.18 0.045 268);--line:oklch(1 0 0 / .07);--ph:repeating-linear-gradient(135deg,oklch(0.25 0.034 268) 0 2px,oklch(0.21 0.032 268) 2px 12px)">
+<div style="{{ themeVars }}">
+<div style="background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif" data-screen-label="Landing">
+
+  <header style="position:sticky;top:0;z-index:20;background:color-mix(in oklch,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;height:72px;padding:0 24px;display:flex;align-items:center;gap:24px">
+      <dc-import name="FoogMark" ink="{{ markInk }}" primary="{{ markO }}" accent="{{ markInk }}" style="width:110px;flex-shrink:0" hint-size="110px,28px"></dc-import>
+      <nav style="display:{{ navD }};gap:28px;margin-left:24px;font-size:15px;font-weight:600">
+        <a href="#how" style="color:var(--text-2)">How it works</a>
+        <a href="#stadiums" style="color:var(--text-2)">Stadiums</a>
+        <a href="#players" style="color:var(--text-2)">Players</a>
+        <a href="#owners" style="color:var(--text-2)">For owners</a>
+      </nav>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button onClick="{{ toggleTheme }}" title="{{ themeTitle }}" style="width:44px;height:44px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">{{ themeIcon }}</span></button>
+        <a href="#access" style="height:44px;padding:0 20px;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 15px Archivo;display:flex;align-items:center;white-space:nowrap">Join Early Access</a>
+      </div>
+    </div>
+  </header>
+
+  <section data-screen-label="Hero" style="position:relative;overflow:hidden;border-bottom:1px solid var(--border)">
+    <div style="position:absolute;inset:32px 24px;border:1px solid var(--line);border-radius:28px;pointer-events:none"></div>
+    <div style="position:absolute;top:32px;bottom:32px;left:50%;width:1px;background:var(--line);pointer-events:none"></div>
+    <div style="position:absolute;top:50%;left:50%;width:360px;height:360px;margin:-180px 0 0 -180px;border:1px solid var(--line);border-radius:50%;pointer-events:none"></div>
+    <div style="position:relative;max-width:1280px;margin:0 auto;padding:{{ heroPad }};display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center">
+      <span style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);font:500 12px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)"><span style="width:7px;height:7px;border-radius:50%;background:var(--primary)"></span>Launching in Berlin · Spring 2027</span>
+      <div style="width:100%;max-width:{{ heroMarkW }}"><dc-import name="FoogMark" ink="{{ markInk }}" primary="{{ heroO }}" accent="{{ heroDot }}" style="width:100%" hint-size="100%,140px"></dc-import></div>
+      <h1 style="margin:0;font-size:{{ h1Size }};line-height:1.05;font-weight:800;letter-spacing:-.03em;text-wrap:balance">Play. Connect. Book. Grow.</h1>
+      <p style="margin:0;max-width:600px;font-size:19px;line-height:1.55;color:var(--text-2);text-wrap:pretty">FOOG is the football ecosystem for everyone — find a pitch, find players, book in seconds, and build your player identity in one app.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <a href="#access" style="height:56px;padding:0 28px;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 17px Archivo;display:flex;align-items:center;gap:8px;white-space:nowrap">Join Early Access<span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">arrow_forward</span></a>
+        <a href="#owners" style="height:56px;padding:0 26px;border-radius:999px;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 17px Archivo;display:flex;align-items:center;gap:8px;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">stadium</span>List Your Stadium</a>
+      </div>
+      <div style="font-size:14px;color:var(--text-3)">{{ waitCount }} players and 140 stadiums already on the list</div>
+    </div>
+  </section>
+
+  <section id="how" data-screen-label="How it works" style="max-width:1280px;margin:0 auto;padding:96px 24px;display:flex;flex-direction:column;gap:40px">
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:640px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)">How FOOG works</div>
+      <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">From “anyone up for a game?” to kick-off.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:{{ stepCols }};gap:1px;background:var(--border);border-radius:24px;overflow:hidden;border:1px solid var(--border)">
+      <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+        <div style="background:var(--surface);padding:28px 24px;display:flex;flex-direction:column;gap:14px;min-height:220px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:500 13px 'JetBrains Mono',monospace;color:var(--text-3)">{{ s.n }}</span><span style="width:44px;height:44px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--brand-ink)"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">{{ s.icon }}</span></span></div>
+          <div style="margin-top:auto;font-size:20px;font-weight:700;letter-spacing:-.01em">{{ s.title }}</div>
+          <div style="font-size:15px;line-height:1.5;color:var(--text-2);text-wrap:pretty">{{ s.text }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="Product preview" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;padding:96px 24px;display:grid;grid-template-columns:{{ splitCols }};gap:56px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)">Product preview</div>
+        <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">Your whole football week, one feed.</h2>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:var(--text-2);max-width:480px;text-wrap:pretty">Live scores from your crew, open matches nearby, tonight’s free pitches and the players you follow — in one feed built around playing, not scrolling.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <a href="FOOG Mobile App.dc.html" style="height:48px;padding:0 20px;border-radius:999px;background:var(--inverse);color:var(--on-inverse);font:600 15px Archivo;display:flex;align-items:center;gap:6px"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">smartphone</span>Try the prototype</a>
+          <a href="FOOG Home.dc.html" style="height:48px;padding:0 20px;border-radius:999px;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 15px Archivo;display:flex;align-items:center">See desktop</a>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:20px;align-items:flex-end">
+        <div style="width:240px;height:500px;border-radius:40px;background:var(--bg);box-shadow:0 0 0 8px oklch(0.1 0.02 268),0 40px 80px -24px oklch(0 0 0 / .6);padding:44px 14px 14px;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+          <div style="font-size:18px;font-weight:800">Evening, Alex.</div>
+          <div style="padding:12px;border-radius:16px;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;gap:10px"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">stadium</span><span style="font:700 13px Archivo">Book a stadium</span></div>
+          <div style="padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:6px"><span style="font:500 9px 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--brand-ink)">LIVE · 67′</span><span style="font:500 20px 'JetBrains Mono',monospace">2–1</span></div>
+          <div style="flex:1;border-radius:16px;background:var(--ph)"></div>
+        </div>
+        <div style="display:{{ phone2D }};width:200px;height:420px;border-radius:36px;background:black;box-shadow:0 0 0 8px oklch(0.1 0.02 268),0 40px 80px -24px oklch(0 0 0 / .6);position:relative;overflow:hidden;flex-shrink:0">
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(135deg,oklch(0.22 0.034 268) 0 2px,oklch(0.18 0.03 268) 2px 14px)"></div>
+          <div style="position:absolute;inset:auto 0 0 0;height:50%;background:linear-gradient(to top,oklch(0.1 0.03 268 / .9),transparent)"></div>
+          <div style="position:absolute;left:14px;right:14px;bottom:18px;color:white;display:flex;flex-direction:column;gap:6px"><span style="font:700 13px Archivo">@lea.wing</span><span style="font-size:12px;line-height:1.35">Rabona assist in the 89th</span><span style="font:600 12px Archivo;color:oklch(0.91 0.2 124)">#skills #5aside</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stadiums" data-screen-label="Stadium booking" style="max-width:1280px;margin:0 auto;padding:96px 24px;display:grid;grid-template-columns:{{ splitColsR }};gap:56px;align-items:center">
+    <div style="order:{{ visualOrder }};background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px;max-width:520px;width:100%;box-sizing:border-box;justify-self:center">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:20px;font-weight:800">Arena Nord</span><span><span style="font:500 22px 'JetBrains Mono',monospace">€60</span><span style="font-size:14px;color:var(--text-2)"> /hr</span></span></div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">
+        <sc-for list="{{ demoDates }}" as="d" hint-placeholder-count="7"><span style="height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:{{ d.bg }};color:{{ d.fg }};box-shadow:{{ d.ring }}"><span style="font:500 9px 'JetBrains Mono',monospace;letter-spacing:.08em;opacity:.8">{{ d.dow }}</span><span style="font:500 17px 'JetBrains Mono',monospace">{{ d.day }}</span></span></sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+        <sc-for list="{{ demoTimes }}" as="t" hint-placeholder-count="8"><button onClick="{{ t.onClick }}" style="height:44px;border-radius:12px;border:none;font:500 14px 'JetBrains Mono',monospace;cursor:pointer;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.ring }};text-decoration:{{ t.deco }}">{{ t.t }}</button></sc-for>
+      </div>
+      <button style="height:52px;border-radius:999px;border:none;font:600 16px Archivo;background:var(--primary);color:var(--on-primary)">Book Stadium · {{ demoTime }}</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)">Stadium booking</div>
+      <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">Real-time slots. Three taps. Done.</h2>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:var(--text-2);max-width:480px;text-wrap:pretty">See every free pitch near you with live availability, pick a time, split the cost with your team, and walk in with a QR check-in.</p>
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;font-size:16px">
+        <sc-for list="{{ bookingPoints }}" as="b" hint-placeholder-count="3"><li style="display:flex;gap:10px;align-items:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--success)">check_circle</span>{{ b }}</li></sc-for>
+      </ul>
+    </div>
+  </section>
+
+  <section id="players" data-screen-label="Players and teams" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;padding:96px 24px;display:flex;flex-direction:column;gap:40px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:620px">
+          <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)">Players &amp; teams</div>
+          <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">Never be one player short again.</h2>
+        </div>
+        <p style="margin:0;max-width:420px;font-size:17px;line-height:1.6;color:var(--text-2);text-wrap:pretty">Filter by position, level and availability. Invite in one tap, or let open matches fill themselves.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px">
+        <sc-for list="{{ players }}" as="p" hint-placeholder-count="4">
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;gap:12px;align-items:center"><span style="width:52px;height:52px;border-radius:50%;background:{{ p.av }};flex-shrink:0"></span><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:700">{{ p.name }}</span><span style="font-size:13px;color:var(--text-2)">{{ p.meta }}</span></div></div>
+            <div style="display:flex;gap:6px"><span style="height:24px;padding:0 10px;border-radius:6px;background:var(--inverse);color:var(--on-inverse);font:500 11px 'JetBrains Mono',monospace;display:flex;align-items:center">{{ p.pos }}</span><span style="height:24px;padding:0 10px;border-radius:6px;background:color-mix(in oklch,var(--success) 16%,transparent);color:var(--success);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.08em;display:flex;align-items:center">{{ p.avail }}</span></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);padding-top:12px;border-top:1px solid var(--border)"><sc-for list="{{ p.stats }}" as="s" hint-placeholder-count="3"><div><div style="font:500 18px 'JetBrains Mono',monospace">{{ s.v }}</div><div style="font-size:12px;color:var(--text-2)">{{ s.k }}</div></div></sc-for></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Reels and community" style="max-width:1280px;margin:0 auto;padding:96px 24px;display:grid;grid-template-columns:{{ splitCols }};gap:56px;align-items:center">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)">Reels &amp; community</div>
+      <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">Share your football. Grow your player identity.</h2>
+      <p style="margin:0;font-size:17px;line-height:1.6;color:var(--text-2);max-width:480px;text-wrap:pretty">Goals, skills and match moments go straight to your profile, linked to real stats from real games. Team chats, match chats and city communities keep everyone in the loop.</p>
+      <div style="display:flex;gap:28px;padding-top:4px">
+        <sc-for list="{{ identityStats }}" as="s" hint-placeholder-count="3"><div><div style="font:500 32px 'JetBrains Mono',monospace;letter-spacing:-.02em;color:{{ s.c }}">{{ s.v }}</div><div style="font-size:14px;color:var(--text-2)">{{ s.k }}</div></div></sc-for>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:520px;width:100%;justify-self:center">
+      <sc-for list="{{ reelTiles }}" as="r" hint-placeholder-count="3">
+        <div style="position:relative;aspect-ratio:9/16;border-radius:18px;overflow:hidden;background:var(--ph);margin-top:{{ r.mt }}">
+          <div style="position:absolute;inset:auto 0 0 0;height:50%;background:linear-gradient(to top,oklch(0.1 0.03 268 / .85),transparent)"></div>
+          <div style="position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:3px;font:500 11px 'JetBrains Mono',monospace;color:white"><span style="font-family:'Material Symbols Rounded';font-size:14px;line-height:1;font-variation-settings:'FILL' 1">play_arrow</span>{{ r.views }}</div>
+          <div style="position:absolute;left:10px;right:10px;bottom:10px;font-size:12px;font-weight:600;color:white;line-height:1.3">{{ r.title }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section id="owners" data-screen-label="Stadium owners" style="background:var(--inverse);color:var(--on-inverse)">
+    <div style="max-width:1280px;margin:0 auto;padding:96px 24px;display:flex;flex-direction:column;gap:40px">
+      <div style="display:grid;grid-template-columns:{{ splitCols }};gap:40px;align-items:end">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;opacity:.7">For stadium owners</div>
+          <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">Fill every empty hour.</h2>
+        </div>
+        <p style="margin:0;font-size:17px;line-height:1.6;opacity:.8;text-wrap:pretty">FOOG puts your pitches in front of thousands of local players who are already looking for a game — with bookings, payments and calendars handled for you.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px">
+        <sc-for list="{{ ownerBenefits }}" as="b" hint-placeholder-count="4">
+          <div style="padding:24px;border-radius:20px;box-shadow:inset 0 0 0 1px {{ ownerLine }};display:flex;flex-direction:column;gap:12px">
+            <span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1">{{ b.icon }}</span>
+            <div style="font-size:18px;font-weight:700">{{ b.title }}</div>
+            <div style="font-size:15px;line-height:1.5;opacity:.75;text-wrap:pretty">{{ b.text }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+        <button onClick="{{ setOwner }}" style="height:56px;padding:0 28px;border-radius:999px;border:none;background:var(--primary);color:oklch(0.18 0.045 268);font:600 17px Archivo;display:flex;align-items:center;gap:8px;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">stadium</span>List Your Stadium</button>
+        <span style="font-size:15px;opacity:.75">Free during early access · 0% commission for the first 6 months</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="access" data-screen-label="Early access" style="max-width:1280px;margin:0 auto;padding:96px 24px">
+    <div style="position:relative;overflow:hidden;border-radius:32px;background:var(--surface);border:1px solid var(--border);padding:{{ accessPad }};display:grid;grid-template-columns:{{ splitCols }};gap:40px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <dc-import name="FoogMark" kind="symbol" primary="var(--brand-ink)" accent="var(--accent)" style="width:96px" hint-size="96px,48px"></dc-import>
+        <h2 style="margin:0;font-size:{{ h2Size }};line-height:1.1;font-weight:800;letter-spacing:-.02em;text-wrap:balance">Get in before kick-off.</h2>
+        <p style="margin:0;font-size:17px;line-height:1.6;color:var(--text-2);max-width:440px;text-wrap:pretty">Early members get founding-player badges, free bookings during beta, and first say on what we build next.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;padding:4px;border-radius:999px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border);align-self:flex-start">
+            <sc-for list="{{ roles }}" as="r" hint-placeholder-count="2"><button onClick="{{ r.onClick }}" style="height:40px;padding:0 18px;border:none;border-radius:999px;font:600 14px Archivo;background:{{ r.bg }};color:{{ r.fg }};cursor:pointer;white-space:nowrap">{{ r.label }}</button></sc-for>
+          </div>
+          <input value="{{ email }}" onChange="{{ onEmail }}" onKeyDown="{{ onKey }}" placeholder="you@email.com" style="height:56px;border-radius:16px;border:none;background:var(--bg);box-shadow:{{ emailRing }};padding:0 18px;color:var(--text-1);font:400 17px Archivo;outline:none">
+          <input value="{{ extra }}" onChange="{{ onExtra }}" placeholder="{{ extraPh }}" style="height:56px;border-radius:16px;border:none;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--border);padding:0 18px;color:var(--text-1);font:400 17px Archivo;outline:none">
+          <div style="display:{{ errD }};font-size:14px;color:var(--error)">Enter a valid email address</div>
+          <button onClick="{{ submit }}" style="height:56px;border-radius:999px;border:none;font:600 17px Archivo;background:var(--primary);color:var(--on-primary);cursor:pointer">{{ submitLabel }}</button>
+          <div style="font-size:13px;color:var(--text-3)">No spam. One email when your city goes live.</div>
+        </sc-if>
+        <sc-if value="{{ formDone }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;padding:24px;border-radius:20px;background:var(--bg)">
+            <span style="width:56px;height:56px;border-radius:50%;background:var(--primary);color:var(--on-primary);display:flex;align-items:center;justify-content:center;font-family:'Material Symbols Rounded';font-size:32px">check</span>
+            <div style="font-size:24px;font-weight:800;letter-spacing:-.01em">You’re on the list</div>
+            <div style="font-size:16px;line-height:1.5;color:var(--text-2)">{{ doneText }}</div>
+            <button onClick="{{ resetForm }}" style="height:44px;padding:0 18px;border-radius:999px;border:none;background:transparent;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 15px Archivo;cursor:pointer">Share with your team</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid var(--border)">
+    <div style="max-width:1280px;margin:0 auto;padding:48px 24px 40px;display:flex;flex-direction:column;gap:32px">
+      <div style="display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:300px">
+          <dc-import name="FoogMark" ink="{{ markInk }}" primary="{{ markO }}" accent="{{ markInk }}" style="width:110px" hint-size="110px,28px"></dc-import>
+          <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)">Football Ecosystem for Everyone</div>
+        </div>
+        <div style="display:flex;gap:56px;flex-wrap:wrap">
+          <sc-for list="{{ footer }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)">{{ f.h }}</div>
+              <sc-for list="{{ f.links }}" as="l" hint-placeholder-count="3"><a href="#" style="color:var(--text-2)">{{ l }}</a></sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3)">
+        <span>© 2026 FOOG</span>
+        <span style="display:flex;gap:20px"><a href="#" style="color:var(--text-3)">Privacy</a><a href="#" style="color:var(--text-3)">Terms</a><a href="#" style="color:var(--text-3)">Instagram</a><a href="#" style="color:var(--text-3)">TikTok</a></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || this.props.theme || 'dark', w: typeof window !== 'undefined' ? window.innerWidth : 1440, demoT: 3, role: 0, email: '', extra: '', err: false, done: false };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onR(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
+  renderVals() {
+    const s = this.state, light = s.theme === 'light', w = s.w, nar = w < 900, sm = w < 640;
+    const LV = { '--bg': 'oklch(0.972 0.004 265)', '--surface': 'oklch(1 0 0)', '--surface-2': 'oklch(0.955 0.005 265)', '--border': 'oklch(0.91 0.006 265)', '--border-strong': 'oklch(0.8 0.01 265)', '--text-1': 'oklch(0.18 0.045 268)', '--text-2': 'oklch(0.44 0.025 265)', '--text-3': 'oklch(0.58 0.02 265)', '--primary-hover': 'oklch(0.94 0.18 124)', '--brand-ink': 'oklch(0.18 0.045 268)', '--accent': 'oklch(0.55 0.21 262)', '--success': 'oklch(0.55 0.14 158)', '--error': 'oklch(0.55 0.21 25)', '--inverse': 'oklch(0.18 0.045 268)', '--on-inverse': 'oklch(0.97 0.005 265)', '--line': 'oklch(0.18 0.045 268 / .07)', '--ph': 'repeating-linear-gradient(135deg,oklch(0.92 0.006 265) 0 2px,oklch(0.965 0.004 265) 2px 12px)' };
+    if (typeof document !== 'undefined') document.body.style.background = light ? 'oklch(0.972 0.004 265)' : 'oklch(0.14 0.028 268)';
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    const T = ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'], off = [1, 2, 6];
+    const valid = /^\S+@\S+\.\S+$/.test(s.email.trim());
+    const submit = () => valid ? this.setState({ done: true, err: false }) : this.setState({ err: true });
+    return {
+      themeVars: light ? LV : {}, toggleTheme, themeIcon: light ? 'dark_mode' : 'light_mode', themeTitle: light ? 'Night mode' : 'Day mode',
+      markInk: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)', markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)',
+      heroO: light ? 'oklch(0.6 0.21 262)' : 'oklch(0.91 0.2 124)', heroDot: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)',
+      stepCols: w >= 1100 ? 'repeat(5,minmax(0,1fr))' : 'minmax(0,1fr)', navD: nar ? 'none' : 'flex', heroPad: sm ? '72px 20px 80px' : '120px 24px 128px', heroMarkW: sm ? '300px' : '560px',
+      h1Size: sm ? '40px' : '72px', h2Size: sm ? '32px' : '48px',
+      splitCols: nar ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)', splitColsR: nar ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1fr)', visualOrder: nar ? 1 : 0, phone2D: w < 960 ? 'none' : 'block',
+      accessPad: sm ? '28px 20px' : '56px', ownerLine: light ? 'oklch(1 0 0 / .18)' : 'oklch(0.18 0.045 268 / .15)',
+      waitCount: s.done ? '12,481' : '12,480',
+      steps: [['01', 'location_on', 'Find where to play', 'Every pitch near you, with live availability, prices and real reviews.'], ['02', 'group', 'Find who to play with', 'Players, teams and open matches filtered by level, position and time.'], ['03', 'event_available', 'Book your stadium', 'Pick a slot, split the cost, check in with a QR code.'], ['04', 'smart_display', 'Share your football', 'Post goals, skills and results to your profile and the city feed.'], ['05', 'trending_up', 'Grow your identity', 'Stats, levels and achievements from every match you play.']].map(([n, icon, title, text]) => ({ n, icon, title, text })),
+      demoDates: ['FRI', 'SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU'].map((dow, i) => ({ dow, day: 3 + i, bg: i === 0 ? 'var(--inverse)' : 'var(--bg)', fg: i === 0 ? 'var(--on-inverse)' : 'var(--text-1)', ring: i === 0 ? 'none' : 'inset 0 0 0 1px var(--border)' })),
+      demoTimes: T.map((t, i) => { const o = off.includes(i), on = i === s.demoT; return { t, onClick: () => !o && this.setState({ demoT: i }), bg: on ? 'var(--primary)' : o ? 'transparent' : 'var(--bg)', fg: on ? 'var(--on-primary)' : o ? 'var(--text-3)' : 'var(--text-1)', ring: on ? 'none' : 'inset 0 0 0 1px var(--border)', deco: o ? 'line-through' : 'none' }; }),
+      demoTime: T[s.demoT],
+      bookingPoints: ['Live availability, no phone calls', 'Split payment with your squad', 'Free cancellation up to 24h before'],
+      players: [['Yara Haddad', 'Prenzlauer Berg · 1.8 km', 'CM', 'FREE TONIGHT', 'oklch(0.8 0.12 160)', [['128', 'Matches'], ['41', 'Goals'], ['8.4', 'Rating']]], ['Jonas Keller', 'Kreuzberg · 2.2 km', 'GK', 'FRIDAYS', 'oklch(0.72 0.12 200)', [['76', 'Matches'], ['31', 'Clean'], ['7.9', 'Rating']]], ['Amara Diallo', 'Mitte · 2.9 km', 'ST', 'FREE TONIGHT', 'oklch(0.82 0.1 80)', [['94', 'Matches'], ['63', 'Goals'], ['8.6', 'Rating']]], ['Northside FC', 'Amateur · 14 players', 'NEEDS GK', 'THURSDAYS', 'oklch(0.97 0.005 265)', [['12', 'Wins'], ['3', 'Draws'], ['5', 'Losses']]]].map(([name, meta, pos, avail, av, st]) => ({ name, meta, pos, avail, av, stats: st.map(([v, k]) => ({ v, k })) })),
+      identityStats: [['41', 'Goals tracked', 'var(--brand-ink)'], ['Lvl 7', 'Player level', 'var(--text-1)'], ['9', 'MVP awards', 'var(--text-1)']].map(([v, k, c]) => ({ v, k, c })),
+      reelTiles: [['48k', 'Rabona assist, 89th', '0'], ['112k', 'Top bins from 25 yards', '40px'], ['22k', 'Triple save', '0']].map(([views, title, mt]) => ({ views, title, mt })),
+      ownerBenefits: [['event_available', 'More bookings', 'Reach local players searching for a pitch right now, not just your regulars.'], ['payments', 'Paid upfront', 'Card, Apple Pay and team splits — no more no-shows or cash at the door.'], ['calendar_month', 'One calendar', 'Manage every pitch and slot in one place, synced with your existing system.'], ['insights', 'Know your peak hours', 'See occupancy, revenue and demand by hour to price smarter.']].map(([icon, title, text]) => ({ icon, title, text })),
+      setOwner: () => { this.setState({ role: 1, done: false }); const el = document.getElementById('access'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' }); },
+      roles: ['I’m a player', 'I own a stadium'].map((label, i) => ({ label, onClick: () => this.setState({ role: i }), bg: i === s.role ? 'var(--inverse)' : 'transparent', fg: i === s.role ? 'var(--on-inverse)' : 'var(--text-2)' })),
+      email: s.email, onEmail: e => this.setState({ email: e.target.value, err: false }), onKey: e => { if (e.key === 'Enter') submit(); },
+      extra: s.extra, onExtra: e => this.setState({ extra: e.target.value }), extraPh: s.role ? 'Stadium name & city' : 'Your city (e.g. Berlin)',
+      emailRing: s.err ? 'inset 0 0 0 1.5px var(--error)' : 'inset 0 0 0 1.5px var(--border)', errD: s.err ? 'block' : 'none',
+      submit, submitLabel: s.role ? 'List Your Stadium' : 'Join Early Access',
+      formOpen: !s.done, formDone: s.done,
+      doneText: s.role ? 'Our partner team will reach out within 2 working days to set up your pitches.' : 'You’re #12,481. We’ll email you the moment FOOG goes live in your city.',
+      resetForm: () => this.setState({ done: false, email: '', extra: '' }),
+      footer: [['Product', ['Stadiums', 'Matches', 'Reels', 'Profiles']], ['Partners', ['List your stadium', 'Clubs & leagues', 'Brands']], ['Company', ['About', 'Careers', 'Press']]].map(([h, links]) => ({ h, links }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#050815;-webkit-font-smoothing:antialiased}a{color:#629BFF;text-decoration:none}a:hover{color:#8DB5FF}</style>
+</helmet>
+<div data-screen-label="ERD" style="width:1900px;box-sizing:border-box;padding:56px 40px 48px;background:#050815;color:#F3F5F9;font-family:Archivo,system-ui,sans-serif;display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px;padding:0 0 0 0">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <dc-import name="FoogMark" ink="#F3F5F9" primary="#C8F53A" accent="#F3F5F9" style="width:120px" hint-size="120px,30px"></dc-import>
+      <h1 style="margin:0;font-size:52px;line-height:56px;font-weight:800;letter-spacing:-.03em">ERD · Ma’lumotlar bazasi</h1>
+      <p style="margin:0;max-width:820px;font-size:18px;line-height:1.5;color:#A5ABB8">PostgreSQL jadvallari va ularning bog‘lanishlari. Jadvalni bosing – uning aloqalari ajratib ko‘rsatiladi.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-end">
+      <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-end">
+        <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5"><span style="display:flex;align-items:center;gap:8px;font-size:14px;color:#A5ABB8"><span style="width:12px;height:12px;border-radius:3px;background:{{ l.c }}"></span>{{ l.t }}</span></sc-for>
+      </div>
+      <div style="display:flex;gap:18px;font:400 12px 'JetBrains Mono',monospace;color:#7A808D">
+        <span style="display:flex;align-items:center;gap:6px"><svg width="34" height="14" viewBox="0 0 34 14"><path d="M2 7H32M6 2V12" stroke="#A5ABB8" stroke-width="1.5" fill="none"></path></svg>bitta (1)</span>
+        <span style="display:flex;align-items:center;gap:6px"><svg width="34" height="14" viewBox="0 0 34 14"><path d="M2 7H32M20 7L32 1M20 7L32 13" stroke="#A5ABB8" stroke-width="1.5" fill="none"></path></svg>ko‘p (N)</span>
+        <span><b style="color:#C8F53A;font-weight:500">PK</b> asosiy kalit · <b style="color:#629BFF;font-weight:500">FK</b> bog‘lovchi · <b style="color:#FABB41;font-weight:500">UQ</b> takrorlanmas</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="position:relative;width:1820px;height:{{ canvasH }}">
+    <svg width="1820" height="{{ canvasH }}" style="position:absolute;inset:0;overflow:visible">
+      <sc-for list="{{ edges }}" as="e" hint-placeholder-count="30">
+        <g opacity="{{ e.op }}">
+          <path d="{{ e.d }}" stroke="{{ e.c }}" stroke-width="{{ e.w }}" fill="none"></path>
+          <path d="{{ e.one }}" stroke="{{ e.c }}" stroke-width="{{ e.w }}" fill="none"></path>
+          <path d="{{ e.many }}" stroke="{{ e.c }}" stroke-width="{{ e.w }}" fill="none"></path>
+        </g>
+      </sc-for>
+    </svg>
+    <sc-for list="{{ ents }}" as="t" hint-placeholder-count="21">
+      <div onClick="{{ t.onClick }}" style="position:absolute;left:{{ t.x }};top:{{ t.y }};width:300px;border-radius:16px;background:#0D1221;box-shadow:{{ t.ring }};overflow:hidden;cursor:pointer;opacity:{{ t.op }}">
+        <div style="height:52px;padding:0 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #222838;background:#151B2C">
+          <span style="width:10px;height:10px;border-radius:3px;background:{{ t.c }};flex-shrink:0"></span>
+          <span style="flex:1;font:500 16px 'JetBrains Mono',monospace">{{ t.name }}</span>
+          <span style="font-size:12px;color:#7A808D">{{ t.uz }}</span>
+        </div>
+        <div style="padding:6px 0">
+          <sc-for list="{{ t.rows }}" as="r" hint-placeholder-count="6">
+            <div style="height:28px;padding:0 14px;display:flex;align-items:center;gap:8px;font:400 13px 'JetBrains Mono',monospace">
+              <span style="width:22px;font-size:10px;font-weight:500;color:{{ r.kc }}">{{ r.k }}</span>
+              <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:{{ r.nc }}">{{ r.n }}</span>
+              <span style="color:#7A808D;font-size:12px;white-space:nowrap">{{ r.t }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px">
+    <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
+      <div style="padding:18px 20px;border-radius:20px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;flex-direction:column;gap:6px">
+        <span style="font:500 14px 'JetBrains Mono',monospace;color:#C8F53A">{{ n.t }}</span>
+        <span style="font-size:14px;line-height:1.5;color:#A5ABB8">{{ n.d }}</span>
+      </div>
+    </sc-for>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const D = { core:'#F3F5F9', social:'#629BFF', stad:'#C8F53A', match:'#FABB41', chat:'#48CD8C', mod:'#FF645F' };
+const X = [40, 420, 800, 1180, 1520];
+const E = [
+  ['users','foydalanuvchi','core',2,120,[['id','uuid','PK'],['telegram_id','bigint','UQ'],['phone','text','UQ'],['name','text'],['username','text','UQ'],['role','player|owner|admin'],['position','text'],['foot','left|right|both'],['district','text'],['level','int'],['avatar_url','text'],['status','active|blocked'],['created_at','timestamptz']]],
+  ['follows','kuzatish','social',1,120,[['follower_id','uuid','FK'],['following_id','uuid','FK'],['created_at','timestamptz']]],
+  ['posts','post','social',1,300,[['id','uuid','PK'],['author_id','uuid','FK'],['stadium_id','uuid','FK'],['text','text'],['media_url','text'],['hidden','bool'],['created_at','timestamptz']]],
+  ['reels','reel','social',1,590,[['id','uuid','PK'],['author_id','uuid','FK'],['stadium_id','uuid','FK'],['video_url','text'],['caption','text'],['type','text'],['book_cta','bool'],['status','processing|published'],['views','int'],['created_at','timestamptz']]],
+  ['comments','izoh','social',0,300,[['id','uuid','PK'],['user_id','uuid','FK'],['post_id','uuid','FK'],['reel_id','uuid','FK'],['text','text'],['created_at','timestamptz']]],
+  ['likes','like','social',0,560,[['user_id','uuid','FK'],['post_id','uuid','FK'],['reel_id','uuid','FK'],['created_at','timestamptz']]],
+  ['reports','shikoyat','mod',0,780,[['id','uuid','PK'],['reporter_id','uuid','FK'],['target_type','post|reel|comment|user'],['target_id','uuid'],['reason','text'],['status','open|kept|removed'],['created_at','timestamptz']]],
+  ['notifications','bildirishnoma','chat',0,1080,[['id','uuid','PK'],['user_id','uuid','FK'],['type','text'],['title','text'],['ref_type','text'],['ref_id','uuid'],['read_at','timestamptz'],['created_at','timestamptz']]],
+  ['stadiums','stadion','stad',3,120,[['id','uuid','PK'],['owner_id','uuid','FK'],['name','text'],['address','text'],['district','text'],['lat','numeric'],['lng','numeric'],['phone','text'],['amenities','text[]'],['cancel_policy','text'],['status','mod|live|off'],['accepting','bool'],['created_at','timestamptz']]],
+  ['stadium_staff','xodim','stad',4,120,[['stadium_id','uuid','FK'],['user_id','uuid','FK'],['role','admin']]],
+  ['pitches','maydon','stad',4,290,[['id','uuid','PK'],['stadium_id','uuid','FK'],['name','text'],['size','5x5|7x7|11x11'],['surface','text'],['indoor','bool'],['price','int'],['peak_price','int']]],
+  ['schedule','ish vaqti / yopiq','stad',4,600,[['id','uuid','PK'],['stadium_id','uuid','FK'],['pitch_id','uuid','FK'],['type','hours|blocked'],['weekday','0–6'],['date','date'],['start_time','time'],['end_time','time']]],
+  ['bookings','bron','stad',3,560,[['id','uuid','PK'],['code','text','UQ'],['user_id','uuid','FK'],['pitch_id','uuid','FK'],['date','date'],['start_time','time'],['end_time','time'],['price','int'],['status','pending|confirmed|…'],['reject_reason','text'],['created_at','timestamptz']]],
+  ['reviews','sharh','stad',3,960,[['id','uuid','PK'],['user_id','uuid','FK'],['stadium_id','uuid','FK'],['booking_id','uuid','FK'],['rating','1–5'],['text','text'],['reply','text'],['created_at','timestamptz']]],
+  ['teams','jamoa','match',2,620,[['id','uuid','PK'],['name','text'],['captain_id','uuid','FK'],['district','text'],['level','text'],['looking_for','text[]'],['created_at','timestamptz']]],
+  ['team_members','jamoa a’zosi','match',2,905,[['team_id','uuid','FK'],['user_id','uuid','FK'],['joined_at','timestamptz']]],
+  ['matches','o‘yin','match',2,1080,[['id','uuid','PK'],['booking_id','uuid','FK'],['organizer_id','uuid','FK'],['home_team_id','uuid','FK'],['away_team_id','uuid','FK'],['capacity','int'],['price_each','int'],['level','text'],['home_score','int'],['away_score','int'],['mvp_id','uuid','FK'],['status','open|full|done']]],
+  ['match_players','o‘yinchi','match',1,960,[['match_id','uuid','FK'],['user_id','uuid','FK'],['side','home|away'],['goals','int'],['assists','int'],['joined_at','timestamptz']]],
+  ['chats','chat','chat',4,900,[['id','uuid','PK'],['type','dm|team|match|community'],['team_id','uuid','FK'],['match_id','uuid','FK'],['name','text'],['created_at','timestamptz']]],
+  ['chat_members','chat a’zosi','chat',4,1170,[['chat_id','uuid','FK'],['user_id','uuid','FK'],['last_read_at','timestamptz']]],
+  ['messages','xabar','chat',3,1290,[['id','uuid','PK'],['chat_id','uuid','FK'],['sender_id','uuid','FK'],['type','text|photo|match_invite|…'],['body','text'],['ref_id','uuid'],['created_at','timestamptz']]]
+];
+const R = [
+  ['users','follows','follower_id'],['users','follows','following_id'],['users','posts','author_id'],['users','reels','author_id'],['users','comments','user_id'],['users','likes','user_id'],['users','reports','reporter_id'],['users','notifications','user_id'],
+  ['posts','comments','post_id'],['reels','comments','reel_id'],['posts','likes','post_id'],['reels','likes','reel_id'],
+  ['users','stadiums','owner_id'],['stadiums','stadium_staff','stadium_id'],['users','stadium_staff','user_id'],['stadiums','pitches','stadium_id'],['stadiums','schedule','stadium_id'],['pitches','schedule','pitch_id'],
+  ['pitches','bookings','pitch_id'],['users','bookings','user_id'],['stadiums','reviews','stadium_id'],['users','reviews','user_id'],['bookings','reviews','booking_id',1],['stadiums','posts','stadium_id'],['stadiums','reels','stadium_id'],
+  ['users','teams','captain_id'],['teams','team_members','team_id'],['users','team_members','user_id'],['bookings','matches','booking_id',1],['users','matches','organizer_id'],['teams','matches','home_team_id'],['teams','matches','away_team_id'],
+  ['matches','match_players','match_id'],['users','match_players','user_id'],['matches','chats','match_id'],['teams','chats','team_id'],['chats','chat_members','chat_id'],['users','chat_members','user_id'],['chats','messages','chat_id'],['users','messages','sender_id']
+];
+const HDR = 52, ROW = 28, PAD = 6, W = 300;
+class Component extends DCLogic {
+  state = { sel: null };
+  renderVals() {
+    const sel = this.state.sel;
+    const pos = {}; E.forEach(([name, , dom, col, y, rows]) => { pos[name] = { x: X[col], y, h: HDR + PAD * 2 + rows.length * ROW, rows, c: D[dom] }; });
+    const rowY = (n, f) => { const p = pos[n], i = p.rows.findIndex(r => r[0] === f); return p.y + HDR + PAD + (i < 0 ? 0 : i) * ROW + ROW / 2; };
+    const related = new Set(); if (sel) R.forEach(([a, b]) => { if (a === sel || b === sel) { related.add(a); related.add(b); } });
+    const edges = R.map(([a, b, fk, oneToOne]) => {
+      const A = pos[a], B = pos[b], ay = rowY(a, 'id'), by = rowY(b, fk);
+      let sx, ex, ds, de;
+      if (B.x > A.x + 10) { sx = A.x + W; ex = B.x; ds = 1; de = -1; }
+      else if (B.x < A.x - 10) { sx = A.x; ex = B.x + W; ds = -1; de = 1; }
+      else { sx = A.x + W; ex = B.x + W; ds = 1; de = 1; }
+      const k = A.x === B.x ? 70 : Math.max(50, Math.abs(ex - sx) / 2);
+      const d = `M${sx} ${ay} C${sx + ds * k} ${ay} ${ex + de * k} ${by} ${ex} ${by}`;
+      const one = `M${sx + ds * 10} ${ay - 6}V${ay + 6}`;
+      const many = oneToOne ? `M${ex + de * 10} ${by - 6}V${by + 6}` : `M${ex + de * 14} ${by}L${ex} ${by - 7}M${ex + de * 14} ${by}L${ex} ${by + 7}`;
+      const on = !sel || a === sel || b === sel, hub = a === 'users' && !sel;
+      return { d, one, many, c: on && sel ? pos[a === sel ? b : a].c : (hub ? '#3B4253' : A.c), w: on && sel ? 2 : 1.25, op: on ? (hub ? .55 : .8) : .08 };
+    });
+    const ents = E.map(([name, uz, dom]) => { const p = pos[name], on = !sel || related.has(name) || sel === name;
+      return { name, uz, c: p.c, x: p.x + 'px', y: p.y + 'px', op: on ? 1 : .3, ring: sel === name ? `inset 0 0 0 2px ${p.c}` : 'inset 0 0 0 1px #222838',
+        onClick: () => this.setState({ sel: sel === name ? null : name }),
+        rows: p.rows.map(([n, t, k]) => ({ n, t, k: k || '', kc: k === 'PK' ? '#C8F53A' : k === 'FK' ? '#629BFF' : '#FABB41', nc: k === 'PK' ? '#F3F5F9' : k === 'FK' ? '#C9D6F5' : '#A5ABB8' })) }; });
+    const canvasH = Math.max(...Object.values(pos).map(p => p.y + p.h)) + 20 + 'px';
+    return {
+      ents, edges, canvasH,
+      legend: [{ t:'Asosiy', c:D.core }, { t:'Ijtimoiy', c:D.social }, { t:'Stadion va bron', c:D.stad }, { t:'O‘yin va jamoa', c:D.match }, { t:'Chat va bildirishnoma', c:D.chat }, { t:'Moderatsiya', c:D.mod }],
+      notes: [
+        { t:'bookings', d:'Bir maydonda bir vaqtga ikkita faol bron bo‘lmasligi uchun: (pitch_id, date, start_time–end_time) bo‘yicha kesishishni taqiqlovchi cheklov.' },
+        { t:'likes · comments', d:'post_id yoki reel_id – faqat bittasi to‘ldiriladi. (user_id, post_id) va (user_id, reel_id) takrorlanmas.' },
+        { t:'schedule', d:'type = hours – haftalik ish vaqti (weekday). type = blocked – egasi yopgan aniq soat (date). pitch_id bo‘sh bo‘lsa – butun stadion.' },
+        { t:'matches', d:'O‘yin bronga bog‘lanadi (1:1). Ochiq o‘yinda o‘yinchilar match_players orqali qo‘shiladi; jamoa o‘yinida home/away_team_id.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

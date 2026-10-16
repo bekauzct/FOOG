@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:#050815;-webkit-font-smoothing:antialiased}a{color:#629BFF;text-decoration:none}a:hover{color:#8DB5FF}</style>
+</helmet>
+<div data-screen-label="Owner panel" style="--bg:{{ c.bg }};--surface:{{ c.surface }};--surface-2:{{ c.surface2 }};--border:{{ c.border }};--border-strong:{{ c.borderStrong }};--text-1:{{ c.text1 }};--text-2:{{ c.text2 }};--text-3:{{ c.text3 }};--primary:#C8F53A;--on-primary:#091025;--brand-ink:{{ c.brandInk }};--accent:{{ c.accent }};--success:{{ c.success }};--warning:{{ c.warning }};--error:{{ c.error }};--inverse:{{ c.inverse }};--on-inverse:{{ c.onInverse }};min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif">
+
+  <dc-import name="FoogTopBar" mode="owner" active="{{ view }}" light="{{ isLight }}" pending="{{ pendingCount }}" on-nav="{{ onNav }}" on-toggle-theme="{{ toggleTheme }}" style="position:sticky;top:0;z-index:20;display:block" hint-size="100%,68px"></dc-import>
+
+  <main style="min-width:0;display:flex;flex-direction:column">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:28px 32px 0;max-width:1240px;width:100%;box-sizing:border-box;margin:0 auto">
+      <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+        <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">15-oktabr, payshanba · Toshkent</span>
+        <h1 style="margin:0;font-size:32px;line-height:38px;font-weight:800;letter-spacing:-.02em">{{ pageTitle }}</h1>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:999px;background:color-mix(in oklab,var(--success) 14%,transparent);color:var(--success);font:600 13px Archivo;white-space:nowrap"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">storefront</span>To‘lov stadionda</span>
+        <button style="display:flex;align-items:center;gap:10px;height:48px;padding:0 12px 0 6px;border-radius:14px;border:none;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);color:var(--text-1);font-family:inherit;text-align:left;cursor:pointer">
+          <div style="width:36px;height:36px;border-radius:10px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--border) 6px 7px);flex-shrink:0"></div>
+          <div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:700;white-space:nowrap">{{ stadium.name }}</span><span style="font-size:12px;color:var(--text-2);white-space:nowrap">{{ stadium.district }}</span></div>
+          <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-2)">unfold_more</span>
+        </button>
+      </div>
+    </div>
+
+    <div style="padding:24px 32px 48px;display:flex;flex-direction:column;gap:24px;max-width:1240px;width:100%;box-sizing:border-box;margin:0 auto">
+
+      <sc-if value="{{ isDashEmpty }}" hint-placeholder-val="{{ false }}">
+        <section style="padding:48px;border-radius:24px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+          <dc-import name="FoogMark" kind="symbol" primary="{{ c.markO }}" accent="{{ c.markDot }}" style="width:96px" hint-size="96px,48px"></dc-import>
+          <h2 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em">Stadioningizni FOOG’ga qo‘shing</h2>
+          <p style="margin:0;max-width:460px;font-size:16px;line-height:1.5;color:var(--text-2)">Toshkentdagi futbolchilar sizning maydoningizni topib, bo‘sh soatlarni bron qila boshlaydi. Sozlash 5 daqiqa oladi.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;width:100%;max-width:720px;margin:8px 0">
+            <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+              <div style="padding:16px;border-radius:16px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:8px;text-align:left">
+                <span style="font:500 12px 'JetBrains Mono',monospace;color:var(--brand-ink)">{{ s.n }}</span>
+                <span style="font-size:15px;font-weight:700">{{ s.t }}</span>
+                <span style="font-size:13px;line-height:1.45;color:var(--text-2)">{{ s.d }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ goStadiums }}" style="min-height:52px;padding:0 28px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 16px Archivo;cursor:pointer">Stadion qo‘shish</button>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,{{ kpiMin }}),1fr));gap:16px">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="padding:20px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">{{ k.label }}</span><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-3)">{{ k.icon }}</span></div>
+              <div style="font:500 30px/34px 'JetBrains Mono',monospace;letter-spacing:-.02em;color:{{ k.color }}">{{ k.value }}</div>
+              <div style="font-size:13px;color:var(--text-2)">{{ k.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:{{ dashCols }};gap:16px;align-items:start">
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:18px;font-weight:700">Bugungi jadval</h2><span style="font-size:13px;color:var(--text-2)">3 maydon · 08:00–24:00</span></div>
+              <button onClick="{{ goSchedule }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 14px Archivo;cursor:pointer;white-space:nowrap;flex-shrink:0">Jadvalni ochish</button>
+            </div>
+            <div style="overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent">
+              <div style="min-width:640px;display:flex;flex-direction:column;gap:6px">
+                <div style="display:grid;grid-template-columns:96px repeat(16,minmax(0,1fr));gap:3px;font:400 10px 'JetBrains Mono',monospace;color:var(--text-3)">
+                  <span></span>
+                  <sc-for list="{{ hoursHdr }}" as="h" hint-placeholder-count="16"><span style="text-align:left">{{ h }}</span></sc-for>
+                </div>
+                <sc-for list="{{ timeline }}" as="p" hint-placeholder-count="3">
+                  <div style="display:grid;grid-template-columns:96px repeat(16,minmax(0,1fr));gap:3px;align-items:center">
+                    <div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:700">{{ p.name }}</span><span style="font-size:11px;color:var(--text-3)">{{ p.meta }}</span></div>
+                    <sc-for list="{{ p.cells }}" as="x" hint-placeholder-count="16"><div title="{{ x.title }}" style="height:40px;border-radius:6px;background:{{ x.bg }};box-shadow:{{ x.ring }};opacity:{{ x.op }}"></div></sc-for>
+                  </div>
+                </sc-for>
+                <div style="display:grid;grid-template-columns:96px repeat(16,minmax(0,1fr));gap:3px;height:2px"><span></span><sc-for list="{{ nowLine }}" as="z" hint-placeholder-count="16"><span style="height:2px;border-radius:1px;background:{{ z }}"></span></sc-for></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--text-2)">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--primary)"></span>Band</span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--warning)"></span>Tasdiq kutilmoqda</span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 3px,var(--border-strong) 3px 4px)"></span>Yopiq</span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;box-shadow:inset 0 0 0 1.5px var(--border-strong)"></span>Bo‘sh</span>
+            </div>
+          </section>
+
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0;font-size:18px;font-weight:700">Yangi so‘rovlar</h2><button onClick="{{ goBookings }}" style="border:none;background:none;color:var(--accent);font:600 14px Archivo;cursor:pointer;padding:8px 0;white-space:nowrap;flex-shrink:0">Barchasi</button></div>
+            <sc-if value="{{ noPending }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:28px 16px;border-radius:16px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center"><span style="font-family:'Material Symbols Rounded';font-size:32px;line-height:1;color:var(--success)">task_alt</span><span style="font-size:15px;font-weight:700">Hammasi ko‘rib chiqildi</span><span style="font-size:13px;color:var(--text-2)">Yangi bron kelsa, shu yerda paydo bo‘ladi.</span></div>
+            </sc-if>
+            <sc-for list="{{ pending }}" as="b" hint-placeholder-count="3">
+              <div style="padding:14px;border-radius:16px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;gap:12px;align-items:center">
+                  <div style="width:40px;height:40px;border-radius:50%;background:{{ b.av }};color:#091025;font:800 14px Archivo;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ b.ini }}</div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:700">{{ b.name }}</span><span style="font-size:12px;color:var(--text-2)">{{ b.pitch }} · {{ b.dur }}</span></div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font:500 15px 'JetBrains Mono',monospace">{{ b.time }}</span><span style="font:500 11px 'JetBrains Mono',monospace;color:var(--brand-ink)">{{ b.day }}</span></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-2)"><span>{{ b.ago }}</span><span style="font-family:'JetBrains Mono',monospace;color:var(--text-1)">{{ b.price }}</span></div>
+                <div style="display:flex;gap:8px">
+                  <button onClick="{{ b.onReject }}" style="flex:1;height:40px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 14px Archivo;cursor:pointer">Rad etish</button>
+                  <button onClick="{{ b.onConfirm }}" style="flex:1.3;height:40px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 14px Archivo;cursor:pointer">Tasdiqlash</button>
+                </div>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+
+        <div style="display:grid;grid-template-columns:{{ dashCols }};gap:16px;align-items:start">
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:18px;min-width:0">
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:4px"><h2 style="margin:0;font-size:18px;font-weight:700">Shu hafta daromadi</h2><span style="font:500 26px 'JetBrains Mono',monospace;letter-spacing:-.02em">31 800 000 so‘m</span></div>
+              <span style="display:inline-flex;align-items:center;gap:4px;height:26px;padding:0 10px;border-radius:999px;background:color-mix(in oklab,var(--success) 16%,transparent);color:var(--success);font:500 12px 'JetBrains Mono',monospace"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">trending_up</span>+14% o‘tgan haftaga</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;align-items:end;height:180px">
+              <sc-for list="{{ weekBars }}" as="w" hint-placeholder-count="7">
+                <div style="display:flex;flex-direction:column;align-items:stretch;justify-content:flex-end;gap:8px;height:100%">
+                  <span style="font:400 11px 'JetBrains Mono',monospace;color:var(--text-2);text-align:center">{{ w.val }}</span>
+                  <div style="height:{{ w.h }};border-radius:8px 8px 4px 4px;background:{{ w.bg }};box-shadow:{{ w.ring }}"></div>
+                  <span style="font:500 11px 'JetBrains Mono',monospace;color:{{ w.lc }};text-align:center;text-transform:uppercase">{{ w.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-size:12px;color:var(--text-3)">Mln so‘m · «Keldi» deb belgilangan bronlar bo‘yicha. Payshanba – reja.</span>
+          </section>
+
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0;font-size:18px;font-weight:700">So‘nggi sharhlar</h2><span style="display:flex;align-items:center;gap:4px;font:500 15px 'JetBrains Mono',monospace"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;color:var(--brand-ink);font-variation-settings:'FILL' 1">star</span>4,8</span></div>
+            <sc-for list="{{ reviewsShort }}" as="r" hint-placeholder-count="2">
+              <div style="display:flex;flex-direction:column;gap:6px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:700">{{ r.name }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3)">{{ r.stars }} · {{ r.when }}</span></div>
+                <span style="font-size:14px;line-height:1.5;color:var(--text-2);text-wrap:pretty">{{ r.text }}</span>
+              </div>
+            </sc-for>
+            <button onClick="{{ goProfile }}" style="align-self:flex-start;border:none;background:none;padding:6px 0;color:var(--accent);font:600 14px Archivo;cursor:pointer">Sharhlarga javob berish</button>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isBook }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div style="display:flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+            <sc-for list="{{ bSegs }}" as="g" hint-placeholder-count="4"><button onClick="{{ g.onClick }}" style="display:flex;align-items:center;gap:6px;height:40px;padding:0 16px;border:none;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ g.label }}<span style="display:{{ g.countD }};min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--on-primary);font:500 10px 'JetBrains Mono',monospace;align-items:center;justify-content:center">{{ g.count }}</span></button></sc-for>
+          </div>
+          <span style="font-size:13px;color:var(--text-2)">Tasdiqlanmagan so‘rov 2 soatdan keyin avtomatik bekor bo‘ladi.</span>
+        </div>
+        <section style="border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);overflow:hidden">
+          <div style="overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent">
+            <div style="min-width:900px">
+              <div style="display:grid;grid-template-columns:minmax(200px,1.6fr) 130px 120px 140px 130px minmax(220px,1.4fr);gap:16px;padding:14px 20px;border-bottom:1px solid var(--border);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3)">
+                <span>Mijoz</span><span>Sana · vaqt</span><span>Maydon</span><span>Summa</span><span>Holat</span><span style="text-align:right">Amal</span>
+              </div>
+              <sc-if value="{{ bEmpty }}" hint-placeholder-val="{{ false }}">
+                <div style="padding:56px 24px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:var(--text-3)">event_available</span><span style="font-size:18px;font-weight:700">Bu bo‘limda bron yo‘q</span><span style="font-size:15px;color:var(--text-2)">Yangi so‘rovlar kelganda shu yerda ko‘rasiz.</span></div>
+              </sc-if>
+              <sc-for list="{{ rows }}" as="b" hint-placeholder-count="6">
+                <div style="display:grid;grid-template-columns:minmax(200px,1.6fr) 130px 120px 140px 130px minmax(220px,1.4fr);gap:16px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border)" style-hover="background:var(--surface-2)">
+                  <div style="display:flex;gap:12px;align-items:center;min-width:0">
+                    <div style="width:40px;height:40px;border-radius:50%;background:{{ b.av }};color:#091025;font:800 14px Archivo;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ b.ini }}</div>
+                    <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.name }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);white-space:nowrap">{{ b.id }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.phone }}</span></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column"><span style="font:500 14px 'JetBrains Mono',monospace">{{ b.time }}</span><span style="font-size:12px;color:var(--text-2)">{{ b.date }} · {{ b.dur }}</span></div>
+                  <span style="font-size:14px">{{ b.pitch }}</span>
+                  <div style="display:flex;flex-direction:column"><span style="font:500 14px 'JetBrains Mono',monospace">{{ b.price }}</span><span style="font-size:12px;color:var(--text-3)">stadionda</span></div>
+                  <span style="justify-self:start;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:{{ b.tagBg }};color:{{ b.tagFg }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">{{ b.tag }}</span>
+                  <div style="display:flex;gap:8px;justify-content:flex-end">
+                    <div style="display:{{ b.pendD }};gap:8px">
+                      <button onClick="{{ b.onReject }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 14px Archivo;cursor:pointer">Rad etish</button>
+                      <button onClick="{{ b.onConfirm }}" style="height:36px;padding:0 16px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 14px Archivo;cursor:pointer">Tasdiqlash</button>
+                    </div>
+                    <div style="display:{{ b.todayD }};gap:8px">
+                      <button onClick="{{ b.onNoShow }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 14px Archivo;cursor:pointer">Kelmadi</button>
+                      <button onClick="{{ b.onArrived }}" style="height:36px;padding:0 16px;border-radius:999px;border:none;background:var(--inverse);color:var(--on-inverse);font:600 14px Archivo;cursor:pointer">Keldi</button>
+                    </div>
+                    <a href="tel:+998901234567" title="Qo‘ng‘iroq qilish" style="width:36px;height:36px;border-radius:999px;background:var(--surface-2);color:var(--text-1);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">call</span></a>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ isSched }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:{{ schedCols }};gap:16px;align-items:start">
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px;min-width:0">
+            <div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:18px;font-weight:700">Ish vaqti</h2><span style="font-size:13px;color:var(--text-2)">Bu vaqtdan tashqarida bron qabul qilinmaydi.</span></div>
+            <sc-for list="{{ hours }}" as="d" hint-placeholder-count="7">
+              <div style="display:flex;align-items:center;gap:12px;min-height:44px">
+                <span style="width:84px;flex-shrink:0;font-size:14px;font-weight:600">{{ d.name }}</span>
+                <span style="flex:1;min-width:0;white-space:nowrap;font:400 13px 'JetBrains Mono',monospace;color:{{ d.fg }}">{{ d.range }}</span>
+                <button onClick="{{ d.onToggle }}" title="{{ d.name }}" style="width:48px;height:28px;padding:3px;border-radius:999px;border:none;background:{{ d.track }};display:flex;justify-content:{{ d.jc }};cursor:pointer;flex-shrink:0"><span style="width:22px;height:22px;border-radius:50%;background:{{ d.knob }}"></span></button>
+              </div>
+            </sc-for>
+            <div style="padding:12px 14px;border-radius:12px;background:var(--bg);font-size:13px;line-height:1.45;color:var(--text-2)">Kechki 18:00–23:00 – «peak» soatlar. Narxni Stadionlarim bo‘limida o‘zgartirasiz.</div>
+          </section>
+
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:16px;min-width:0">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:18px;font-weight:700">12–18-oktabr</h2><span style="font-size:13px;color:var(--text-2)">Bo‘sh katakni bosing – soat yopiladi. Yana bosing – ochiladi.</span></div>
+              <div style="display:flex;padding:4px;border-radius:999px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border)">
+                <sc-for list="{{ pitchSegs }}" as="g" hint-placeholder-count="3"><button onClick="{{ g.onClick }}" style="height:36px;padding:0 16px;border:none;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ g.label }}</button></sc-for>
+              </div>
+            </div>
+            <div style="overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent">
+              <div style="min-width:620px;display:flex;flex-direction:column;gap:4px">
+                <div style="display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr));gap:4px">
+                  <span></span>
+                  <sc-for list="{{ weekHdr }}" as="w" hint-placeholder-count="7"><div style="height:44px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:{{ w.bg }};color:{{ w.fg }}"><span style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;opacity:.8">{{ w.dow }}</span><span style="font:500 15px 'JetBrains Mono',monospace">{{ w.day }}</span></div></sc-for>
+                </div>
+                <sc-for list="{{ schedRows }}" as="r" hint-placeholder-count="16">
+                  <div style="display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr));gap:4px">
+                    <span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);padding-top:6px">{{ r.hour }}</span>
+                    <sc-for list="{{ r.cells }}" as="x" hint-placeholder-count="7"><button onClick="{{ x.onClick }}" title="{{ x.title }}" style="height:32px;padding:0 8px;border-radius:8px;border:none;background:{{ x.bg }};color:{{ x.fg }};box-shadow:{{ x.ring }};font:600 11px Archivo;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:{{ x.cursor }};min-width:0">{{ x.txt }}</button></sc-for>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;gap:18px;flex-wrap:wrap;font-size:12px;color:var(--text-2)">
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;box-shadow:inset 0 0 0 1.5px var(--border)"></span>Bo‘sh</span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--primary)"></span>Band</span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 3px,var(--border-strong) 3px 4px)"></span>Yopiq (siz yopgansiz)</span>
+              <span style="display:flex;align-items:center;gap:6px"><span style="width:10px;height:10px;border-radius:3px;background:var(--bg);opacity:.5"></span>Ish vaqtidan tashqari</span>
+            </div>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isStad }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:{{ stadCols }};gap:16px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ stadList }}" as="s" hint-placeholder-count="2">
+              <button onClick="{{ s.onClick }}" style="display:flex;flex-direction:column;gap:0;padding:0;border-radius:20px;border:none;overflow:hidden;background:var(--surface);box-shadow:{{ s.ring }};color:var(--text-1);font-family:inherit;text-align:left;cursor:pointer">
+                <div style="aspect-ratio:16/8;background:repeating-linear-gradient(135deg,var(--surface-2) 0 10px,var(--border) 10px 11px);display:flex;align-items:flex-start;justify-content:space-between;padding:10px;box-sizing:border-box"><span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--surface);color:{{ s.stFg }};font:500 11px 'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em"><span style="width:6px;height:6px;border-radius:50%;background:{{ s.stFg }}"></span>{{ s.status }}</span></div>
+                <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:700">{{ s.name }}</span><span style="font-size:13px;color:var(--text-2)">{{ s.meta }}</span></div>
+              </button>
+            </sc-for>
+            <button style="min-height:120px;border-radius:20px;border:1.5px dashed var(--border-strong);background:transparent;color:var(--text-2);font:600 15px Archivo;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer" style-hover="color:var(--text-1);border-color:var(--text-2)"><span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1">add</span>Yangi stadion qo‘shish</button>
+          </div>
+
+          <section style="padding:24px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:22px;min-width:0">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">Tahrirlash</span><h2 style="margin:0;font-size:22px;font-weight:800;letter-spacing:-.01em">{{ ed.name }}</h2></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="font-size:14px;font-weight:600">Bron qabul qilish</span><button onClick="{{ toggleAccept }}" title="Bron qabul qilish" style="width:48px;height:28px;padding:3px;border-radius:999px;border:none;background:{{ accept.track }};display:flex;justify-content:{{ accept.jc }};cursor:pointer"><span style="width:22px;height:22px;border-radius:50%;background:{{ accept.knob }}"></span></button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:88px 88px;gap:8px">
+              <div style="grid-row:span 2;border-radius:16px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 10px,var(--border) 10px 11px);display:flex;align-items:flex-end;padding:10px;box-sizing:border-box;font:400 11px 'JetBrains Mono',monospace;color:var(--text-2)">asosiy rasm · maydon kechasi</div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+              <div style="border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 8px,var(--border) 8px 9px)"></div>
+              <button style="border-radius:12px;border:1.5px dashed var(--border-strong);background:transparent;color:var(--text-2);font:600 13px Archivo;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">add_photo_alternate</span>Rasm</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px">
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;color:var(--text-2)">Stadion nomi</span><input onInput="{{ markDirty }}" value="{{ ed.name }}" style="height:48px;padding:0 14px;border-radius:12px;border:none;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--border);color:var(--text-1);font:400 15px Archivo;outline:none" style-focus="box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in oklab,var(--accent) 22%,transparent)"></input></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;color:var(--text-2)">Manzil</span><input onInput="{{ markDirty }}" value="{{ ed.address }}" style="height:48px;padding:0 14px;border-radius:12px;border:none;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--border);color:var(--text-1);font:400 15px Archivo;outline:none" style-focus="box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in oklab,var(--accent) 22%,transparent)"></input></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;color:var(--text-2)">Telefon (mijozlar uchun)</span><input onInput="{{ markDirty }}" value="+998 90 123 45 67" style="height:48px;padding:0 14px;border-radius:12px;border:none;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--border);color:var(--text-1);font:400 15px 'JetBrains Mono',monospace;outline:none" style-focus="box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in oklab,var(--accent) 22%,transparent)"></input></label>
+              <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;color:var(--text-2)">Bekor qilish</span><select onChange="{{ markDirty }}" style="height:48px;padding:0 14px;border-radius:12px;border:none;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--border);color:var(--text-1);font:400 15px Archivo;outline:none"><option>O‘yindan 3 soat oldingacha</option><option>O‘yindan 12 soat oldingacha</option><option>O‘yindan 24 soat oldingacha</option></select></label>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:16px;font-weight:700">Maydonlar</span><button style="height:36px;padding:0 14px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 14px Archivo;display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">add</span>Maydon</button></div>
+              <sc-for list="{{ ed.pitches }}" as="p" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:16px;align-items:center;min-height:60px;padding:8px 8px 8px 16px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border)">
+                  <div style="display:flex;flex-direction:column;min-width:0"><span style="font-size:15px;font-weight:700">{{ p.name }}</span><span style="font-size:13px;color:var(--text-2)">{{ p.meta }}</span></div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font:500 14px 'JetBrains Mono',monospace">{{ p.price }}</span><span style="font-size:11px;color:var(--text-3)">soatiga</span></div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end"><span style="font:500 14px 'JetBrains Mono',monospace;color:var(--brand-ink)">{{ p.peak }}</span><span style="font-size:11px;color:var(--text-3)">peak 18–23</span></div>
+                  <button title="Tahrirlash" style="width:40px;height:40px;border-radius:999px;border:none;background:transparent;color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">edit</span></button>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <span style="font-size:16px;font-weight:700">Qulayliklar</span>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ amen }}" as="a" hint-placeholder-count="8"><button onClick="{{ a.onClick }}" style="display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:none;background:{{ a.bg }};color:{{ a.fg }};box-shadow:{{ a.ring }};font:600 14px Archivo;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ a.icon }}</span>{{ a.label }}</button></sc-for>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:18px;border-top:1px solid var(--border)">
+              <button onClick="{{ discard }}" style="height:48px;padding:0 20px;border-radius:999px;border:none;background:transparent;color:var(--text-1);font:600 15px Archivo;cursor:pointer">Bekor qilish</button>
+              <button onClick="{{ save }}" disabled="{{ notDirty }}" style="height:48px;padding:0 24px;border-radius:999px;border:none;background:{{ saveBg }};color:{{ saveFg }};font:600 15px Archivo;cursor:{{ saveCur }}">O‘zgarishlarni saqlash</button>
+            </div>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isRep }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div style="display:flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+            <sc-for list="{{ rSegs }}" as="g" hint-placeholder-count="2"><button onClick="{{ g.onClick }}" style="height:40px;padding:0 18px;border:none;border-radius:999px;background:{{ g.bg }};color:{{ g.fg }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ g.label }}</button></sc-for>
+          </div>
+          <button style="height:40px;padding:0 16px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 14px Archivo;display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">download</span>Excel’ga yuklash</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,{{ kpiMin }}),1fr));gap:16px">
+          <sc-for list="{{ rep.kpis }}" as="k" hint-placeholder-count="4">
+            <div style="padding:20px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:8px">
+              <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">{{ k.label }}</span>
+              <span style="font:500 28px/32px 'JetBrains Mono',monospace;letter-spacing:-.02em;color:{{ k.color }}">{{ k.value }}</span>
+              <span style="font-size:13px;color:var(--text-2)">{{ k.sub }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:grid;grid-template-columns:{{ dashCols }};gap:16px;align-items:start">
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:18px;min-width:0">
+            <h2 style="margin:0;font-size:18px;font-weight:700">{{ rep.chartTitle }}</h2>
+            <div style="display:flex;gap:10px;align-items:end;height:220px">
+              <sc-for list="{{ rep.bars }}" as="w" hint-placeholder-count="7">
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%">
+                  <span style="font:400 11px 'JetBrains Mono',monospace;color:var(--text-2);text-align:center">{{ w.val }}</span>
+                  <div style="height:{{ w.h }};border-radius:8px 8px 4px 4px;background:{{ w.bg }}"></div>
+                  <span style="font:500 11px 'JetBrains Mono',monospace;color:var(--text-3);text-align:center;text-transform:uppercase;white-space:nowrap">{{ w.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-size:12px;color:var(--text-3)">Mln so‘m · faqat «Keldi» deb belgilangan bronlar. Onlayn to‘lov yo‘q – summa stadionda olingan pul.</span>
+          </section>
+          <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px;min-width:0">
+            <h2 style="margin:0;font-size:18px;font-weight:700">Maydonlar bo‘yicha</h2>
+            <sc-for list="{{ rep.pitches }}" as="p" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:700">{{ p.name }}</span><span style="font:500 14px 'JetBrains Mono',monospace">{{ p.rev }}</span></div>
+                <div style="height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden"><div style="height:100%;width:{{ p.occ }};background:var(--brand-ink);border-radius:3px"></div></div>
+                <div style="display:flex;justify-content:space-between;font:400 12px 'JetBrains Mono',monospace;color:var(--text-2)"><span>{{ p.occ }} bandlik</span><span>{{ p.count }}</span></div>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+        <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px;min-width:0">
+          <div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:18px;font-weight:700">Eng band soatlar</h2><span style="font-size:13px;color:var(--text-2)">Rang qancha to‘q bo‘lsa, bandlik shuncha yuqori. Bo‘sh soatlarga chegirma qo‘yishni o‘ylab ko‘ring.</span></div>
+          <div style="overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--border-strong) transparent"><div style="min-width:640px;display:flex;flex-direction:column;gap:3px">
+            <div style="display:grid;grid-template-columns:40px repeat(16,minmax(0,1fr));gap:3px;font:400 10px 'JetBrains Mono',monospace;color:var(--text-3)"><span></span><sc-for list="{{ hoursHdr }}" as="h" hint-placeholder-count="16"><span>{{ h }}</span></sc-for></div>
+            <sc-for list="{{ heat }}" as="r" hint-placeholder-count="7">
+              <div style="display:grid;grid-template-columns:40px repeat(16,minmax(0,1fr));gap:3px;align-items:center"><span style="font:500 11px 'JetBrains Mono',monospace;color:var(--text-2);text-transform:uppercase">{{ r.dow }}</span><sc-for list="{{ r.cells }}" as="x" hint-placeholder-count="16"><div title="{{ x.t }}" style="height:22px;border-radius:4px;background:{{ x.bg }}"></div></sc-for></div>
+            </sc-for>
+          </div></div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ isReels }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid;grid-template-columns:{{ reelCols }};gap:24px;align-items:start">
+          <section style="display:flex;flex-direction:column;gap:12px;align-items:center;position:{{ reelPos }};top:92px">
+            <div style="position:relative;width:100%;max-width:380px;aspect-ratio:9/16;border-radius:24px;overflow:hidden;background:repeating-linear-gradient(135deg,#151B2C 0 12px,#1C2334 12px 13px);color:#fff">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 11px 'JetBrains Mono',monospace;color:#7A808D;padding:0 40px;text-align:center">{{ rv.media }}</div>
+              <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(5,8,21,.55) 0%,transparent 22%,transparent 50%,rgba(5,8,21,.88) 100%)"></div>
+              <div style="position:absolute;top:12px;left:12px;right:12px;display:flex;gap:4px"><sc-for list="{{ rProg }}" as="p" hint-placeholder-count="4"><span style="flex:1;height:3px;border-radius:2px;background:{{ p }}"></span></sc-for></div>
+              <div style="position:absolute;top:26px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:center"><span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase">Lenta · Toshkent</span><span style="display:{{ rv.mineD }};height:24px;padding:0 10px;border-radius:999px;background:#C8F53A;color:#091025;font:500 10px/24px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase">{{ rv.mineTxt }}</span></div>
+              <div style="position:absolute;right:10px;bottom:150px;display:flex;flex-direction:column;gap:14px;align-items:center">
+                <sc-for list="{{ rRail }}" as="a" hint-placeholder-count="4"><button onClick="{{ a.onClick }}" title="{{ a.t }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;border:none;background:none;color:#fff;cursor:pointer;padding:0"><span style="width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:{{ a.c }};font-variation-settings:'FILL' {{ a.fill }}">{{ a.icon }}</span></span><span style="font:500 12px 'JetBrains Mono',monospace">{{ a.n }}</span></button></sc-for>
+              </div>
+              <div style="position:absolute;left:14px;right:72px;bottom:16px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div style="width:40px;height:40px;border-radius:50%;background:{{ rv.av }};box-shadow:0 0 0 2px #fff;color:#091025;font:800 13px Archivo;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ rv.ini }}</div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ rv.handle }}</span><span style="font-size:12px;color:rgba(255,255,255,.75)">{{ rv.meta }}</span></div>
+                  <button onClick="{{ rv.onFollow }}" style="display:{{ rv.followD }};height:32px;padding:0 14px;border-radius:999px;border:none;background:{{ rv.fBg }};color:{{ rv.fFg }};box-shadow:{{ rv.fRing }};font:600 13px Archivo;cursor:pointer;white-space:nowrap;flex-shrink:0">{{ rv.fTxt }}</button>
+                </div>
+                <span style="font-size:15px;line-height:1.4;text-wrap:pretty">{{ rv.caption }}</span>
+                <span style="font-size:14px;font-weight:600;color:#C8F53A">{{ rv.tags }}</span>
+                <span style="display:flex;align-items:center;gap:4px;font-size:13px;color:rgba(255,255,255,.8)"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">location_on</span>{{ rv.place }}</span>
+                <span style="display:{{ rv.ctaD }};align-items:center;justify-content:center;height:40px;border-radius:999px;background:#C8F53A;color:#091025;font:600 14px Archivo">Bron qilish · {{ rv.price }}</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <button onClick="{{ rPrev }}" title="Oldingi" style="width:44px;height:44px;border-radius:999px;border:none;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);color:var(--text-1);cursor:pointer;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">keyboard_arrow_up</span></button>
+              <span style="font:500 13px 'JetBrains Mono',monospace;color:var(--text-2);min-width:48px;text-align:center">{{ rCount }}</span>
+              <button onClick="{{ rNext }}" title="Keyingi" style="width:44px;height:44px;border-radius:999px;border:none;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);color:var(--text-1);cursor:pointer;display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">keyboard_arrow_down</span></button>
+            </div>
+          </section>
+
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;flex-direction:column;gap:2px"><h2 style="margin:0;font-size:18px;font-weight:700">Reel joylash</h2><span style="font-size:13px;color:var(--text-2)">Stadioningizni ko‘rsating: kechki o‘yinlar, yangi o‘t, turnirlar, aksiyalar.</span></div>
+              <div style="display:flex;gap:16px;flex-wrap:wrap">
+                <button onClick="{{ pickMedia }}" style="width:150px;aspect-ratio:9/16;flex-shrink:0;border-radius:16px;border:{{ up.border }};background:{{ up.bg }};color:var(--text-2);font:600 13px Archivo;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:12px;box-sizing:border-box;text-align:center"><span style="font-family:'Material Symbols Rounded';font-size:30px;line-height:1;color:{{ up.ic }}">{{ up.icon }}</span>{{ up.txt }}<span style="font:400 11px 'JetBrains Mono',monospace;color:var(--text-3)">{{ up.sub }}</span></button>
+                <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:14px">
+                  <label style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;color:var(--text-2)">Izoh</span><textarea onInput="{{ onCaption }}" placeholder="Masalan: B maydonga yangi o‘t yotqizildi. Kechki soatlar ochiq." style="min-height:84px;padding:12px 14px;border-radius:12px;border:none;resize:vertical;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--border);color:var(--text-1);font:400 15px/1.45 Archivo;outline:none" style-focus="box-shadow:inset 0 0 0 1.5px var(--accent),0 0 0 4px color-mix(in oklab,var(--accent) 22%,transparent)">{{ caption }}</textarea></label>
+                  <div style="display:flex;flex-direction:column;gap:8px"><span style="font-size:13px;font-weight:600;color:var(--text-2)">Turi</span><div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ rTypes }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;background:{{ t.bg }};color:{{ t.fg }};box-shadow:{{ t.ring }};font:600 14px Archivo;cursor:pointer;white-space:nowrap">{{ t.label }}</button></sc-for></div></div>
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;background:var(--bg)">
+                    <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-2)">stadium</span>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:600">«Bron qilish» tugmasini qo‘shish</span><span style="font-size:12px;color:var(--text-2)">Arena Yunusobod · Maydon B · 420 000 so‘m dan</span></div>
+                    <button onClick="{{ toggleCta }}" title="Bron tugmasi" style="width:48px;height:28px;padding:3px;border-radius:999px;border:none;background:{{ cta.track }};display:flex;justify-content:{{ cta.jc }};cursor:pointer;flex-shrink:0"><span style="width:22px;height:22px;border-radius:50%;background:{{ cta.knob }}"></span></button>
+                  </div>
+                  <div style="display:flex;justify-content:flex-end;align-items:center;gap:12px">
+                    <span style="font-size:12px;color:var(--text-3)">{{ pubHint }}</span>
+                    <button onClick="{{ publish }}" disabled="{{ pubDisabled }}" style="height:48px;padding:0 24px;border-radius:999px;border:none;background:{{ pubBg }};color:{{ pubFg }};font:600 15px Archivo;cursor:{{ pubCur }};white-space:nowrap">{{ pubTxt }}</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap"><h2 style="margin:0;font-size:18px;font-weight:700">Mening reellarim</h2><span style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">{{ myStats }}</span></div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px">
+                <sc-for list="{{ myReels }}" as="m" hint-placeholder-count="4">
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div style="position:relative;aspect-ratio:9/16;border-radius:16px;overflow:hidden;background:repeating-linear-gradient(135deg,#151B2C 0 10px,#1C2334 10px 11px);color:#fff">
+                      <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(5,8,21,.85))"></div>
+                      <span style="position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:2px;font:500 12px 'JetBrains Mono',monospace"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1">play_arrow</span>{{ m.views }}</span>
+                      <span style="display:{{ m.newD }};position:absolute;top:8px;right:8px;height:22px;padding:0 8px;border-radius:999px;background:#C8F53A;color:#091025;font:500 10px/22px 'JetBrains Mono',monospace;text-transform:uppercase">Yangi</span>
+                      <span style="position:absolute;left:10px;right:10px;bottom:10px;font-size:13px;font-weight:600;line-height:1.3">{{ m.title }}</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font:400 12px 'JetBrains Mono',monospace;color:var(--text-2)"><span>♥ {{ m.likes }}</span><span style="color:var(--brand-ink)">{{ m.books }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isProf }}" hint-placeholder-val="{{ false }}">
+        <section style="border-radius:24px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);overflow:hidden">
+          <div style="height:180px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 12px,var(--border) 12px 13px);display:flex;align-items:flex-end;justify-content:flex-end;padding:14px 18px;box-sizing:border-box;font:400 11px 'JetBrains Mono',monospace;color:var(--text-2)">muqova · stadion kechki yoritishda</div>
+          <div style="padding:0 28px 26px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:20px;margin-top:-52px">
+            <div style="width:112px;height:112px;border-radius:50%;padding:4px;background:var(--surface);flex-shrink:0;box-sizing:border-box"><div style="width:100%;height:100%;border-radius:50%;background:oklch(0.72 0.1 40);box-shadow:0 0 0 3px var(--primary);display:flex;align-items:center;justify-content:center;font:800 36px Archivo;color:#091025">JK</div></div>
+            <div style="flex:1;min-width:240px;display:flex;flex-direction:column;gap:6px;padding-bottom:4px">
+              <div style="display:flex;align-items:center;gap:8px"><h2 style="margin:0;font-size:28px;font-weight:800;letter-spacing:-.02em">Jasur Karimov</h2><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--accent);font-variation-settings:'FILL' 1">verified</span></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--text-2)">
+                <span style="height:24px;padding:0 10px;border-radius:6px;background:var(--inverse);color:var(--on-inverse);font:500 11px/24px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase">Stadion egasi</span>
+                <span>Tasdiqlangan hamkor · 2025-yil martdan</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;padding-bottom:4px">
+              <button style="height:44px;padding:0 18px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 15px Archivo;display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">visibility</span>Ommaviy ko‘rinish</button>
+              <button style="height:44px;padding:0 20px;border-radius:999px;border:none;background:var(--inverse);color:var(--on-inverse);font:600 15px Archivo;cursor:pointer;white-space:nowrap;flex-shrink:0">Profilni tahrirlash</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border-top:1px solid var(--border)">
+            <sc-for list="{{ profStats }}" as="s" hint-placeholder-count="4">
+              <div style="padding:18px 28px;display:flex;flex-direction:column;gap:2px;box-shadow:inset -1px 0 0 var(--border)"><span style="font:500 24px 'JetBrains Mono',monospace;color:{{ s.color }}">{{ s.v }}</span><span style="font-size:13px;color:var(--text-2)">{{ s.l }}</span></div>
+            </sc-for>
+          </div>
+        </section>
+
+        <div style="display:grid;grid-template-columns:{{ dashCols }};gap:16px;align-items:start">
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0;font-size:18px;font-weight:700">Mening stadionlarim</h2><button onClick="{{ goStadiums }}" style="border:none;background:none;color:var(--accent);font:600 14px Archivo;cursor:pointer;padding:8px 0;white-space:nowrap;flex-shrink:0">Boshqarish</button></div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">
+                <sc-for list="{{ stadList }}" as="s" hint-placeholder-count="2">
+                  <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border)">
+                    <div style="width:64px;height:64px;border-radius:12px;background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,var(--border) 6px 7px);flex-shrink:0"></div>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;font-weight:700">{{ s.name }}</span><span style="font-size:12px;color:var(--text-2)">{{ s.meta }}</span><span style="font:500 12px 'JetBrains Mono',monospace;color:{{ s.stFg }}">● {{ s.status }}</span></div>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+            <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0;font-size:18px;font-weight:700">Sharhlar</h2><span style="font:500 14px 'JetBrains Mono',monospace;color:var(--text-2)">4,8 · 312 ta</span></div>
+              <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:10px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+                  <div style="display:flex;gap:12px;align-items:center">
+                    <div style="width:36px;height:36px;border-radius:50%;background:{{ r.av }};color:#091025;font:800 13px Archivo;display:flex;align-items:center;justify-content:center">{{ r.ini }}</div>
+                    <div style="flex:1;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:700">{{ r.name }}</span><span style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3)">{{ r.stars }} · {{ r.when }} · {{ r.pitch }}</span></div>
+                  </div>
+                  <span style="font-size:15px;line-height:1.5;text-wrap:pretty">{{ r.text }}</span>
+                  <div style="display:{{ r.replyD }};margin-left:24px;padding:12px 14px;border-radius:12px;background:var(--bg);box-shadow:inset 2px 0 0 var(--brand-ink);flex-direction:column;gap:4px"><span style="font-size:12px;font-weight:700;color:var(--text-2)">Sizning javobingiz</span><span style="font-size:14px;line-height:1.45;color:var(--text-2)">{{ r.reply }}</span></div>
+                  <button style="display:{{ r.btnD }};align-self:flex-start;height:32px;padding:0 12px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 13px Archivo;cursor:pointer;white-space:nowrap">Javob berish</button>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+            <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:4px">
+              <h2 style="margin:0 0 10px;font-size:18px;font-weight:700">Biznes ma’lumotlari</h2>
+              <sc-for list="{{ biz }}" as="b" hint-placeholder-count="6">
+                <div style="display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+                  <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-3);margin-top:1px">{{ b.icon }}</span>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:var(--text-3)">{{ b.l }}</span><span style="font-size:14px;font-weight:600;overflow-wrap:anywhere">{{ b.v }}</span></div>
+                </div>
+              </sc-for>
+            </section>
+            <section style="padding:22px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;justify-content:space-between"><h2 style="margin:0;font-size:18px;font-weight:700">Xodimlar</h2><button style="height:34px;padding:0 12px;border-radius:999px;border:none;background:transparent;box-shadow:inset 0 0 0 1.5px var(--border-strong);color:var(--text-1);font:600 13px Archivo;display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">person_add</span>Qo‘shish</button></div>
+              <sc-for list="{{ staff }}" as="s" hint-placeholder-count="2">
+                <div style="display:flex;gap:12px;align-items:center;min-height:52px">
+                  <div style="width:40px;height:40px;border-radius:50%;background:{{ s.av }};color:#091025;font:800 14px Archivo;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ s.ini }}</div>
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:14px;font-weight:700">{{ s.name }}</span><span style="font-size:12px;color:var(--text-2)">{{ s.role }} · {{ s.tg }}</span></div>
+                </div>
+              </sc-for>
+              <span style="font-size:12px;line-height:1.45;color:var(--text-3)">Administrator bronlarni tasdiqlay oladi va jadvalni boshqaradi. Hisobot va biznes ma’lumotlarini faqat siz ko‘rasiz.</span>
+            </section>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+
+  <div style="display:{{ toastD }};position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;align-items:center;gap:10px;min-height:48px;padding:0 10px 0 16px;border-radius:16px;background:var(--inverse);color:var(--on-inverse);font:500 14px Archivo;box-shadow:0 12px 24px rgba(0,0,0,.3)">
+    <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:{{ toastIc }};font-variation-settings:'FILL' 1">{{ toastIcon }}</span>
+    <span>{{ toastText }}</span>
+    <button onClick="{{ undo }}" style="display:{{ undoD }};height:36px;padding:0 12px;border-radius:999px;border:none;background:transparent;color:var(--on-inverse);font:700 14px Archivo;cursor:pointer;text-decoration:underline">Qaytarish</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;'dark'|'light'&quot;},&quot;newOwner&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const COL = {
+  dark: { bg:'#050815', surface:'#0D1221', surface2:'#151B2C', border:'#222838', borderStrong:'#3B4253', text1:'#F3F5F9', text2:'#A5ABB8', text3:'#7A808D', brandInk:'#C8F53A', accent:'#629BFF', success:'#48CD8C', warning:'#FABB41', error:'#FF645F', inverse:'#F3F5F9', onInverse:'#091025', markO:'#C8F53A', markDot:'#F3F5F9' },
+  light: { bg:'#F4F5F8', surface:'#FFFFFF', surface2:'#EEF0F3', border:'#E0E2E7', borderStrong:'#C3C7CE', text1:'#091025', text2:'#4B5262', text3:'#6F7583', brandInk:'#091025', accent:'#2366E9', success:'#0F8A5A', warning:'#A86509', error:'#D3302F', inverse:'#091025', onInverse:'#F3F5F9', markO:'#091025', markDot:'#2366E9' }
+};
+const sum = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '\u00A0so‘m';
+const av = s => `oklch(0.78 0.1 ${[...s].reduce((a, ch) => a + ch.charCodeAt(0), 0) * 37 % 360})`;
+const ini = s => s.split(' ').map(w => w[0]).join('').slice(0, 2);
+const HOURS = Array.from({ length: 16 }, (_, i) => 8 + i);
+const DOW = ['Du','Se','Ch','Pa','Ju','Sh','Ya'];
+const DOWF = ['Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba','Yakshanba'];
+const PITCHES = [
+  { name:'Maydon A', meta:'5×5 · sun’iy o‘t · yopiq', price:300000, peak:380000 },
+  { name:'Maydon B', meta:'7×7 · sun’iy o‘t · ochiq', price:420000, peak:500000 },
+  { name:'Maydon C', meta:'5×5 · futzal · yopiq', price:250000, peak:320000 }
+];
+const TEAMS = ['Yunusobod Lions','Chilonzor FC','Sardor A.','IT Park jamoasi','Bek T.','Oqtepa Boys','Navro‘z','Diyor M.'];
+const BOOKED = {};
+for (let p = 0; p < 3; p++) for (let d = 0; d < 7; d++) for (const h of HOURS) {
+  const v = (h * 7 + d * 3 + p * 5) % 9;
+  const evening = h >= 18 && h <= 22, wknd = d >= 5;
+  if ((evening && v < 6) || (wknd && h >= 10 && v < 4) || (!evening && v === 0)) BOOKED[`${p}-${d}-${h}`] = TEAMS[(h + d + p) % TEAMS.length];
+}
+const INIT = [
+  { id:'FG-2481', name:'Sardor Aliyev', phone:'+998 90 412 33 21', date:'Bugun', time:'21:00', dur:'1 soat', pitch:'Maydon A', amount:380000, status:'pending', ago:'5 daqiqa oldin', today:true },
+  { id:'FG-2479', name:'Chilonzor FC', phone:'+998 93 551 09 77', date:'Ertaga', time:'20:00', dur:'1,5 soat', pitch:'Maydon B', amount:750000, status:'pending', ago:'18 daqiqa oldin' },
+  { id:'FG-2476', name:'Diyor Mahmudov', phone:'+998 97 300 12 45', date:'17-okt', time:'11:00', dur:'1 soat', pitch:'Maydon C', amount:250000, status:'pending', ago:'1 soat oldin' },
+  { id:'FG-2470', name:'Yunusobod Lions', phone:'+998 90 777 21 08', date:'Bugun', time:'19:00', dur:'1 soat', pitch:'Maydon A', amount:380000, status:'confirmed', ago:'kecha', today:true },
+  { id:'FG-2468', name:'IT Park jamoasi', phone:'+998 99 845 66 30', date:'Bugun', time:'20:00', dur:'2 soat', pitch:'Maydon B', amount:1000000, status:'confirmed', ago:'kecha', today:true },
+  { id:'FG-2461', name:'Bek Toshmatov', phone:'+998 94 120 88 19', date:'Ertaga', time:'18:00', dur:'1 soat', pitch:'Maydon C', amount:320000, status:'confirmed', ago:'2 kun oldin' },
+  { id:'FG-2455', name:'Oqtepa Boys', phone:'+998 90 233 47 61', date:'Bugun', time:'09:00', dur:'1 soat', pitch:'Maydon A', amount:300000, status:'arrived', ago:'3 kun oldin', today:true },
+  { id:'FG-2449', name:'Navro‘z jamoasi', phone:'+998 91 600 72 14', date:'13-okt', time:'21:00', dur:'1 soat', pitch:'Maydon B', amount:500000, status:'noshow', ago:'4 kun oldin' },
+  { id:'FG-2440', name:'Akmal Rasulov', phone:'+998 93 410 55 02', date:'12-okt', time:'18:00', dur:'1 soat', pitch:'Maydon A', amount:380000, status:'rejected', ago:'5 kun oldin' }
+];
+const TAG = {
+  pending:['Kutilmoqda','warning'], confirmed:['Tasdiqlangan','success'], arrived:['Keldi','accent'], noshow:['Kelmadi','error'], rejected:['Rad etilgan','text3']
+};
+const AMEN = [['checkroom','Kiyinish xonasi'],['shower','Dush'],['local_parking','Avtoturargoh'],['lightbulb','Kechki yoritish'],['local_cafe','Kafe'],['wifi','Wi‑Fi'],['sports_soccer','To‘p ijarasi'],['accessible','Nogironlar uchun']];
+
+const FEED = [
+  { handle:'@yunusobod.lions', name:'Yunusobod Lions', meta:'Jamoa · 2,4K obunachi', caption:'89-daqiqa. Burchakdan to‘g‘ri darvoza burchagiga.', tags:'#gol #toshkentfutboli #5x5', place:'Arena Yunusobod · Maydon A', likes:1240, comments:86, media:'reel · kechki o‘yin, gol lahzasi', tagged:true },
+  { handle:'@arena.yunusobod', name:'Arena Yunusobod', meta:'Stadion · siz', caption:'B maydonga yangi o‘t yotqizildi. Kechki soatlar ochiq.', tags:'#arenayunusobod #7x7', place:'Arena Yunusobod · Maydon B', likes:860, comments:42, media:'reel · yangi o‘t, dron kadri', mine:true, price:'420 000 so‘m' },
+  { handle:'@diyor.10', name:'Diyor Mahmudov', meta:'Hujumchi · Chilonzor', caption:'Elastico mashqi – 30 kunlik challenge, 12-kun.', tags:'#skill #challenge', place:'Chilonzor Sport', likes:3120, comments:210, media:'reel · skill mashqi' },
+  { handle:'@futzal.tashkent', name:'Futzal Tashkent', meta:'Hamjamiyat · 8,1K', caption:'Haftaning eng yaxshi seyvi. Ovoz bering.', tags:'#futzal #seyv', place:'Arena Yunusobod · Maydon C', likes:2050, comments:134, media:'reel · darvozabon seyvi', tagged:true }
+];
+class Component extends DCLogic {
+  state = { reelIdx:0, liked:{}, saved:{}, followed:{}, media:false, caption:'', rType:0, cta:true, publishing:false,
+    myReels:[{ title:'Yangi o‘t · B maydon', views:'12,4K', likes:'860', books:'14 bron' }, { title:'Juma turniri finali', views:'21,7K', likes:'1,9K', books:'11 bron' }, { title:'Kechki yoritish', views:'8,3K', likes:'540', books:'7 bron' }, { title:'Oktabr aksiyasi: 07–12 −20%', views:'5,8K', likes:'310', books:'5 bron' }],
+    view:'dash', theme:null, bookings:INIT, bFilter:'pending', pitch:0, blocked:{'0-2-9':1,'0-2-10':1,'1-4-8':1}, closed:{}, stad:0, amen:{0:1,1:1,2:1,3:1,5:1}, dirty:false, accept:true, range:'week', toast:null, w:1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); this.onR(); window.addEventListener('resize', this.onR); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); clearTimeout(this.tt); }
+  toast(text, kind = 'ok', undo = null) { clearTimeout(this.tt); this.setState({ toast:{ text, kind, undo } }); this.tt = setTimeout(() => this.setState({ toast:null }), 3200); }
+  setStatus(id, status, msg, undoable) {
+    const prev = this.state.bookings;
+    this.setState({ bookings: prev.map(b => b.id === id ? { ...b, status } : b) });
+    this.toast(msg, status === 'rejected' || status === 'noshow' ? 'warn' : 'ok', undoable ? () => this.setState({ bookings: prev, toast:null }) : null);
+  }
+  renderVals() {
+    const s = this.state, themeName = s.theme ?? this.props.theme ?? 'dark', c = COL[themeName];
+    const newOwner = !!this.props.newOwner;
+    const wide = s.w >= 1100, mid = s.w >= 900;
+    const go = v => () => { this.setState({ view:v }); window.scrollTo(0, 0); };
+    const pend = s.bookings.filter(b => b.status === 'pending');
+    const titles = { reels:'Reels', dash:'Bosh sahifa', book:'Bronlar', sched:'Jadval', stad:'Stadionlarim', rep:'Hisobot', prof:'Profil' };
+    const navDef = [['dash','space_dashboard','Bosh sahifa'],['book','event_note','Bronlar'],['sched','calendar_view_week','Jadval'],['stad','stadium','Stadionlarim'],['rep','monitoring','Hisobot'],['prof','person','Profil']];
+    const nav = navDef.map(([k, icon, label]) => { const on = s.view === k, bad = k === 'book' && pend.length && !newOwner; return { icon, label, onClick: go(k), bg: on ? c.surface : 'transparent', fg: on ? c.text1 : c.text2, fill: on ? 1 : 0, labelD: wide ? 'block' : 'none', jc: wide ? 'flex-start' : 'center', badgeD: bad && wide ? 'flex' : 'none', badge: pend.length }; });
+    const tint = k => `color-mix(in oklab, ${c[k]} 16%, transparent)`;
+    const bookRow = b => { const [tag, tone] = TAG[b.status]; return { ...b, ini: ini(b.name), av: av(b.name), price: sum(b.amount), day: b.date, tag, tagBg: tint(tone), tagFg: c[tone],
+      pendD: b.status === 'pending' ? 'flex' : 'none', todayD: b.status === 'confirmed' && b.today ? 'flex' : 'none',
+      onConfirm: () => this.setStatus(b.id, 'confirmed', `${b.name} · ${b.time} tasdiqlandi. Mijozga Telegram orqali xabar ketdi.`, true),
+      onReject: () => this.setStatus(b.id, 'rejected', `${b.id} rad etildi`, true),
+      onArrived: () => this.setStatus(b.id, 'arrived', `${sum(b.amount)} hisobotga qo‘shildi`, true),
+      onNoShow: () => this.setStatus(b.id, 'noshow', `${b.name} – kelmadi deb belgilandi`, true) }; };
+    const filt = { pending: b => b.status === 'pending', today: b => b.today && b.status !== 'rejected', confirmed: b => b.status === 'confirmed', history: b => ['arrived','noshow','rejected'].includes(b.status) };
+    const rows = s.bookings.filter(filt[s.bFilter]).map(bookRow);
+    const segOf = (list, cur, set, bgOn = c.inverse, fgOn = c.onInverse) => list.map(([k, label, count]) => ({ label, onClick: () => this.setState({ [set]: k }), bg: cur === k ? bgOn : 'transparent', fg: cur === k ? fgOn : c.text2, count, countD: count ? 'flex' : 'none' }));
+    const bSegs = segOf([['pending','Kutilmoqda',pend.length],['today','Bugun'],['confirmed','Tasdiqlangan'],['history','Tarix']], s.bFilter, 'bFilter');
+    const pendCell = {}; s.bookings.forEach(b => { if (b.today && b.status === 'pending') pendCell[`${PITCHES.findIndex(p => p.name === b.pitch)}-${parseInt(b.time)}`] = b.name; });
+    const timeline = PITCHES.map((p, pi) => ({ name: p.name, meta: p.meta.split(' · ')[0], cells: HOURS.map(h => {
+      const k = `${pi}-3-${h}`, bk = BOOKED[k], pd = pendCell[`${pi}-${h}`], bl = s.blocked[k];
+      return { title: `${h}:00 · ${pd ? pd + ' (kutilmoqda)' : bk || (bl ? 'Yopiq' : 'Bo‘sh')}`, bg: pd ? c.warning : bk ? '#C8F53A' : bl ? `repeating-linear-gradient(135deg,${c.surface2} 0 3px,${c.borderStrong} 3px 4px)` : 'transparent', ring: pd || bk || bl ? 'none' : `inset 0 0 0 1.5px ${c.border}`, op: h < 17 && !pd ? (bk ? .55 : .7) : 1 };
+    }) }));
+    const nowLine = HOURS.map(h => h === 17 ? c.error : 'transparent');
+    const occ = Math.round(Object.keys(BOOKED).filter(k => k.split('-')[1] === '3').length / 48 * 100);
+    const kpis = [
+      { label:'Bugungi bronlar', icon:'event', value: String(s.bookings.filter(b => b.today && b.status !== 'rejected').length + 6), sub:'shundan 3 tasi kechki peak', color: c.text1 },
+      { label:'Tasdiq kutmoqda', icon:'hourglass_top', value: String(pend.length), sub: pend.length ? 'Javob berish – 2 soatgacha' : 'Hammasi ko‘rib chiqildi', color: pend.length ? c.warning : c.success },
+      { label:'Bugungi bandlik', icon:'donut_large', value: occ + '%', sub:'3 maydon · 48 soat', color: c.brandInk },
+      { label:'Oktabr daromadi', icon:'payments', value:'48,6 mln', sub:'so‘m · stadionda olingan', color: c.text1 }
+    ];
+    const wk = [2.4, 3.15, 2.7, 4.2, 5.85, 7.2, 6.3], wmax = 7.2;
+    const weekBars = wk.map((v, i) => ({ val: String(v).replace('.', ','), h: Math.round(v / wmax * 100) * 0.78 + '%', label: DOW[i], bg: i < 3 ? (themeName === 'dark' ? '#C8F53A' : c.text1) : i === 3 ? tint('brandInk') : 'transparent', ring: i > 3 ? `inset 0 0 0 1.5px ${c.borderStrong}` : 'none', lc: i === 3 ? c.text1 : c.text3 }));
+    const REV = [
+      { name:'Dilshod R.', ini:'DR', stars:'★★★★★', when:'2 kun oldin', pitch:'Maydon A', text:'Yoritish zo‘r, o‘t yangi. Kiyinish xonasi toza. Har hafta shu yerda o‘ynaymiz.', reply:'Rahmat, Dilshod! Kelasi hafta ham kutamiz.' },
+      { name:'Azizbek N.', ini:'AN', stars:'★★★★☆', when:'5 kun oldin', pitch:'Maydon B', text:'Maydon yaxshi, lekin avtoturargohda kechqurun joy kam bo‘ladi.', reply:'' },
+      { name:'Timur S.', ini:'TS', stars:'★★★★★', when:'1 hafta oldin', pitch:'Maydon C', text:'Bron tez tasdiqlandi, administrator xushmuomala. Futzal uchun eng yaxshi joy.', reply:'' }
+    ].map(r => ({ ...r, av: av(r.name), replyD: r.reply ? 'flex' : 'none', btnD: r.reply ? 'none' : 'block' }));
+    const weekHdr = DOW.map((d, i) => ({ dow: d, day: String(12 + i), bg: i === 3 ? c.inverse : 'transparent', fg: i === 3 ? c.onInverse : c.text2 }));
+    const schedRows = HOURS.map(h => ({ hour: `${String(h).padStart(2,'0')}:00`, cells: DOW.map((_, d) => {
+      const k = `${s.pitch}-${d}-${h}`, bk = BOOKED[k], bl = s.blocked[k], off = s.closed[d];
+      if (off) return { txt:'', bg: c.bg, fg: c.text3, ring:'none', cursor:'not-allowed', title:'Ish vaqtidan tashqari', onClick: null };
+      if (bk) return { txt: bk, bg:'#C8F53A', fg:'#091025', ring:'none', cursor:'default', title:`${bk} · band`, onClick: () => this.toast('Band soatni yopib bo‘lmaydi. Avval bronni bekor qiling.', 'warn') };
+      if (bl) return { txt:'Yopiq', bg:`repeating-linear-gradient(135deg,${c.surface2} 0 4px,${c.border} 4px 5px)`, fg: c.text2, ring:'none', cursor:'pointer', title:'Ochish uchun bosing', onClick: () => { const b = { ...s.blocked }; delete b[k]; this.setState({ blocked: b }); } };
+      return { txt:'', bg:'transparent', fg: c.text2, ring:`inset 0 0 0 1.5px ${c.border}`, cursor:'pointer', title:'Yopish uchun bosing', onClick: () => this.setState({ blocked: { ...s.blocked, [k]: 1 } }) };
+    }) }));
+    const pitchSegs = PITCHES.map((p, i) => ({ label: p.name, onClick: () => this.setState({ pitch: i }), bg: s.pitch === i ? c.inverse : 'transparent', fg: s.pitch === i ? c.onInverse : c.text2 }));
+    const tog = on => ({ track: on ? '#C8F53A' : c.borderStrong, knob: on ? '#091025' : c.surface, jc: on ? 'flex-end' : 'flex-start' });
+    const hours = DOWF.map((name, d) => { const off = s.closed[d]; return { name, range: off ? 'Dam olish kuni' : d >= 5 ? '08:00 – 24:00' : '08:00 – 23:00', fg: off ? c.text3 : c.text1, ...tog(!off), onToggle: () => this.setState({ closed: { ...s.closed, [d]: !off } }) }; });
+    const STADS = [
+      { name:'Arena Yunusobod', district:'Yunusobod tumani', address:'Toshkent, Yunusobod tumani, Amir Temur ko‘chasi 108', meta:'3 maydon · Yunusobod · 4,8 ★' },
+      { name:'Chilonzor Sport', district:'Chilonzor tumani', address:'Toshkent, Chilonzor tumani, Bunyodkor shoh ko‘chasi 41', meta:'1 maydon · Chilonzor · 4,6 ★' }
+    ];
+    const stadList = (newOwner ? [] : STADS).map((st, i) => ({ ...st, onClick: () => this.setState({ stad: i, dirty:false }), ring: s.stad === i ? `inset 0 0 0 2px ${c.brandInk}` : `inset 0 0 0 1px ${c.border}`, status: i === 0 && !s.accept ? 'Bron yopiq' : i === 1 ? 'Moderatsiyada' : 'Faol', stFg: i === 0 && !s.accept ? c.text3 : i === 1 ? c.warning : c.success }));
+    const st = STADS[s.stad];
+    const ed = { name: st.name, address: st.address, pitches: (s.stad === 0 ? PITCHES : PITCHES.slice(1, 2)).map(p => ({ name: p.name, meta: p.meta, price: sum(p.price), peak: sum(p.peak) })) };
+    const amen = AMEN.map(([icon, label], i) => { const on = s.amen[i]; return { icon, label, bg: on ? c.inverse : 'transparent', fg: on ? c.onInverse : c.text1, ring: on ? 'none' : `inset 0 0 0 1px ${c.borderStrong}`, onClick: () => this.setState({ amen: { ...s.amen, [i]: !on }, dirty:true }) }; });
+    const repWeek = s.range === 'week';
+    const repVals = repWeek ? wk.map((v, i) => [DOW[i], v]) : [['May',31.2],['Iyn',38.4],['Iyl',41.9],['Avg',44.0],['Sen',46.3],['Okt',48.6]];
+    const rmax = Math.max(...repVals.map(x => x[1]));
+    const rep = {
+      chartTitle: repWeek ? 'Kunlar bo‘yicha daromad · 12–18-oktabr' : 'Oylar bo‘yicha daromad · 2026',
+      kpis: [
+        { label:'Daromad', value: repWeek ? '31,8 mln' : '250,4 mln', sub:'so‘m · stadionda olingan', color: c.text1 },
+        { label:'Bronlar', value: repWeek ? '86' : '1 240', sub: repWeek ? '+11 o‘tgan haftaga' : 'o‘rtacha 207 / oy', color: c.text1 },
+        { label:'O‘rtacha bandlik', value: repWeek ? '68%' : '64%', sub:'ish vaqti ichida', color: c.brandInk },
+        { label:'Kelmaganlar', value: repWeek ? '3' : '41', sub: repWeek ? '3,5% · me’yorda' : '3,3% bronlardan', color: c.warning }
+      ],
+      bars: repVals.map(([label, v], i) => ({ label, val: String(v).replace('.', ','), h: Math.round(v / rmax * 78) + '%', bg: i === repVals.length - 1 && !repWeek ? (themeName === 'dark' ? '#C8F53A' : c.text1) : repWeek && i > 3 ? tint('brandInk') : (themeName === 'dark' ? '#C8F53A' : c.text1) })),
+      pitches: [['Maydon A','74%',repWeek ? '12,9 mln' : '104,2 mln', repWeek ? '38 bron' : '520 bron'],['Maydon B','69%',repWeek ? '13,6 mln' : '98,7 mln', repWeek ? '27 bron' : '395 bron'],['Maydon C','58%',repWeek ? '5,3 mln' : '47,5 mln', repWeek ? '21 bron' : '325 bron']].map(([name, occ, rev, count]) => ({ name, occ, rev: rev + ' so‘m', count }))
+    };
+    const heat = DOW.map((dow, d) => ({ dow, cells: HOURS.map(h => { const n = [0,1,2].filter(p => BOOKED[`${p}-${d}-${h}`]).length; return { t: `${dow} ${h}:00 · ${n}/3 band`, bg: n === 0 ? c.surface2 : `color-mix(in oklab, ${themeName === 'dark' ? '#C8F53A' : c.text1} ${n * 30 + 5}%, ${c.surface2})` }; }) }));
+    const t = s.toast, ri = s.reelIdx, r = FEED[ri];
+    const rv = { ...r, ini: ini(r.name), av: av(r.name), mineD: r.mine || r.tagged ? 'block' : 'none', mineTxt: r.mine ? 'Sizning reel' : 'Stadioningizda', followD: r.mine ? 'none' : 'block',
+      fTxt: s.followed[ri] ? 'Kuzatilmoqda' : 'Kuzatish', fBg: s.followed[ri] ? 'transparent' : '#fff', fFg: s.followed[ri] ? '#fff' : '#091025', fRing: s.followed[ri] ? 'inset 0 0 0 1.5px rgba(255,255,255,.6)' : 'none',
+      onFollow: () => this.setState({ followed: { ...s.followed, [ri]: !s.followed[ri] } }), ctaD: r.mine ? 'flex' : 'none' };
+    const fmt = n => n >= 1000 ? (n / 1000).toFixed(1).replace('.', ',') + 'K' : String(n);
+    const liked = s.liked[ri], saved = s.saved[ri];
+    const rRail = [
+      { icon:'favorite', t:'Yoqdi', n: fmt(r.likes + (liked ? 1 : 0)), c: liked ? '#FF645F' : '#fff', fill: liked ? 1 : 0, onClick: () => this.setState({ liked: { ...s.liked, [ri]: !liked } }) },
+      { icon:'chat_bubble', t:'Izohlar', n: fmt(r.comments), c:'#fff', fill:0, onClick: null },
+      { icon:'bookmark', t:'Saqlash', n: saved ? 'Saqlandi' : 'Saqlash', c: saved ? '#C8F53A' : '#fff', fill: saved ? 1 : 0, onClick: () => this.setState({ saved: { ...s.saved, [ri]: !saved } }) },
+      { icon:'send', t:'Ulashish', n:'Ulashish', c:'#fff', fill:0, onClick: () => this.toast('Havola nusxalandi') }
+    ];
+    const RT = ['Stadion sharhi','O‘yin lavhasi','Turnir','Aksiya'];
+    const ready = s.media && !s.publishing;
+    return {
+      view: s.view, isLight: themeName === 'light', onNav: id => go(id)(), isReels: s.view === 'reels',
+      reelCols: mid ? '380px minmax(0,1fr)' : 'minmax(0,1fr)', reelPos: mid ? 'sticky' : 'static',
+      rv, rRail, rProg: FEED.map((_, i) => i < ri ? '#fff' : i === ri ? '#C8F53A' : 'rgba(255,255,255,.3)'), rCount: `${ri + 1} / ${FEED.length}`,
+      rPrev: () => this.setState({ reelIdx: (ri + FEED.length - 1) % FEED.length }), rNext: () => this.setState({ reelIdx: (ri + 1) % FEED.length }),
+      up: s.media ? { border:'none', bg:'repeating-linear-gradient(135deg,#151B2C 0 10px,#1C2334 10px 11px)', ic:'#C8F53A', icon:'check_circle', txt:'arena_kech.mp4', sub:'0:24 · almashtirish' } : { border:`1.5px dashed ${c.borderStrong}`, bg:'transparent', ic: c.text2, icon:'video_call', txt:'Video tanlang', sub:'9:16 · 60 soniyagacha' },
+      pickMedia: () => this.setState({ media: true }), onCaption: e => this.setState({ caption: e.target.value }), caption: s.caption,
+      rTypes: RT.map((label, i) => ({ label, onClick: () => this.setState({ rType: i }), bg: s.rType === i ? c.inverse : 'transparent', fg: s.rType === i ? c.onInverse : c.text1, ring: s.rType === i ? 'none' : `inset 0 0 0 1px ${c.borderStrong}` })),
+      cta: tog(s.cta), toggleCta: () => this.setState({ cta: !s.cta }),
+      pubHint: s.media ? 'Futbolchilar lentasida va stadion sahifasida chiqadi' : 'Avval video tanlang',
+      pubDisabled: !ready, pubBg: ready ? '#C8F53A' : c.surface2, pubFg: ready ? '#091025' : c.text3, pubCur: ready ? 'pointer' : 'not-allowed', pubTxt: s.publishing ? 'Joylanmoqda…' : 'Joylash',
+      publish: () => { if (!ready) return; this.setState({ publishing: true }); setTimeout(() => { this.setState(st => ({ publishing:false, media:false, caption:'', myReels: [{ title: st.caption || RT[st.rType], views:'0', likes:'0', books: st.cta ? '0 bron' : '', isNew:true }, ...st.myReels] })); this.toast('Reel joylandi · lentada ko‘rinadi'); }, 1200); },
+      myReels: s.myReels.map(m => ({ ...m, newD: m.isNew ? 'block' : 'none' })), myStats: '48,2K ko‘rish · 37 bron reellar orqali',
+      c, cols: `${wide ? 264 : 76}px minmax(0,1fr)`, wideD: wide ? 'flex' : 'none', narrowD: wide ? 'none' : 'block', jc: wide ? 'flex-start' : 'center',
+      dashCols: mid ? 'minmax(0,1.55fr) minmax(0,1fr)' : 'minmax(0,1fr)', schedCols: mid ? '300px minmax(0,1fr)' : 'minmax(0,1fr)', stadCols: mid ? '300px minmax(0,1fr)' : 'minmax(0,1fr)',
+      kpiMin: s.w >= 1180 ? '200px' : '320px',
+      searchD: s.w >= 1000 ? 'flex' : 'none',
+      stadium: newOwner ? { name:'Stadion yo‘q', district:'Birinchisini qo‘shing' } : STADS[0],
+      nav, pageTitle: titles[s.view], themeIcon: themeName === 'dark' ? 'light_mode' : 'dark_mode', themeLabel: themeName === 'dark' ? 'Kunduzgi rejim' : 'Tungi rejim',
+      toggleTheme: () => this.setState({ theme: themeName === 'dark' ? 'light' : 'dark' }),
+      goBookings: go('book'), goSchedule: go('sched'), goStadiums: go('stad'), goProfile: go('prof'),
+      pendingCount: pend.length, pendBadgeD: pend.length && !newOwner ? 'flex' : 'none',
+      isDash: s.view === 'dash' && !newOwner, isDashEmpty: s.view === 'dash' && newOwner,
+      isBook: s.view === 'book', isSched: s.view === 'sched', isStad: s.view === 'stad', isRep: s.view === 'rep', isProf: s.view === 'prof',
+      steps: [{ n:'01', t:'Stadion qo‘shing', d:'Nomi, manzil, rasmlar va maydonlar.' }, { n:'02', t:'Ish vaqti va narx', d:'Har bir maydon uchun soatlik va peak narx.' }, { n:'03', t:'Bron qabul qiling', d:'So‘rovlar Telegram va shu panelga keladi.' }],
+      kpis, hoursHdr: HOURS.map(h => String(h).padStart(2, '0')), timeline, nowLine,
+      pending: pend.slice(0, 3).map(bookRow), noPending: !pend.length,
+      weekBars, reviewsShort: REV.slice(0, 2), reviews: REV,
+      bSegs, rows, bEmpty: !rows.length,
+      hours, weekHdr, schedRows, pitchSegs,
+      stadList, ed, amen, accept: tog(s.accept), toggleAccept: () => { this.setState({ accept: !s.accept }); this.toast(s.accept ? 'Yangi bronlar vaqtincha yopildi' : 'Bron qabul qilish yoqildi'); },
+      markDirty: () => !s.dirty && this.setState({ dirty:true }), notDirty: !s.dirty,
+      saveBg: s.dirty ? '#C8F53A' : c.surface2, saveFg: s.dirty ? '#091025' : c.text3, saveCur: s.dirty ? 'pointer' : 'not-allowed',
+      save: () => { this.setState({ dirty:false }); this.toast('O‘zgarishlar saqlandi'); }, discard: () => this.setState({ dirty:false, amen:{0:1,1:1,2:1,3:1,5:1} }),
+      rSegs: segOf([['week','Shu hafta'],['year','6 oy']], s.range, 'range'), rep, heat,
+      profStats: [{ v:'2', l:'stadion', color:c.text1 }, { v:'4', l:'maydon', color:c.text1 }, { v:'4,8', l:'reyting · 312 sharh', color:c.brandInk }, { v:'1 240', l:'bron 2026-yilda', color:c.text1 }],
+      biz: [{ icon:'business', l:'Kompaniya', v:'«Arena Sport» MChJ' }, { icon:'badge', l:'STIR', v:'305 123 456' }, { icon:'send', l:'Telegram', v:'@jasur_arena' }, { icon:'call', l:'Telefon', v:'+998 90 123 45 67' }, { icon:'location_on', l:'Yuridik manzil', v:'Toshkent, Yunusobod tumani, Amir Temur ko‘chasi 108' }, { icon:'storefront', l:'To‘lov usuli', v:'Stadionda: naqd, Payme yoki Click orqali' }],
+      staff: [{ name:'Otabek Yusupov', role:'Administrator', tg:'@otabek_admin' }, { name:'Malika Saidova', role:'Administrator', tg:'@malika_s' }].map(x => ({ ...x, ini: ini(x.name), av: av(x.name) })),
+      toastD: t ? 'flex' : 'none', toastText: t ? t.text : '', toastIcon: t && t.kind === 'warn' ? 'info' : 'check_circle', toastIc: t && t.kind === 'warn' ? c.warning : (themeName === 'dark' ? '#0F8A5A' : '#48CD8C'),
+      undoD: t && t.undo ? 'block' : 'none', undo: () => t && t.undo && t.undo()
+    };
+  }
+}
+</script>
+</body>
+</html>

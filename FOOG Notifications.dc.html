@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.14 0.028 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}</style>
+</helmet>
+<div style="--bg:oklch(0.14 0.028 268);--surface:oklch(0.185 0.032 268);--surface-2:oklch(0.225 0.034 268);--border:oklch(0.28 0.03 268);--border-strong:oklch(0.38 0.03 268);--text-1:oklch(0.97 0.005 265);--text-2:oklch(0.74 0.02 265);--text-3:oklch(0.6 0.02 265);--primary:oklch(0.91 0.2 124);--primary-hover:oklch(0.95 0.17 124);--on-primary:oklch(0.18 0.045 268);--brand-ink:oklch(0.91 0.2 124);--accent:oklch(0.7 0.17 262);--success:oklch(0.76 0.15 158);--warning:oklch(0.83 0.15 80);--error:oklch(0.7 0.19 25);--hover:oklch(1 0 0 / .06);--inverse:oklch(0.97 0.005 265);--on-inverse:oklch(0.18 0.045 268)">
+<div style="{{ themeVars }}">
+<div style="background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif;min-height:100vh" data-screen-label="Notifications">
+  <dc-import name="FoogTopBar" active="notifications" light="{{ isLight }}" unread="{{ unread }}" on-toggle-theme="{{ toggleTheme }}" style="position:sticky;top:0;z-index:20;display:block" hint-size="100%,68px"></dc-import>
+
+  <div style="max-width:760px;margin:0 auto;padding:32px 24px 96px;display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <h1 style="margin:0;font-size:32px;line-height:38px;font-weight:800;letter-spacing:-.02em">Notifications</h1>
+        <div style="font-size:15px;color:var(--text-2)">{{ subtitle }}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onClick="{{ markAll }}" disabled="{{ noneUnread }}" style="height:40px;padding:0 16px;border-radius:999px;border:none;background:transparent;color:{{ markFg }};box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 14px Archivo;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">done_all</span>Mark all read</button>
+        <button title="Notification settings" style="width:40px;height:40px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">settings</span></button>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6">
+        <button onClick="{{ f.onClick }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;font:600 14px Archivo;white-space:nowrap;flex-shrink:0;cursor:pointer;display:flex;align-items:center;gap:6px;background:{{ f.bg }};color:{{ f.fg }};box-shadow:{{ f.ring }}">{{ f.label }}<span style="display:{{ f.countD }};min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 10px 'JetBrains Mono',monospace;align-items:center;justify-content:center">{{ f.count }}</span></button>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:64px 24px;border-radius:20px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+        <span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:var(--text-3)">notifications_off</span>
+        <div style="font-size:18px;font-weight:700">{{ emptyTitle }}</div>
+        <div style="font-size:15px;color:var(--text-2);max-width:340px">{{ emptyText }}</div>
+      </div>
+    </sc-if>
+
+    <sc-for list="{{ sections }}" as="sec" hint-placeholder-count="2">
+      <section style="display:flex;flex-direction:column;gap:4px">
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);padding:8px 4px">{{ sec.title }}</div>
+        <sc-for list="{{ sec.items }}" as="n" hint-placeholder-count="4">
+          <div onClick="{{ n.onRead }}" style="position:relative;display:flex;gap:14px;padding:14px;border-radius:16px;background:{{ n.bg }};cursor:pointer" style-hover="background:var(--hover)">
+            <div style="position:relative;width:48px;height:48px;flex-shrink:0">
+              <div style="width:48px;height:48px;border-radius:{{ n.rad }};background:{{ n.av }};display:flex;align-items:center;justify-content:center;color:{{ n.avFg }};font:800 14px Archivo"><span style="display:{{ n.avIconD }};font-family:'Material Symbols Rounded';font-size:24px;line-height:1;font-variation-settings:'FILL' 1">{{ n.avIcon }}</span>{{ n.init }}</div>
+              <span style="position:absolute;right:-4px;bottom:-4px;width:22px;height:22px;border-radius:50%;background:{{ n.typeBg }};color:{{ n.typeFg }};box-shadow:0 0 0 3px var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Material Symbols Rounded';font-size:14px;font-variation-settings:'FILL' 1">{{ n.typeIcon }}</span>
+            </div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <div style="font-size:15px;line-height:1.45;color:var(--text-2);text-wrap:pretty"><b style="color:var(--text-1)">{{ n.who }}</b> {{ n.text }} <b style="color:var(--text-1)">{{ n.obj }}</b></div>
+                <div style="display:flex;gap:8px;align-items:center;font:400 12px 'JetBrains Mono',monospace;color:var(--text-3)"><span>{{ n.time }}</span><span style="display:{{ n.metaD }}">· {{ n.meta }}</span></div>
+              </div>
+              <div style="display:{{ n.actionsD }};gap:8px;flex-wrap:wrap">
+                <sc-for list="{{ n.actions }}" as="a" hint-placeholder-count="2">
+                  <a href="{{ a.href }}" onClick="{{ a.onClick }}" style="height:36px;padding:0 14px;border-radius:999px;font:600 14px Archivo;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;background:{{ a.bg }};color:{{ a.fg }};box-shadow:{{ a.ring }}">{{ a.label }}</a>
+                </sc-for>
+              </div>
+              <div style="display:{{ n.resultD }};font-size:14px;font-weight:600;color:{{ n.resultColor }};align-items:center;gap:6px"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ n.resultIcon }}</span>{{ n.result }}</div>
+            </div>
+            <div style="display:{{ n.thumbD }};width:56px;height:56px;border-radius:12px;flex-shrink:0;background:repeating-linear-gradient(135deg,oklch(0.25 0.034 268) 0 2px,oklch(0.21 0.032 268) 2px 12px)"></div>
+            <span style="display:{{ n.dotD }};position:absolute;top:20px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--accent)"></span>
+          </div>
+        </sc-for>
+      </section>
+    </sc-for>
+  </div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || this.props.theme || 'dark', filter: 0, read: {}, resolved: {}, allRead: typeof localStorage !== 'undefined' && !!localStorage.getItem('foog-notif-read') };
+  data = [
+    { id: 'n1', sec: 0, type: 'invites', who: 'Northside FC', text: 'invited you to', obj: 'Thursday 5-a-side', time: '12m', meta: 'Arena Yunusobod · Thu 20:00', init: 'NS', av: 'oklch(0.97 0.005 265)', rad: '14px', icon: 'sports_soccer', kind: 'invite' },
+    { id: 'n2', sec: 0, type: 'bookings', who: 'Reminder:', text: 'your booking at', obj: 'Arena Yunusobod · Pitch 2', time: '1h', meta: 'Tonight 20:00 · check-in opens 19:45', avIcon: 'stadium', av: 'var(--primary)', avFg: 'var(--on-primary)', rad: '14px', icon: 'event_available', kind: 'booking' },
+    { id: 'n3', sec: 0, type: 'social', who: 'Amara Diallo', text: 'started following you', obj: '', time: '2h', init: 'AD', av: 'oklch(0.82 0.1 80)', rad: '50%', icon: 'person_add', kind: 'follow' },
+    { id: 'n4', sec: 0, type: 'social', who: 'Lea Wing and 41 others', text: 'liked your reel', obj: '“Through ball, first touch”', time: '3h', init: 'LW', av: 'oklch(0.8 0.12 40)', rad: '50%', icon: 'favorite', kind: 'like', thumb: true },
+    { id: 'n5', sec: 1, type: 'matches', who: 'Full time:', text: 'Northside 3–2 Kreuz Rovers. You were voted', obj: 'MVP', time: 'Sun', meta: '1 goal · 1 assist', avIcon: 'scoreboard', av: 'var(--surface-2)', avFg: 'var(--brand-ink)', rad: '14px', icon: 'star', kind: 'result', read: true },
+    { id: 'n6', sec: 1, type: 'matches', who: 'Achievement unlocked:', text: '', obj: 'Hat-trick Hero', time: 'Sat', meta: 'Rare · 4% of players', avIcon: 'trophy', av: 'var(--surface-2)', avFg: 'var(--brand-ink)', rad: '50%', icon: 'military_tech', kind: 'achievement', read: true },
+    { id: 'n7', sec: 1, type: 'bookings', who: 'Anhor Indoor', text: 'has a slot open that matches your saved search', obj: 'Sat 18:00 · 7v7', time: 'Fri', avIcon: 'notifications_active', av: 'var(--surface-2)', avFg: 'var(--accent)', rad: '14px', icon: 'bolt', kind: 'slot', read: true },
+    { id: 'n8', sec: 1, type: 'social', who: 'Marco Ruiz', text: 'commented on your post:', obj: '“Teach me this on Thursday”', time: 'Thu', init: 'MR', av: 'oklch(0.78 0.12 320)', rad: '50%', icon: 'chat_bubble', kind: 'comment', thumb: true, read: true }
+  ];
+  renderVals() {
+    const s = this.state, light = s.theme === 'light';
+    const LV = { '--bg': 'oklch(0.972 0.004 265)', '--surface': 'oklch(1 0 0)', '--surface-2': 'oklch(0.955 0.005 265)', '--border': 'oklch(0.91 0.006 265)', '--border-strong': 'oklch(0.8 0.01 265)', '--text-1': 'oklch(0.18 0.045 268)', '--text-2': 'oklch(0.44 0.025 265)', '--text-3': 'oklch(0.58 0.02 265)', '--primary-hover': 'oklch(0.94 0.18 124)', '--brand-ink': 'oklch(0.18 0.045 268)', '--accent': 'oklch(0.55 0.21 262)', '--success': 'oklch(0.55 0.14 158)', '--warning': 'oklch(0.6 0.15 65)', '--error': 'oklch(0.55 0.21 25)', '--hover': 'oklch(0.18 0.045 268 / .05)', '--inverse': 'oklch(0.18 0.045 268)', '--on-inverse': 'oklch(0.97 0.005 265)' };
+    if (typeof document !== 'undefined') document.body.style.background = light ? 'oklch(0.972 0.004 265)' : 'oklch(0.14 0.028 268)';
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    const isUnread = n => !n.read && !s.allRead && !s.read[n.id];
+    const resolve = (id, v) => e => { e.preventDefault(); e.stopPropagation(); this.setState(st => ({ resolved: { ...st.resolved, [id]: v }, read: { ...st.read, [id]: true } })); };
+    const P = 'var(--primary)', OUT = 'inset 0 0 0 1.5px var(--border-strong)';
+    const act = (label, primary, extra) => ({ label, href: extra.href || '#', onClick: extra.onClick || (() => {}), bg: primary ? P : 'transparent', fg: primary ? 'var(--on-primary)' : 'var(--text-1)', ring: primary ? 'none' : OUT });
+    const typeStyle = { invite: ['var(--primary)', 'var(--on-primary)'], booking: ['var(--success)', 'var(--on-primary)'], follow: ['var(--accent)', 'white'], like: ['var(--error)', 'white'], result: ['var(--primary)', 'var(--on-primary)'], achievement: ['var(--primary)', 'var(--on-primary)'], slot: ['var(--warning)', 'var(--on-primary)'], comment: ['var(--accent)', 'white'] };
+    const filters = [['All', null], ['Invites', 'invites'], ['Matches', 'matches'], ['Bookings', 'bookings'], ['Social', 'social'], ['Unread', 'unread']];
+    const fv = filters[s.filter][1];
+    const list = this.data.filter(n => !fv || (fv === 'unread' ? isUnread(n) : n.type === fv));
+    const build = n => {
+      const r = s.resolved[n.id], u = isUnread(n);
+      let actions = [];
+      if (n.kind === 'invite' && !r) actions = [act('Accept', true, { onClick: resolve(n.id, 'accepted') }), act('Decline', false, { onClick: resolve(n.id, 'declined') })];
+      if (n.kind === 'booking') actions = [act('Check-in QR', true, { href: 'FOOG Stadium Detail.dc.html' }), act('Directions', false, {})];
+      if (n.kind === 'follow' && !r) actions = [act('Follow back', false, { onClick: resolve(n.id, 'following') })];
+      if (n.kind === 'slot') actions = [act('Book Stadium', true, { href: 'FOOG Stadium Detail.dc.html' })];
+      if (n.kind === 'result') actions = [act('View match', false, { href: 'FOOG Profile.dc.html' })];
+      const res = { accepted: ['You’re in · added to match chat', 'var(--success)', 'check_circle'], declined: ['Declined', 'var(--text-3)', 'block'], following: ['Following', 'var(--success)', 'how_to_reg'] }[r];
+      const [tb, tf] = typeStyle[n.kind];
+      return { ...n, init: n.init || '', avIconD: n.avIcon ? 'inline' : 'none', avIcon: n.avIcon || '', avFg: n.avFg || 'oklch(0.18 0.045 268)',
+        typeIcon: n.icon, typeBg: tb, typeFg: tf, metaD: n.meta ? 'inline' : 'none', meta: n.meta || '', thumbD: n.thumb ? 'block' : 'none',
+        actions, actionsD: actions.length ? 'flex' : 'none', resultD: res ? 'flex' : 'none', result: res ? res[0] : '', resultColor: res ? res[1] : '', resultIcon: res ? res[2] : '',
+        bg: u ? 'color-mix(in oklch,var(--accent) 8%,transparent)' : 'transparent', dotD: u ? 'block' : 'none',
+        onRead: () => this.setState(st => ({ read: { ...st.read, [n.id]: true } })) };
+    };
+    const sections = ['Today', 'This week'].map((title, i) => ({ title, items: list.filter(n => n.sec === i).map(build) })).filter(x => x.items.length);
+    const unread = this.data.filter(isUnread).length;
+    const counts = filters.map(([, v]) => this.data.filter(n => isUnread(n) && (!v || v === 'unread' || n.type === v)).length);
+    return {
+      themeVars: light ? LV : {}, isLight: light, toggleTheme, unread,
+      subtitle: unread ? `${unread} new since you last checked` : 'You’re all caught up',
+      markAll: () => { localStorage.setItem('foog-notif-read', '1'); this.setState({ allRead: true }); }, noneUnread: !unread, markFg: unread ? 'var(--text-1)' : 'var(--text-3)',
+      filters: filters.map(([label], i) => { const on = i === s.filter; return { label, onClick: () => this.setState({ filter: i }), bg: on ? 'var(--inverse)' : 'transparent', fg: on ? 'var(--on-inverse)' : 'var(--text-1)', ring: on ? 'none' : 'inset 0 0 0 1px var(--border-strong)', count: counts[i], countD: counts[i] && i !== 0 && i !== 5 ? 'inline-flex' : 'none' }; }),
+      sections, empty: sections.length === 0,
+      emptyTitle: fv === 'unread' ? 'You’re all caught up' : 'Nothing here yet',
+      emptyText: fv === 'unread' ? 'New invites, results and bookings will show up here.' : 'When teams invite you or matches finish, you’ll see it here.'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.955 0.004 265);-webkit-font-smoothing:antialiased}a{color:oklch(0.55 0.21 262);text-decoration:none}a:hover{color:oklch(0.4 0.18 262)}</style>
+</helmet>
+<div style="font-family:Archivo,system-ui,sans-serif;color:oklch(0.18 0.045 268);padding:40px 32px 96px;display:flex;flex-direction:column;align-items:center">
+<div style="width:100%;max-width:1280px;display:flex;flex-direction:column;gap:24px">
+
+  <header style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid oklch(0.88 0.006 265)">
+    <div style="display:flex;align-items:center;gap:20px">
+      <dc-import name="FoogMark" ink="oklch(0.18 0.045 268)" primary="oklch(0.18 0.045 268)" accent="oklch(0.6 0.21 262)" style="width:120px" hint-size="120px,30px"></dc-import>
+      <div style="width:1px;height:28px;background:oklch(0.85 0.006 265)"></div>
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.01em">Design System</div>
+    </div>
+    <nav style="display:flex;gap:6px;font-size:14px;font-weight:600">
+      <span style="padding:8px 14px;border-radius:999px;background:oklch(0.18 0.045 268);color:oklch(0.97 0.005 265)">01 Foundations</span>
+      <a href="FOOG DS Components.dc.html" style="padding:8px 14px;border-radius:999px;color:oklch(0.18 0.045 268);background:white">02 Components →</a>
+    </nav>
+  </header>
+
+  <section data-screen-label="Color" style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:28px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">01 — Color</div>
+      <h2 style="margin:0;font-size:32px;font-weight:800;letter-spacing:-.02em">Brand core, mapped to two themes</h2>
+      <p style="margin:0;max-width:720px;font-size:16px;line-height:1.55;color:oklch(0.44 0.025 265);text-wrap:pretty">Volt is the signal — primary actions, live states and brand moments. Keep it under ~10% of any screen. Midnight carries the product. Signal Blue is for links, focus and info. Dark is the default app theme; light is used for web, booking receipts and partner tools.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+      <sc-for list="{{ brand }}" as="b" hint-placeholder-count="4">
+        <div style="background:{{ b.value }};color:{{ b.text }};border-radius:14px;padding:18px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid oklch(0.9 0.006 265)">
+          <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;opacity:.8">{{ b.role }}</div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <div style="font-size:20px;font-weight:800">{{ b.name }}</div>
+            <div style="font:400 12px 'JetBrains Mono',monospace;opacity:.8">{{ b.hex }} · {{ b.value }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,460px),1fr));gap:16px">
+      <div style="background:oklch(0.972 0.004 265);border:1px solid oklch(0.91 0.006 265);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:4px">
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.44 0.025 265);padding-bottom:10px">Light theme</div>
+        <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="14">
+          <div style="display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:12px;padding:6px 0;border-top:1px solid oklch(0.92 0.006 265)">
+            <div style="width:32px;height:32px;border-radius:8px;background:{{ t.light }};box-shadow:inset 0 0 0 1px oklch(0.18 0.045 268 / .12)"></div>
+            <div style="display:flex;flex-direction:column">
+              <div style="font-size:14px;font-weight:600;color:oklch(0.18 0.045 268)">{{ t.name }}</div>
+              <div style="font:400 11px 'JetBrains Mono',monospace;color:oklch(0.5 0.02 265)">{{ t.token }}</div>
+            </div>
+            <div style="font:400 11px 'JetBrains Mono',monospace;color:oklch(0.44 0.025 265)">{{ t.light }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:oklch(0.14 0.028 268);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:4px">
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.74 0.02 265);padding-bottom:10px">Dark theme · default</div>
+        <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="14">
+          <div style="display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:12px;padding:6px 0;border-top:1px solid oklch(0.24 0.03 268)">
+            <div style="width:32px;height:32px;border-radius:8px;background:{{ t.dark }};box-shadow:inset 0 0 0 1px oklch(1 0 0 / .1)"></div>
+            <div style="display:flex;flex-direction:column">
+              <div style="font-size:14px;font-weight:600;color:oklch(0.97 0.005 265)">{{ t.name }}</div>
+              <div style="font:400 11px 'JetBrains Mono',monospace;color:oklch(0.62 0.02 265)">{{ t.token }}</div>
+            </div>
+            <div style="font:400 11px 'JetBrains Mono',monospace;color:oklch(0.74 0.02 265)">{{ t.dark }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px">
+      <sc-for list="{{ rules }}" as="r" hint-placeholder-count="3">
+        <div style="display:flex;gap:12px;padding:16px;border-radius:14px;background:oklch(0.965 0.004 265)">
+          <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:{{ r.color }}">{{ r.icon }}</span>
+          <div style="font-size:14px;line-height:1.5;color:oklch(0.3 0.03 265);text-wrap:pretty">{{ r.text }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="Typography" style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">02 — Typography</div>
+      <h2 style="margin:0;font-size:32px;font-weight:800;letter-spacing:-.02em">Archivo for voice, JetBrains Mono for data</h2>
+      <p style="margin:0;max-width:720px;font-size:16px;line-height:1.55;color:oklch(0.44 0.025 265);text-wrap:pretty">Archivo's tight, athletic grotesque echoes the wordmark. Mono is reserved for labels, stats, scores, times and prices — anything you'd read off a scoreboard. Tabular figures on all numbers.</p>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <div style="display:grid;grid-template-columns:140px minmax(0,1fr) 200px 120px;gap:20px;padding:0 0 10px;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:oklch(0.5 0.02 265)">
+        <div>Token</div><div>Specimen</div><div>Desktop</div><div>Mobile</div>
+      </div>
+      <sc-for list="{{ type }}" as="t" hint-placeholder-count="9">
+        <div style="display:grid;grid-template-columns:140px minmax(0,1fr) 200px 120px;gap:20px;align-items:center;padding:18px 0;border-top:1px solid oklch(0.92 0.006 265)">
+          <div style="font:500 13px 'JetBrains Mono',monospace;color:oklch(0.18 0.045 268)">{{ t.token }}</div>
+          <div style="font-family:{{ t.family }};font-size:{{ t.size }}px;line-height:{{ t.lh }}px;font-weight:{{ t.weight }};letter-spacing:{{ t.track }};text-transform:{{ t.transform }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ t.sample }}</div>
+          <div style="font:400 12px 'JetBrains Mono',monospace;color:oklch(0.44 0.025 265)">{{ t.spec }}</div>
+          <div style="font:400 12px 'JetBrains Mono',monospace;color:oklch(0.44 0.025 265)">{{ t.mobile }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section data-screen-label="Spacing radius shadow" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:24px">
+    <div style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:20px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">03 — Spacing · 4px base</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ spacing }}" as="s" hint-placeholder-count="12">
+          <div style="display:grid;grid-template-columns:72px 44px 1fr;align-items:center;gap:12px">
+            <div style="font:500 12px 'JetBrains Mono',monospace">{{ s.token }}</div>
+            <div style="font:400 12px 'JetBrains Mono',monospace;color:oklch(0.5 0.02 265)">{{ s.v }}px</div>
+            <div style="height:12px;width:{{ s.v }}px;background:oklch(0.6 0.21 262);border-radius:2px"></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:20px">
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">04 — Radius · from the OO pill</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          <sc-for list="{{ radius }}" as="r" hint-placeholder-count="6">
+            <div style="display:flex;flex-direction:column;gap:8px;align-items:center">
+              <div style="width:72px;height:72px;background:oklch(0.18 0.045 268);border-radius:{{ r.v }}px"></div>
+              <div style="font:500 11px 'JetBrains Mono',monospace;text-align:center">{{ r.token }}<br><span style="color:oklch(0.5 0.02 265)">{{ r.label }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:20px">
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">05 — Elevation</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:8px;background:oklch(0.972 0.004 265);border-radius:14px">
+          <sc-for list="{{ shadows }}" as="s" hint-placeholder-count="4">
+            <div style="height:84px;border-radius:14px;background:white;box-shadow:{{ s.v }};display:flex;flex-direction:column;justify-content:flex-end;padding:10px">
+              <div style="font:500 11px 'JetBrains Mono',monospace">{{ s.token }}</div>
+              <div style="font-size:11px;color:oklch(0.5 0.02 265)">{{ s.use }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;line-height:1.5;color:oklch(0.44 0.025 265)">Dark theme: elevation is expressed by surface steps (bg → surface → surface-2) plus a 1px border; shadows only on overlays.</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Layout grid" style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:24px">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">06 — Layout</div>
+      <h2 style="margin:0;font-size:32px;font-weight:800;letter-spacing:-.02em">Containers &amp; grids</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+      <sc-for list="{{ containers }}" as="c" hint-placeholder-count="4">
+        <div style="padding:16px;border-radius:14px;background:oklch(0.965 0.004 265);display:flex;flex-direction:column;gap:4px">
+          <div style="font:500 20px 'JetBrains Mono',monospace">{{ c.v }}</div>
+          <div style="font-size:13px;font-weight:600">{{ c.token }}</div>
+          <div style="font-size:13px;color:oklch(0.44 0.025 265)">{{ c.use }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:24px;align-items:start">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="border-radius:14px;background:oklch(0.14 0.028 268);padding:20px 5.5%;height:220px;display:grid;grid-template-columns:repeat(12,1fr);gap:1.7%">
+          <sc-for list="{{ cols12 }}" as="c" hint-placeholder-count="12">
+            <div style="background:oklch(0.91 0.2 124 / .18);border-left:1px solid oklch(0.91 0.2 124 / .5);border-right:1px solid oklch(0.91 0.2 124 / .5);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:500 11px 'JetBrains Mono',monospace;color:oklch(0.91 0.2 124)">{{ c }}</div>
+          </sc-for>
+        </div>
+        <div style="font:400 12px 'JetBrains Mono',monospace;color:oklch(0.44 0.025 265)">Desktop · 1440 canvas · 12 cols · 80px margin · 24px gutter · app shell: 248 sidebar / 6-col feed / 3-col context</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="border-radius:22px;background:oklch(0.14 0.028 268);padding:20px 16px;height:220px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;box-sizing:border-box">
+          <sc-for list="{{ cols4 }}" as="c" hint-placeholder-count="4">
+            <div style="background:oklch(0.91 0.2 124 / .18);border-left:1px solid oklch(0.91 0.2 124 / .5);border-right:1px solid oklch(0.91 0.2 124 / .5);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font:500 11px 'JetBrains Mono',monospace;color:oklch(0.91 0.2 124)">{{ c }}</div>
+          </sc-for>
+        </div>
+        <div style="font:400 12px 'JetBrains Mono',monospace;color:oklch(0.44 0.025 265)">Mobile · 390 · 4 cols · 16 margin · 12 gutter</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="Icons imagery motion" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:24px">
+    <div style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:20px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">07 — Iconography</div>
+      <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:8px">
+        <sc-for list="{{ icons }}" as="i" hint-placeholder-count="24">
+          <div style="aspect-ratio:1;border-radius:12px;background:oklch(0.965 0.004 265);display:flex;align-items:center;justify-content:center">
+            <span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:oklch(0.18 0.045 268)">{{ i }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;color:oklch(0.3 0.03 265)">
+        <li>Material Symbols Rounded — rounded terminals match the OO's curves. Weight 400, optical size 24.</li>
+        <li>Outlined by default; filled only for the active/selected state (nav, like, save).</li>
+        <li>Sizes 16 / 20 / 24 / 32. Never decorative — every icon pairs with an action or a label.</li>
+      </ul>
+    </div>
+    <div style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:20px">
+      <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">08 — Imagery</div>
+      <div style="display:grid;grid-template-columns:1.6fr 1fr .75fr .75fr;gap:10px;align-items:end">
+        <sc-for list="{{ ratios }}" as="r" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="aspect-ratio:{{ r.ar }};border-radius:{{ r.rad }};background:repeating-linear-gradient(135deg,oklch(0.92 0.006 265) 0 2px,oklch(0.965 0.004 265) 2px 12px);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;box-sizing:border-box;font:400 10px 'JetBrains Mono',monospace;color:oklch(0.44 0.025 265)">{{ r.label }}</div>
+            <div style="font:500 11px 'JetBrains Mono',monospace">{{ r.name }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <ul style="margin:0;padding-left:18px;font-size:14px;line-height:1.6;color:oklch(0.3 0.03 265)">
+        <li>Real players, real pitches. Natural light or floodlit night; slightly cool grade, true blacks.</li>
+        <li>No stock handshakes, no generic ball close-ups. People in motion &gt; empty stadiums.</li>
+        <li>Text over media sits on a bottom scrim (midnight 0→70%), never on raw photo.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section data-screen-label="Motion" style="background:white;border-radius:20px;padding:40px;display:flex;flex-direction:column;gap:20px">
+    <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:oklch(0.5 0.02 265)">09 — Motion</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+      <sc-for list="{{ motion }}" as="m" hint-placeholder-count="4">
+        <div style="padding:18px;border-radius:14px;background:oklch(0.965 0.004 265);display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;font:500 12px 'JetBrains Mono',monospace"><span>{{ m.token }}</span><span style="color:oklch(0.5 0.02 265)">{{ m.v }}</span></div>
+          <div style="font-size:14px;line-height:1.5;color:oklch(0.3 0.03 265)">{{ m.use }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;font-size:14px;line-height:1.55;color:oklch(0.3 0.03 265)">
+      <div><b style="color:oklch(0.18 0.045 268)">Fast, not flashy.</b> UI responds in under 120ms; nothing blocks input.</div>
+      <div><b style="color:oklch(0.18 0.045 268)">Kick, then settle.</b> Positive moments (like, join, booked) get one quick overshoot — never loops.</div>
+      <div><b style="color:oklch(0.18 0.045 268)">Spatial continuity.</b> Cards expand into detail; sheets rise from the bottom; nothing teleports.</div>
+      <div><b style="color:oklch(0.18 0.045 268)">Respect reduced motion.</b> Swap movement for 120ms fades.</div>
+    </div>
+  </section>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const M = 'oklch(0.18 0.045 268)', C = 'oklch(0.975 0.006 120)';
+    const brand = [
+      { role: 'Primary', name: 'Volt', hex: '#C8F53A', value: 'oklch(0.91 0.2 124)', text: M },
+      { role: 'Secondary', name: 'Midnight', hex: '#0D1226', value: M, text: C },
+      { role: 'Accent', name: 'Signal Blue', hex: '#3D6BFF', value: 'oklch(0.6 0.21 262)', text: 'white' },
+      { role: 'Neutral', name: 'Chalk', hex: '#F7F8F1', value: C, text: M }
+    ];
+    const T = (name, token, light, dark) => ({ name, token, light, dark });
+    const tokens = [
+      T('Background', '--bg', 'oklch(0.972 0.004 265)', 'oklch(0.14 0.028 268)'),
+      T('Surface / card', '--surface', 'oklch(1 0 0)', 'oklch(0.185 0.032 268)'),
+      T('Surface raised', '--surface-2', 'oklch(0.955 0.005 265)', 'oklch(0.225 0.034 268)'),
+      T('Border', '--border', 'oklch(0.91 0.006 265)', 'oklch(0.28 0.03 268)'),
+      T('Border strong', '--border-strong', 'oklch(0.8 0.01 265)', 'oklch(0.38 0.03 268)'),
+      T('Text primary', '--text-1', 'oklch(0.18 0.045 268)', 'oklch(0.97 0.005 265)'),
+      T('Text secondary', '--text-2', 'oklch(0.44 0.025 265)', 'oklch(0.74 0.02 265)'),
+      T('Primary (Volt)', '--primary', 'oklch(0.91 0.2 124)', 'oklch(0.91 0.2 124)'),
+      T('On primary', '--on-primary', 'oklch(0.18 0.045 268)', 'oklch(0.18 0.045 268)'),
+      T('Brand emphasis', '--brand-ink', 'oklch(0.18 0.045 268)', 'oklch(0.91 0.2 124)'),
+      T('Accent / link / focus', '--accent', 'oklch(0.55 0.21 262)', 'oklch(0.7 0.17 262)'),
+      T('Success', '--success', 'oklch(0.55 0.14 158)', 'oklch(0.76 0.15 158)'),
+      T('Warning', '--warning', 'oklch(0.6 0.15 65)', 'oklch(0.83 0.15 80)'),
+      T('Error', '--error', 'oklch(0.55 0.21 25)', 'oklch(0.7 0.19 25)')
+    ];
+    const rules = [
+      { icon: 'contrast', color: 'oklch(0.55 0.21 262)', text: 'Volt is a fill, never text on light. On light surfaces, brand emphasis switches to Midnight.' },
+      { icon: 'bolt', color: 'oklch(0.18 0.045 268)', text: 'One Volt action per view. Secondary actions use outline or ghost.' },
+      { icon: 'check_circle', color: 'oklch(0.55 0.14 158)', text: 'Success is teal-green (hue 158) so it never reads as brand Volt (hue 124).' }
+    ];
+    const ty = (token, family, size, lh, weight, track, transform, sample, spec, mobile) => ({ token, family, size, lh, weight, track, transform, sample, spec, mobile });
+    const A = 'Archivo', J = "'JetBrains Mono'";
+    const type = [
+      ty('display', A, 72, 72, 800, '-0.03em', 'none', 'Play. Connect. Book.', '72/72 · 800 · −3%', '44/46'),
+      ty('h1', A, 48, 52, 800, '-0.02em', 'none', 'Tonight at Arena Nord', '48/52 · 800 · −2%', '32/36'),
+      ty('h2', A, 34, 40, 700, '-0.015em', 'none', 'Nearby stadiums', '34/40 · 700 · −1.5%', '26/32'),
+      ty('h3', A, 24, 30, 700, '-0.01em', 'none', 'Thursday 5-a-side', '24/30 · 700 · −1%', '20/26'),
+      ty('body', A, 16, 24, 400, '0', 'none', 'Two spots left — midfielder and a keeper. Bring white and dark shirts.', '16/24 · 400', '16/24'),
+      ty('small', A, 14, 20, 400, '0', 'none', '1.2 km · Artificial turf · Floodlit', '14/20 · 400', '14/20'),
+      ty('label', J, 12, 16, 500, '0.12em', 'uppercase', 'Live · 2nd half', '12/16 · Mono 500 · +12% caps', '12/16'),
+      ty('button', A, 15, 20, 600, '0', 'none', 'Book Stadium', '15/20 · 600', '16/20'),
+      ty('caption', A, 12, 16, 400, '0.01em', 'none', 'Posted 2h ago · Edited', '12/16 · 400', '12/16'),
+      ty('stat', J, 32, 36, 500, '-0.02em', 'none', '3 – 2 · 47 · 1.8k', '32/36 · Mono 500 · tabular', '28/32')
+    ];
+    const spacing = [2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96].map((v, i) => ({ token: 'space-' + [0.5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24][i], v }));
+    const radius = [['xs', 6, 'tags'], ['sm', 10, 'inputs'], ['md', 14, 'cards'], ['lg', 20, 'panels'], ['xl', 28, 'sheets'], ['pill', 999, 'buttons']].map(([t, v, l]) => ({ token: t, v: Math.min(v, 36), label: l }));
+    const shadows = [
+      { token: 'shadow-0', v: '0 0 0 1px oklch(0.91 0.006 265)', use: 'flat card' },
+      { token: 'shadow-1', v: '0 1px 2px oklch(0.18 0.045 268 / .06), 0 2px 8px oklch(0.18 0.045 268 / .05)', use: 'card hover' },
+      { token: 'shadow-2', v: '0 8px 24px -6px oklch(0.18 0.045 268 / .16)', use: 'dropdown' },
+      { token: 'shadow-3', v: '0 24px 64px -12px oklch(0.18 0.045 268 / .3)', use: 'modal/sheet' }
+    ];
+    const containers = [
+      { v: '1440', token: 'canvas', use: 'Desktop artboard' },
+      { v: '1280', token: 'container-xl', use: 'App shell, landing' },
+      { v: '960', token: 'container-md', use: 'Detail pages, booking' },
+      { v: '640', token: 'container-sm', use: 'Feed column, forms' }
+    ];
+    const icons = ['home', 'explore', 'stadium', 'sports_soccer', 'calendar_month', 'group', 'chat_bubble', 'notifications', 'person', 'favorite', 'bookmark', 'send', 'add_circle', 'location_on', 'schedule', 'star', 'bolt', 'trophy', 'play_arrow', 'search', 'tune', 'map', 'check_circle', 'more_horiz'];
+    const ratios = [
+      { ar: '16/10', rad: '14px', name: 'Stadium 16:10', label: 'stadium photo' },
+      { ar: '4/5', rad: '14px', name: 'Post 4:5', label: 'post media' },
+      { ar: '9/16', rad: '14px', name: 'Reel 9:16', label: 'reel' },
+      { ar: '1/1', rad: '999px', name: 'Avatar 1:1', label: 'avatar' }
+    ];
+    const motion = [
+      { token: 'duration-fast', v: '120ms', use: 'Hover, press, toggles, checkboxes' },
+      { token: 'duration-base', v: '200ms', use: 'Dropdowns, tabs, tooltips, toasts' },
+      { token: 'duration-slow', v: '320ms', use: 'Sheets, modals, card → detail' },
+      { token: 'ease-standard', v: 'cubic-bezier(.2,.8,.2,1)', use: 'Default for all movement' },
+      { token: 'ease-kick', v: 'cubic-bezier(.34,1.56,.64,1)', use: 'Like, join, booking confirmed' }
+    ];
+    return { brand, tokens, rules, type, spacing, radius, shadows, containers, icons, ratios, motion,
+      cols12: Array.from({ length: 12 }, (_, i) => i + 1), cols4: [1, 2, 3, 4] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<svg viewBox="{{ vb }}" style="display:block;width:100%;height:auto;overflow:visible">
+  <defs>
+    <mask id="{{ gId }}">
+      <path d="M428 0 H480 V120 H428 A60 60 0 0 1 428 0 Z" fill="white"></path>
+      <path d="M428 22 H458 V98 H428 A38 38 0 0 1 428 22 Z" fill="black"></path>
+      <rect x="450" y="22" width="40" height="34" fill="black"></rect>
+      <rect x="440" y="56" width="40" height="22" fill="white"></rect>
+    </mask>
+    <mask id="{{ oId }}">
+      <path d="M174 0 H229 V120 H174 A60 60 0 0 1 174 0 Z" fill="white"></path>
+      <path d="M174 22 H207 V98 H174 A38 38 0 0 1 174 22 Z" fill="black"></path>
+      <path d="M294 0 H239 V120 H294 A60 60 0 0 0 294 0 Z" fill="white"></path>
+      <path d="M294 22 H261 V98 H294 A38 38 0 0 0 294 22 Z" fill="black"></path>
+      <circle cx="234" cy="60" r="20" fill="black"></circle>
+    </mask>
+  </defs>
+  <g display="{{ lettersDisplay }}">
+    <path display="{{ fCurvedD }}" d="M0 120 V60 A60 60 0 0 1 60 0 H100 V22 H60 A38 38 0 0 0 22 60 V120 Z" fill="{{ ink }}"></path>
+    <path display="{{ fSharpD }}" d="M0 120 V0 H100 V22 H22 V120 Z" fill="{{ ink }}"></path>
+    <rect x="22" y="56" width="54" height="22" fill="{{ ink }}"></rect>
+    <rect x="360" y="0" width="122" height="120" fill="{{ ink }}" mask="{{ gMask }}"></rect>
+  </g>
+  <rect x="110" y="0" width="250" height="120" fill="{{ primary }}" mask="{{ oMask }}"></rect>
+  <circle cx="234" cy="60" r="{{ dotR }}" fill="{{ accent }}"></circle>
+</svg>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:480,&quot;height&quot;:120},&quot;kind&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;wordmark&quot;,&quot;symbol&quot;],&quot;default&quot;:&quot;wordmark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;ink&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#0d1226&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;primary&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#c8f53a&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#3d6bff&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;fCorner&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;curved&quot;,&quot;sharp&quot;],&quot;default&quot;:&quot;curved&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;dot&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  uid = Math.random().toString(36).slice(2, 8);
+  renderVals() {
+    const p = this.props, sym = p.kind === 'symbol', curved = (p.fCorner ?? 'curved') === 'curved';
+    return {
+      vb: sym ? '114 0 240 120' : '0 0 482 120',
+      gId: 'g' + this.uid, oId: 'o' + this.uid,
+      gMask: `url(#g${this.uid})`, oMask: `url(#o${this.uid})`,
+      lettersDisplay: sym ? 'none' : 'inline',
+      fCurvedD: curved ? 'inline' : 'none', fSharpD: curved ? 'none' : 'inline',
+      ink: p.ink ?? '#0d1226', primary: p.primary ?? '#c8f53a', accent: p.accent ?? '#3d6bff',
+      dotR: (p.dot ?? true) ? 11 : 0
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.14 0.028 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}</style>
+</helmet>
+<div style="--bg:oklch(0.14 0.028 268);--surface:oklch(0.185 0.032 268);--surface-2:oklch(0.225 0.034 268);--border:oklch(0.28 0.03 268);--border-strong:oklch(0.38 0.03 268);--text-1:oklch(0.97 0.005 265);--text-2:oklch(0.74 0.02 265);--text-3:oklch(0.6 0.02 265);--primary:oklch(0.91 0.2 124);--primary-hover:oklch(0.95 0.17 124);--on-primary:oklch(0.18 0.045 268);--brand-ink:oklch(0.91 0.2 124);--accent:oklch(0.7 0.17 262);--success:oklch(0.76 0.15 158);--warning:oklch(0.83 0.15 80);--error:oklch(0.7 0.19 25);--hover:oklch(1 0 0 / .06);--inverse:oklch(0.97 0.005 265);--on-inverse:oklch(0.18 0.045 268);--map:oklch(0.17 0.03 268);--map-road:oklch(0.24 0.032 268);--map-park:oklch(0.22 0.05 160);--ph:repeating-linear-gradient(135deg,oklch(0.25 0.034 268) 0 2px,oklch(0.21 0.032 268) 2px 12px)">
+<div style="{{ themeVars }}">
+<div style="background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif;min-height:100vh" data-screen-label="Stadium Explore">
+
+  <dc-import name="FoogTopBar" active="stadiums" light="{{ isLight }}" on-toggle-theme="{{ toggleTheme }}" style="position:sticky;top:0;z-index:20;display:block" hint-size="100%,68px"></dc-import>
+
+  <div style="position:sticky;top:68px;z-index:15;background:var(--bg);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;gap:0;align-items:stretch;background:var(--surface);border-radius:999px;box-shadow:inset 0 0 0 1px var(--border);padding:6px;flex-wrap:wrap;max-width:1100px">
+      <div style="flex:1.6;min-width:200px;display:flex;align-items:center;gap:10px;padding:0 14px;height:48px">
+        <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--text-2)">search</span>
+        <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Stadium name or area" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text-1);font:400 16px Archivo">
+      </div>
+      <sc-for list="{{ searchFields }}" as="f" hint-placeholder-count="3">
+        <div style="flex:1;min-width:150px;display:flex;align-items:center;gap:10px;padding:0 14px;height:48px;border-left:1px solid var(--border);cursor:pointer">
+          <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-2)">{{ f.icon }}</span>
+          <div style="display:flex;flex-direction:column;min-width:0"><div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">{{ f.k }}</div><div style="font-size:15px;font-weight:600;white-space:nowrap">{{ f.v }}</div></div>
+        </div>
+      </sc-for>
+      <button style="height:48px;padding:0 22px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 15px Archivo;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:8px" style-hover="background:var(--primary-hover)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">search</span>Search</button>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <sc-for list="{{ chips }}" as="c" hint-placeholder-count="8">
+        <button onClick="{{ c.onClick }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;font:600 14px Archivo;white-space:nowrap;cursor:pointer;display:flex;align-items:center;gap:6px;background:{{ c.bg }};color:{{ c.fg }};box-shadow:{{ c.ring }}">{{ c.label }}</button>
+      </sc-for>
+      <div style="width:1px;height:24px;background:var(--border);margin:0 4px"></div>
+      <div style="display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--border-strong);font-size:14px">
+        <span style="color:var(--text-2)">Max</span>
+        <input type="range" min="150000" max="600000" step="25000" value="{{ maxPrice }}" onChange="{{ onPrice }}" style="width:110px;accent-color:oklch(0.91 0.2 124)">
+        <span style="font:500 14px 'JetBrains Mono',monospace;min-width:120px">{{ maxPriceF }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:{{ cols }};min-height:calc(100vh - 210px)">
+    <main style="padding:20px 24px 80px;display:flex;flex-direction:column;gap:16px;min-width:0">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <h1 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em">{{ count }} stadiums in Toshkent</h1>
+          <div style="font-size:14px;color:var(--text-2)">Fri 3 Oct · 20:00 · 1 hour · sorted by distance</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:{{ mapToggleD }};padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+            <button onClick="{{ toggleMap }}" style="height:32px;padding:0 12px;border:none;border-radius:999px;background:{{ mapBtnBg }};color:{{ mapBtnFg }};font:600 13px Archivo;display:flex;align-items:center;gap:6px;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">map</span>Map</button>
+          </div>
+          <div style="display:flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)">
+            <button onClick="{{ setGrid }}" title="Grid" style="width:36px;height:32px;border:none;border-radius:999px;background:{{ gridBg }};color:{{ gridFg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">grid_view</span></button>
+            <button onClick="{{ setList }}" title="List" style="width:36px;height:32px;border:none;border-radius:999px;background:{{ listBg }};color:{{ listFg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">view_agenda</span></button>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:56px 24px;border-radius:20px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+          <span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:var(--text-3)">stadium</span>
+          <div style="font-size:18px;font-weight:700">No stadiums match these filters</div>
+          <div style="font-size:15px;color:var(--text-2);max-width:360px">Try raising the max price or removing a filter. Most pitches open up after 21:00.</div>
+          <button onClick="{{ clearFilters }}" style="height:44px;padding:0 20px;border-radius:999px;border:none;background:var(--inverse);color:var(--on-inverse);font:600 15px Archivo;cursor:pointer">Clear filters</button>
+        </div>
+      </sc-if>
+
+      <div style="display:grid;grid-template-columns:{{ cardCols }};gap:16px">
+        <sc-for list="{{ stadiums }}" as="s" hint-placeholder-count="6">
+          <div onMouseEnter="{{ s.onHover }}" onMouseLeave="{{ s.onLeave }}" style="background:var(--surface);border-radius:20px;overflow:hidden;display:{{ s.cardDisplay }};grid-template-columns:{{ s.listCols }};flex-direction:column;box-shadow:{{ s.ring }};transition:box-shadow .12s">
+            <a href="FOOG Stadium Detail.dc.html" style="position:relative;display:block;aspect-ratio:{{ s.ar }};background:var(--ph);color:var(--text-3)">
+              <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:400 11px 'JetBrains Mono',monospace">stadium photo</div>
+              <span style="position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:var(--surface);color:{{ s.availColor }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap"><span style="width:6px;height:6px;border-radius:50%;background:{{ s.availColor }}"></span>{{ s.avail }}</span>
+            </a>
+            <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;min-width:0">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+                <a href="FOOG Stadium Detail.dc.html" style="font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--text-1)">{{ s.name }}</a>
+                <div style="display:flex;align-items:center;gap:3px;font:500 14px 'JetBrains Mono',monospace;flex-shrink:0"><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1;color:var(--brand-ink);font-variation-settings:'FILL' 1">star</span>{{ s.rating }}<span style="color:var(--text-3)">({{ s.reviews }})</span></div>
+              </div>
+              <div style="font-size:14px;color:var(--text-2)">{{ s.area }} · {{ s.dist }} km</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                <sc-for list="{{ s.tags }}" as="t" hint-placeholder-count="3"><span style="height:24px;padding:0 9px;display:inline-flex;align-items:center;border-radius:6px;box-shadow:inset 0 0 0 1px var(--border-strong);color:var(--text-2);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase">{{ t }}</span></sc-for>
+                <span style="display:inline-flex;gap:6px;align-items:center;margin-left:4px;color:var(--text-2)"><sc-for list="{{ s.amen }}" as="a" hint-placeholder-count="3"><span title="{{ a.label }}" style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">{{ a.icon }}</span></sc-for></span>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <sc-for list="{{ s.slots }}" as="t" hint-placeholder-count="4"><span style="height:28px;padding:0 10px;display:inline-flex;align-items:center;border-radius:8px;background:var(--bg);font:500 12px 'JetBrains Mono',monospace;color:{{ t.fg }};text-decoration:{{ t.deco }}">{{ t.t }}</span></sc-for>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;margin-top:auto">
+                <div><span style="font:500 20px 'JetBrains Mono',monospace">{{ s.priceF }}</span><span style="font-size:14px;color:var(--text-2)"> /hr</span></div>
+                <a href="FOOG Stadium Detail.dc.html" style="height:44px;padding:0 18px;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 15px Archivo;white-space:nowrap;display:flex;align-items:center" style-hover="background:var(--primary-hover)">Book Stadium</a>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </main>
+
+    <aside style="display:{{ mapD }};position:sticky;top:210px;height:calc(100vh - 210px);padding:20px 24px 24px 0;box-sizing:border-box">
+      <div style="position:relative;width:100%;height:100%;border-radius:20px;overflow:hidden;background:var(--map);box-shadow:inset 0 0 0 1px var(--border)">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(var(--map-road) 2px,transparent 2px),linear-gradient(90deg,var(--map-road) 2px,transparent 2px);background-size:96px 96px"></div>
+        <div style="position:absolute;left:0;right:0;top:44%;height:10px;background:var(--map-road);transform:rotate(-8deg)"></div>
+        <div style="position:absolute;left:28%;top:-10%;bottom:-10%;width:8px;background:var(--map-road);transform:rotate(14deg)"></div>
+        <div style="position:absolute;left:58%;top:58%;width:22%;height:24%;border-radius:24px;background:var(--map-park)"></div>
+        <div style="position:absolute;left:8%;top:12%;width:16%;height:14%;border-radius:18px;background:var(--map-park)"></div>
+        <div style="position:absolute;left:0;right:0;top:74%;height:28px;background:oklch(0.3 0.06 250 / .55);transform:rotate(4deg)"></div>
+        <sc-for list="{{ pins }}" as="p" hint-placeholder-count="6">
+          <a href="FOOG Stadium Detail.dc.html" onMouseEnter="{{ p.onHover }}" onMouseLeave="{{ p.onLeave }}" style="position:absolute;left:{{ p.x }}%;top:{{ p.y }}%;transform:translate(-50%,-100%) scale({{ p.scale }});z-index:{{ p.z }};display:flex;flex-direction:column;align-items:center;transition:transform .12s">
+            <span style="height:32px;padding:0 12px;border-radius:999px;background:{{ p.bg }};color:{{ p.fg }};font:600 13px 'JetBrains Mono',monospace;display:flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 6px 16px -4px oklch(0 0 0 / .5)"><span style="width:6px;height:6px;border-radius:50%;background:{{ p.dot }}"></span>{{ p.priceF }}</span>
+            <span style="width:10px;height:10px;background:{{ p.bg }};transform:rotate(45deg);margin-top:-6px"></span>
+          </a>
+        </sc-for>
+        <div style="position:absolute;left:46%;top:52%;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px color-mix(in oklch,var(--accent) 30%,transparent),0 0 0 3px white inset"></div>
+        <div style="position:absolute;right:14px;top:14px;display:flex;flex-direction:column;border-radius:14px;background:var(--surface);box-shadow:0 6px 16px -4px oklch(0 0 0 / .4);overflow:hidden">
+          <button style="width:40px;height:40px;border:none;background:transparent;color:var(--text-1);font-family:'Material Symbols Rounded';font-size:20px">add</button>
+          <div style="height:1px;background:var(--border)"></div>
+          <button style="width:40px;height:40px;border:none;background:transparent;color:var(--text-1);font-family:'Material Symbols Rounded';font-size:20px">remove</button>
+        </div>
+        <button style="position:absolute;left:50%;top:14px;transform:translateX(-50%);height:40px;padding:0 16px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);font:600 14px Archivo;display:flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 6px 16px -4px oklch(0 0 0 / .4)"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">refresh</span>Search this area</button>
+        <div style="position:absolute;left:14px;bottom:14px;display:flex;gap:12px;padding:8px 12px;border-radius:12px;background:var(--surface);font-size:12px;color:var(--text-2)">
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--success)"></span>Available</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--warning)"></span>Few left</span>
+          <span style="display:flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:var(--error)"></span>Full</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || this.props.theme || 'dark', view: 'grid', map: true, hover: null, query: '', maxPrice: 600000, f: { avail: true }, w: typeof window !== 'undefined' ? window.innerWidth : 1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onR(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
+  renderVals() {
+    const som = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '\u00A0so‘m';
+    const s = this.state, light = s.theme === 'light';
+    const LV = { '--bg': 'oklch(0.972 0.004 265)', '--surface': 'oklch(1 0 0)', '--surface-2': 'oklch(0.955 0.005 265)', '--border': 'oklch(0.91 0.006 265)', '--border-strong': 'oklch(0.8 0.01 265)', '--text-1': 'oklch(0.18 0.045 268)', '--text-2': 'oklch(0.44 0.025 265)', '--text-3': 'oklch(0.58 0.02 265)', '--primary-hover': 'oklch(0.94 0.18 124)', '--brand-ink': 'oklch(0.18 0.045 268)', '--accent': 'oklch(0.55 0.21 262)', '--success': 'oklch(0.55 0.14 158)', '--warning': 'oklch(0.6 0.15 65)', '--error': 'oklch(0.55 0.21 25)', '--hover': 'oklch(0.18 0.045 268 / .05)', '--inverse': 'oklch(0.18 0.045 268)', '--on-inverse': 'oklch(0.97 0.005 265)', '--map': 'oklch(0.95 0.006 250)', '--map-road': 'oklch(1 0 0)', '--map-park': 'oklch(0.9 0.06 150)', '--ph': 'repeating-linear-gradient(135deg,oklch(0.92 0.006 265) 0 2px,oklch(0.965 0.004 265) 2px 12px)' };
+    if (typeof document !== 'undefined') document.body.style.background = light ? 'oklch(0.972 0.004 265)' : 'oklch(0.14 0.028 268)';
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    const A = { parking: ['local_parking', 'Parking'], shower: ['shower', 'Showers'], light: ['lightbulb', 'Floodlights'], cafe: ['local_cafe', 'Café'], locker: ['lock', 'Lockers'] };
+    const data = [
+      { id: 1, name: 'Arena Yunusobod', area: 'Yunusobod', dist: 1.2, rating: 4.8, reviews: 312, price: 300000, size: '5v5', surface: 'Turf', io: 'Indoor', open: 6, amen: ['parking', 'shower', 'light'], x: 52, y: 30 },
+      { id: 2, name: 'Chilonzor Cage', area: 'Chilonzor', dist: 2.4, rating: 4.6, reviews: 188, price: 225000, size: '5v5', surface: 'Turf', io: 'Outdoor', open: 2, amen: ['light', 'locker'], x: 40, y: 78 },
+      { id: 3, name: 'Anhor Indoor', area: 'Mirzo Ulug‘bek', dist: 3.1, rating: 4.9, reviews: 540, price: 400000, size: '7v7', surface: 'Hybrid', io: 'Indoor', open: 4, amen: ['parking', 'shower', 'cafe'], x: 72, y: 46 },
+      { id: 4, name: 'Mauerpark Pitch', area: 'Mitte', dist: 3.6, rating: 4.4, reviews: 96, price: 175000, size: '11v11', surface: 'Grass', io: 'Outdoor', open: 1, amen: ['shower', 'light'], x: 34, y: 22 },
+      { id: 5, name: 'Yakkasaroy Hall', area: 'Yakkasaroy', dist: 4.0, rating: 4.7, reviews: 260, price: 350000, size: '5v5', surface: 'Futsal', io: 'Indoor', open: 0, amen: ['shower', 'locker', 'cafe'], x: 60, y: 66 },
+      { id: 6, name: 'Bodomzor 7s', area: 'Wedding', dist: 5.2, rating: 4.5, reviews: 142, price: 250000, size: '7v7', surface: 'Turf', io: 'Outdoor', open: 5, amen: ['parking', 'light'], x: 22, y: 50 }
+    ];
+    const chipDefs = [['avail', 'Available now'], ['5v5', '5v5'], ['7v7', '7v7'], ['11v11', '11v11'], ['Turf', 'Artificial turf'], ['Grass', 'Natural grass'], ['Indoor', 'Indoor'], ['Outdoor', 'Outdoor']];
+    const tog = k => () => this.setState(st => ({ f: { ...st.f, [k]: !st.f[k] } }));
+    const chips = chipDefs.map(([k, label]) => { const on = !!s.f[k]; return { label, onClick: tog(k), bg: on ? 'var(--inverse)' : 'transparent', fg: on ? 'var(--on-inverse)' : 'var(--text-1)', ring: on ? 'none' : 'inset 0 0 0 1px var(--border-strong)' }; });
+    const sizes = ['5v5', '7v7', '11v11'].filter(k => s.f[k]), surf = ['Turf', 'Grass'].filter(k => s.f[k]), io = ['Indoor', 'Outdoor'].filter(k => s.f[k]);
+    const q = s.query.trim().toLowerCase();
+    const res = data.filter(d => (!s.f.avail || d.open > 0) && (!sizes.length || sizes.includes(d.size)) && (!surf.length || surf.includes(d.surface)) && (!io.length || io.includes(d.io)) && d.price <= s.maxPrice && (!q || (d.name + d.area).toLowerCase().includes(q)));
+    const w = s.w, showMap = s.map && w >= 1100, list = s.view === 'list';
+    const stat = d => d.open === 0 ? ['Full tonight', 'var(--error)'] : d.open <= 2 ? [d.open + ' slots left', 'var(--warning)'] : [d.open + ' slots today', 'var(--success)'];
+    const times = ['19:00', '20:00', '21:00', '22:00'];
+    const stadiums = res.map(d => { const [avail, availColor] = stat(d), hov = s.hover === d.id; return { ...d, priceF: som(d.price), avail, availColor, tags: [d.size, d.surface, d.io],
+      amen: d.amen.map(k => ({ icon: A[k][0], label: A[k][1] })),
+      slots: times.map((t, i) => { const off = i >= d.open || (d.id === 2 && i === 1); return { t, fg: off ? 'var(--text-3)' : 'var(--text-1)', deco: off ? 'line-through' : 'none' }; }),
+      onHover: () => this.setState({ hover: d.id }), onLeave: () => this.setState({ hover: null }),
+      ring: hov ? '0 0 0 2px var(--brand-ink)' : '0 0 0 1px var(--border)',
+      cardDisplay: list ? 'grid' : 'flex', listCols: list ? 'minmax(0,280px) minmax(0,1fr)' : 'none', ar: list ? 'auto' : '16/10' }; });
+    const pins = res.map(d => { const hov = s.hover === d.id; return { x: d.x, y: d.y, price: d.price, priceF: Math.round(d.price / 1000) + 'k', scale: hov ? 1.12 : 1, z: hov ? 5 : 1,
+      bg: hov ? 'var(--primary)' : 'var(--surface)', fg: hov ? 'var(--on-primary)' : 'var(--text-1)', dot: stat(d)[1],
+      onHover: () => this.setState({ hover: d.id }), onLeave: () => this.setState({ hover: null }) }; });
+    const seg = on => ({ bg: on ? 'var(--inverse)' : 'transparent', fg: on ? 'var(--on-inverse)' : 'var(--text-2)' });
+    const g = seg(!list), l = seg(list), m = seg(s.map);
+    return {
+      themeVars: light ? LV : {}, isLight: light, toggleTheme, themeIcon: light ? 'dark_mode' : 'light_mode', themeTitle: light ? 'Night mode' : 'Day mode',
+      markInk: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)', markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)',
+      navD: w >= 860 ? 'flex' : 'none',
+      topNav: [['Home', 'FOOG Home.dc.html'], ['Stadiums', '#'], ['Matches', '#'], ['Reels', '#'], ['Community', '#']].map(([label, href]) => ({ label, href, fg: label === 'Stadiums' ? 'var(--on-inverse)' : 'var(--text-2)', bg: label === 'Stadiums' ? 'var(--inverse)' : 'transparent' })),
+      query: s.query, onQuery: e => this.setState({ query: e.target.value }),
+      searchFields: [{ icon: 'location_on', k: 'Location', v: 'Toshkent · 5 km' }, { icon: 'calendar_month', k: 'Date', v: 'Today, Fri 3' }, { icon: 'schedule', k: 'Time', v: '20:00 · 1h' }],
+      chips, maxPrice: s.maxPrice, maxPriceF: som(s.maxPrice), onPrice: e => this.setState({ maxPrice: +e.target.value }),
+      count: res.length, empty: res.length === 0, clearFilters: () => this.setState({ f: {}, maxPrice: 600000, query: '' }),
+      stadiums, pins,
+      cols: showMap ? 'minmax(0,1fr) minmax(0,0.85fr)' : 'minmax(0,1fr)', mapD: showMap ? 'block' : 'none', mapToggleD: w >= 1100 ? 'flex' : 'none',
+      cardCols: list ? 'minmax(0,1fr)' : (showMap ? 'repeat(auto-fill,minmax(280px,1fr))' : 'repeat(auto-fill,minmax(300px,1fr))'),
+      setGrid: () => this.setState({ view: 'grid' }), setList: () => this.setState({ view: 'list' }), toggleMap: () => this.setState({ map: !s.map }),
+      gridBg: g.bg, gridFg: g.fg, listBg: l.bg, listFg: l.fg, mapBtnBg: m.bg, mapBtnFg: m.fg
+    };
+  }
+}
+</script>
+</body>
+</html>

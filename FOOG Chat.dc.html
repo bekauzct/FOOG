@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.14 0.028 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}</style>
+</helmet>
+<div style="--bg:oklch(0.14 0.028 268);--surface:oklch(0.185 0.032 268);--surface-2:oklch(0.225 0.034 268);--border:oklch(0.28 0.03 268);--border-strong:oklch(0.38 0.03 268);--text-1:oklch(0.97 0.005 265);--text-2:oklch(0.74 0.02 265);--text-3:oklch(0.6 0.02 265);--primary:oklch(0.91 0.2 124);--primary-hover:oklch(0.95 0.17 124);--on-primary:oklch(0.18 0.045 268);--brand-ink:oklch(0.91 0.2 124);--accent:oklch(0.7 0.17 262);--success:oklch(0.76 0.15 158);--warning:oklch(0.83 0.15 80);--error:oklch(0.7 0.19 25);--hover:oklch(1 0 0 / .06);--inverse:oklch(0.97 0.005 265);--on-inverse:oklch(0.18 0.045 268);--bubble-me:oklch(0.91 0.2 124);--on-bubble-me:oklch(0.18 0.045 268);--ph:repeating-linear-gradient(135deg,oklch(0.25 0.034 268) 0 2px,oklch(0.21 0.032 268) 2px 12px)">
+<div style="{{ themeVars }}">
+<div style="background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden" data-screen-label="Chat">
+
+  <div style="display:{{ headerD }};flex-shrink:0"><dc-import name="FoogTopBar" active="messages" light="{{ isLight }}" on-toggle-theme="{{ toggleTheme }}" style="display:block" hint-size="100%,68px"></dc-import></div>
+
+  <div style="flex:1;min-height:0;display:grid;grid-template-columns:{{ cols }}">
+
+    <aside style="display:{{ listD }};flex-direction:column;min-height:0;border-right:1px solid var(--border)">
+      <div style="padding:18px 16px 10px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:10px"><a href="FOOG Home.dc.html" style="display:{{ mobBackD }};width:40px;height:40px;border-radius:999px;align-items:center;justify-content:center;color:var(--text-1)"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">arrow_back</span></a><h1 style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em">Messages</h1></div>
+          <button style="width:40px;height:40px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">edit_square</span></button>
+        </div>
+        <div style="height:44px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;align-items:center;gap:10px;padding:0 14px">
+          <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-2)">search</span>
+          <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search chats" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text-1);font:400 15px Archivo">
+        </div>
+        <div style="display:flex;gap:6px;overflow-x:auto;scrollbar-width:none">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+            <button onClick="{{ f.onClick }}" style="height:32px;padding:0 12px;border-radius:999px;border:none;font:600 13px Archivo;white-space:nowrap;cursor:pointer;flex-shrink:0;background:{{ f.bg }};color:{{ f.fg }};box-shadow:{{ f.ring }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:0 8px 12px">
+        <sc-for list="{{ convs }}" as="c" hint-placeholder-count="7">
+          <div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:{{ c.bg }};cursor:pointer" style-hover="background:var(--hover)">
+            <div style="position:relative;width:48px;height:48px;border-radius:{{ c.rad }};background:{{ c.av }};flex-shrink:0;display:flex;align-items:center;justify-content:center;font:800 14px Archivo;color:oklch(0.18 0.045 268)">{{ c.init }}<span style="display:{{ c.onlineD }};position:absolute;right:0;bottom:0;width:12px;height:12px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px var(--bg)"></span></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+              <div style="display:flex;justify-content:space-between;gap:8px"><div style="display:flex;align-items:center;gap:6px;min-width:0"><span style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.name }}</span><span style="display:{{ c.kindD }};flex-shrink:0;height:18px;padding:0 6px;border-radius:5px;box-shadow:inset 0 0 0 1px var(--border-strong);color:var(--text-2);font:500 9px 'JetBrains Mono',monospace;letter-spacing:.1em;align-items:center">{{ c.kind }}</span></div><div style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3);flex-shrink:0">{{ c.time }}</div></div>
+              <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div style="font-size:14px;color:{{ c.msgColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.last }}</div><span style="display:{{ c.unreadD }};min-width:20px;height:20px;padding:0 6px;box-sizing:border-box;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 11px 'JetBrains Mono',monospace;align-items:center;justify-content:center;flex-shrink:0">{{ c.unread }}</span></div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+
+    <main style="display:{{ convD }};flex-direction:column;min-height:0;min-width:0">
+      <div style="flex-shrink:0;height:68px;display:flex;align-items:center;gap:12px;padding:0 16px;border-bottom:1px solid var(--border)">
+        <button onClick="{{ backToList }}" style="display:{{ backD }};width:40px;height:40px;border-radius:999px;border:none;background:transparent;color:var(--text-1);align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">arrow_back</span></button>
+        <a href="{{ cur.href }}" style="display:flex;align-items:center;gap:12px;color:var(--text-1);min-width:0;flex:1">
+          <div style="width:40px;height:40px;border-radius:{{ cur.rad }};background:{{ cur.av }};flex-shrink:0;display:flex;align-items:center;justify-content:center;font:800 13px Archivo;color:oklch(0.18 0.045 268)">{{ cur.init }}</div>
+          <div style="display:flex;flex-direction:column;min-width:0"><div style="font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cur.name }}</div><div style="font-size:13px;color:{{ cur.subColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cur.sub }}</div></div>
+        </a>
+        <button style="width:40px;height:40px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">call</span></button>
+        <button onClick="{{ toggleInfo }}" style="width:40px;height:40px;border-radius:999px;border:none;background:{{ infoBtnBg }};color:{{ infoBtnFg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">info</span></button>
+      </div>
+
+      <div ref="{{ scrollRef }}" style="flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:6px">
+        <div style="align-self:center;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);padding:6px 0 10px">Today</div>
+        <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="6">
+          <div style="display:flex;flex-direction:column;align-items:{{ m.align }};gap:3px;margin-top:{{ m.gapTop }}">
+            <div style="display:{{ m.authorD }};font-size:12px;color:var(--text-2);padding:0 12px">{{ m.author }}</div>
+            <div style="display:{{ m.textD }};max-width:min(72%,460px);padding:10px 14px;border-radius:{{ m.rad }};background:{{ m.bg }};color:{{ m.fg }};font-size:15px;line-height:1.45;text-wrap:pretty">{{ m.text }}</div>
+            <div style="display:{{ m.photoD }};width:260px;aspect-ratio:4/3;border-radius:18px;background:var(--ph);align-items:flex-end;padding:10px;box-sizing:border-box;font:400 11px 'JetBrains Mono',monospace;color:var(--text-3)">photo</div>
+            <div style="display:{{ m.videoD }};position:relative;width:180px;aspect-ratio:9/16;border-radius:18px;background:var(--ph);align-items:center;justify-content:center"><span style="width:48px;height:48px;border-radius:50%;background:oklch(0 0 0 / .45);color:white;display:flex;align-items:center;justify-content:center;font-family:'Material Symbols Rounded';font-size:30px;font-variation-settings:'FILL' 1">play_arrow</span><span style="position:absolute;left:10px;bottom:10px;font:500 11px 'JetBrains Mono',monospace;color:white">0:14</span></div>
+            <div style="display:{{ m.inviteD }};width:300px;border-radius:18px;background:var(--surface);border:1px solid var(--border);padding:14px;flex-direction:column;gap:10px;box-sizing:border-box">
+              <div style="display:flex;justify-content:space-between;align-items:center"><span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-ink)">Match invite</span><span style="font:400 11px 'JetBrains Mono',monospace;color:var(--text-2)">8 / 10</span></div>
+              <div style="font-size:17px;font-weight:700">Thursday 5-a-side</div>
+              <div style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">Thu 9 Oct · 20:00 · Arena Yunusobod</div>
+              <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px"><sc-for list="{{ m.bar }}" as="b" hint-placeholder-count="10"><div style="height:5px;border-radius:999px;background:{{ b }}"></div></sc-for></div>
+              <button onClick="{{ m.onJoin }}" style="height:40px;border-radius:999px;border:none;font:600 14px Archivo;cursor:pointer;background:{{ m.joinBg }};color:{{ m.joinFg }};box-shadow:{{ m.joinRing }}">{{ m.joinLabel }}</button>
+            </div>
+            <a href="FOOG Stadium Detail.dc.html" style="display:{{ m.stadiumD }};width:300px;border-radius:18px;overflow:hidden;background:var(--surface);border:1px solid var(--border);flex-direction:column;color:var(--text-1)">
+              <div style="height:110px;background:var(--ph)"></div>
+              <div style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px"><div><div style="font-size:15px;font-weight:700">Anhor Indoor</div><div style="font-size:13px;color:var(--text-2)">7v7 · 3.1 km · 4.9</div></div><span style="font:500 14px 'JetBrains Mono',monospace">400 000 so‘m</span></div>
+            </a>
+            <a href="FOOG Profile.dc.html" style="display:{{ m.profileD }};width:300px;border-radius:18px;background:var(--surface);border:1px solid var(--border);padding:14px;gap:12px;align-items:center;box-sizing:border-box;color:var(--text-1)">
+              <div style="width:48px;height:48px;border-radius:50%;padding:2px;box-sizing:border-box;background:var(--primary);flex-shrink:0"><div style="width:100%;height:100%;border-radius:50%;border:2px solid var(--surface);box-sizing:border-box;background:oklch(0.72 0.12 200)"></div></div>
+              <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:700">Jonas Keller</div><div style="font-size:13px;color:var(--text-2)">GK · Lvl 6 · 76 matches</div></div>
+              <span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:var(--text-2)">chevron_right</span>
+            </a>
+            <div style="display:{{ m.metaD }};font:400 11px 'JetBrains Mono',monospace;color:var(--text-3);padding:0 6px">{{ m.time }}</div>
+          </div>
+        </sc-for>
+        <div style="display:{{ typingD }};align-self:flex-start;padding:12px 16px;border-radius:18px 18px 18px 6px;background:var(--surface);color:var(--text-2);font-size:14px">{{ typingName }} is typing…</div>
+      </div>
+
+      <div style="flex-shrink:0;padding:12px 16px 16px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px">
+        <sc-if value="{{ attachOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px">
+            <sc-for list="{{ attachments }}" as="a" hint-placeholder-count="5">
+              <button onClick="{{ a.onClick }}" style="height:64px;border-radius:14px;border:none;background:var(--surface);color:var(--text-1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font:500 12px Archivo"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:{{ a.color }}">{{ a.icon }}</span>{{ a.label }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="display:flex;gap:8px;align-items:flex-end">
+          <button onClick="{{ toggleAttach }}" style="width:44px;height:44px;border-radius:999px;border:none;background:{{ attachBg }};color:{{ attachFg }};display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:transform .12s;transform:rotate({{ attachRot }}deg)"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">add</span></button>
+          <div style="flex:1;min-height:44px;border-radius:22px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;align-items:center;padding:0 6px 0 16px">
+            <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onKey }}" placeholder="Message" style="flex:1;min-width:0;height:44px;background:transparent;border:none;outline:none;color:var(--text-1);font:400 16px Archivo">
+            <button style="width:36px;height:36px;border-radius:999px;border:none;background:transparent;color:var(--text-2);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">mic</span></button>
+          </div>
+          <button onClick="{{ send }}" disabled="{{ cantSend }}" style="width:44px;height:44px;border-radius:999px;border:none;background:{{ sendBg }};color:{{ sendFg }};display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1">send</span></button>
+        </div>
+      </div>
+    </main>
+
+    <aside style="display:{{ infoD }};flex-direction:column;gap:20px;padding:24px 20px;border-left:1px solid var(--border);overflow-y:auto;min-height:0">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+        <div style="width:80px;height:80px;border-radius:{{ cur.radBig }};background:{{ cur.av }};display:flex;align-items:center;justify-content:center;font:800 22px Archivo;color:oklch(0.18 0.045 268)">{{ cur.init }}</div>
+        <div style="font-size:18px;font-weight:700">{{ cur.name }}</div>
+        <div style="font-size:14px;color:var(--text-2)">{{ cur.info }}</div>
+        <div style="display:flex;gap:8px">
+          <a href="{{ cur.href }}" style="height:36px;padding:0 14px;border-radius:999px;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 13px Archivo;display:flex;align-items:center;white-space:nowrap">{{ cur.cta }}</a>
+          <button style="width:36px;height:36px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">notifications_off</span></button>
+        </div>
+      </div>
+      <div style="display:{{ ctxMatchD }};flex-direction:column;gap:10px;padding:14px;border-radius:16px;background:var(--surface);border:1px solid var(--border)">
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">Next up</div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font:500 9px 'JetBrains Mono',monospace;color:var(--brand-ink)">OCT</div><div style="font:500 18px 'JetBrains Mono',monospace;line-height:1">09</div></div>
+          <div><div style="font-size:15px;font-weight:700">Arena Yunusobod · Pitch 2</div><div style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">20:00 · 8/10 in</div></div>
+        </div>
+        <a href="FOOG Stadium Detail.dc.html" style="height:40px;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 14px Archivo;display:flex;align-items:center;justify-content:center">View booking</a>
+      </div>
+      <div style="display:{{ ctxMembersD }};flex-direction:column;gap:10px">
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">Members · {{ cur.members }}</div>
+        <sc-for list="{{ members }}" as="p" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:10px"><span style="width:32px;height:32px;border-radius:50%;background:{{ p.av }}"></span><span style="flex:1;font-size:14px">{{ p.name }}</span><span style="font:500 11px 'JetBrains Mono',monospace;color:var(--text-3)">{{ p.pos }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">Shared media</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px"><sc-for list="{{ media }}" as="x" hint-placeholder-count="6"><div style="aspect-ratio:1;border-radius:8px;background:var(--ph)"></div></sc-for></div>
+      </div>
+    </aside>
+  </div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  scrollRef = React.createRef();
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || this.props.theme || 'dark', cur: 'yara', filter: 0, query: '', draft: '', attach: false, info: true, mobConv: false, joined: false, typing: null, extra: {}, w: typeof window !== 'undefined' ? window.innerWidth : 1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onR(); this.scroll(); }
+  componentDidUpdate() { const st = this.state, k = st.cur + '|' + st.typing + '|' + (st.extra[st.cur] || []).length; if (k !== this._k) { this._k = k; this.scroll(); } }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); clearTimeout(this.t1); clearTimeout(this.t2); }
+  scroll() { requestAnimationFrame(() => { const el = this.scrollRef.current; if (el) el.scrollTop = el.scrollHeight; }); }
+  convs = [
+    { id: 'yara', name: 'Yara Haddad', kind: 'DM', init: 'YH', av: 'oklch(0.8 0.12 160)', rad: '50%', online: true, time: '20:41', unread: 2, href: 'FOOG Profile.dc.html', sub: 'Online · CM · Northside FC', info: '@yara.10 · 12 mutual', cta: 'View profile',
+      msgs: [['them', 'text', 'Hey! Saw you’re free Thursdays — we’re one short for 5-a-side.', '20:30'], ['them', 'invite', '', '20:30'], ['me', 'text', 'Perfect timing, I’m in. Which pitch?', '20:34'], ['them', 'text', 'Pitch 2, covered. Bring a dark shirt', '20:38'], ['them', 'photo', '', '20:41']] },
+    { id: 'thu', name: 'Thursday 5-a-side', kind: 'MATCH', init: '5v5', av: 'oklch(0.91 0.2 124)', rad: '14px', time: '20:12', unread: 5, href: 'FOOG Discover.dc.html', sub: '8 players · Thu 20:00 · Arena Yunusobod', info: 'Match chat · ends after the game', cta: 'Match details', members: 8, isGroup: true, hasMatch: true,
+      msgs: [['Marco', 'text', 'Bringing the bibs and two balls', '19:50'], ['Jonas', 'profile', '', '19:55'], ['Jonas', 'text', 'My mate can keep if we need a GK', '19:55'], ['me', 'text', 'Yes please, add him', '20:02'], ['Lea', 'video', '', '20:12']] },
+    { id: 'ns', name: 'Northside FC', kind: 'TEAM', init: 'NS', av: 'oklch(0.97 0.005 265)', rad: '14px', time: 'Tue', unread: 0, href: 'FOOG Discover.dc.html', sub: '14 members · Team chat', info: 'Amateur · Toshkent · Est. 2023', cta: 'Team page', members: 14, isGroup: true, hasMatch: true,
+      msgs: [['Coach Ali', 'text', 'Training moved to 19:30 on Tuesday. Same pitch.', 'Tue'], ['Coach Ali', 'stadium', '', 'Tue'], ['Teo', 'text', 'Can we try Anhor Indoor for the cup prep?', 'Tue']] },
+    { id: 'lea', name: 'Lea Wing', kind: 'DM', init: 'LW', av: 'oklch(0.8 0.12 40)', rad: '50%', online: true, time: '18:02', unread: 0, href: 'FOOG Profile.dc.html', sub: 'Online', info: '@lea.wing · LW', cta: 'View profile', typing: true,
+      msgs: [['me', 'text', 'That rabona was filthy', '17:58'], ['them', 'text', 'Ha, pure luck. Rematch Sunday?', '18:02']] },
+    { id: 'berlin', name: 'Toshkent Sunday League', kind: 'COMMUNITY', init: 'BSL', av: 'oklch(0.75 0.12 262)', rad: '14px', time: 'Mon', unread: 0, href: 'FOOG Discover.dc.html', sub: '2.4k members · Community', info: 'Open community · 2.4k members', cta: 'Community page', members: '2.4k', isGroup: true,
+      msgs: [['Mod · Sara', 'text', 'Fixtures for round 6 are up. Two pitches swapped due to the marathon.', 'Mon'], ['Amara', 'text', 'Any team need a striker for the next few weeks?', 'Mon']] },
+    { id: 'amara', name: 'Amara Diallo', kind: 'DM', init: 'AD', av: 'oklch(0.82 0.1 80)', rad: '50%', time: 'Sun', unread: 0, href: 'FOOG Profile.dc.html', sub: 'Last seen 2h ago', info: '@amara.9 · ST', cta: 'View profile',
+      msgs: [['them', 'text', 'GG today. That through ball was class.', 'Sun']] }
+  ];
+  renderVals() {
+    const s = this.state, light = s.theme === 'light', w = s.w, mob = w < 760, wide = w >= 1180;
+    const LV = { '--bg': 'oklch(0.972 0.004 265)', '--surface': 'oklch(1 0 0)', '--surface-2': 'oklch(0.955 0.005 265)', '--border': 'oklch(0.91 0.006 265)', '--border-strong': 'oklch(0.8 0.01 265)', '--text-1': 'oklch(0.18 0.045 268)', '--text-2': 'oklch(0.44 0.025 265)', '--text-3': 'oklch(0.58 0.02 265)', '--primary-hover': 'oklch(0.94 0.18 124)', '--brand-ink': 'oklch(0.18 0.045 268)', '--accent': 'oklch(0.55 0.21 262)', '--success': 'oklch(0.55 0.14 158)', '--warning': 'oklch(0.6 0.15 65)', '--error': 'oklch(0.55 0.21 25)', '--hover': 'oklch(0.18 0.045 268 / .05)', '--inverse': 'oklch(0.18 0.045 268)', '--on-inverse': 'oklch(0.97 0.005 265)', '--bubble-me': 'oklch(0.18 0.045 268)', '--on-bubble-me': 'oklch(0.97 0.005 265)', '--ph': 'repeating-linear-gradient(135deg,oklch(0.92 0.006 265) 0 2px,oklch(0.965 0.004 265) 2px 12px)' };
+    if (typeof document !== 'undefined') document.body.style.background = light ? 'oklch(0.972 0.004 265)' : 'oklch(0.14 0.028 268)';
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    const kinds = [null, 'DM', 'TEAM', 'MATCH', 'COMMUNITY'];
+    const q = s.query.toLowerCase();
+    const convs = this.convs.filter(c => (!kinds[s.filter] || c.kind === kinds[s.filter]) && (!q || c.name.toLowerCase().includes(q))).map(c => {
+      const extra = s.extra[c.id] || [], last = extra.length ? extra[extra.length - 1] : c.msgs[c.msgs.length - 1], on = c.id === s.cur;
+      const lastTxt = last[1] === 'text' ? (last[0] === 'me' ? 'You: ' : c.isGroup && last[0] !== 'them' ? last[0] + ': ' : '') + last[2].replace('', '') : { invite: 'Match invite', photo: 'Photo', video: 'Video', stadium: 'Stadium link', profile: 'Player card' }[last[1]];
+      const unread = on ? 0 : c.unread;
+      return { ...c, onClick: () => this.setState({ cur: c.id, mobConv: true, attach: false }), bg: on && !mob ? 'var(--surface)' : 'transparent', onlineD: c.online ? 'block' : 'none', kindD: c.kind !== 'DM' ? 'inline-flex' : 'none',
+        last: c.typing && !on ? 'typing…' : lastTxt, msgColor: c.typing && !on ? 'var(--accent)' : unread ? 'var(--text-1)' : 'var(--text-2)', unread, unreadD: unread ? 'flex' : 'none', time: extra.length ? 'now' : c.time };
+    });
+    const cc = this.convs.find(c => c.id === s.cur);
+    const all = [...cc.msgs, ...(s.extra[cc.id] || [])];
+    const msgs = all.map((m, i) => {
+      const me = m[0] === 'me', prev = all[i - 1], next = all[i + 1], firstOfRun = !prev || prev[0] !== m[0], lastOfRun = !next || next[0] !== m[0];
+      const filled = 8 + (s.joined ? 1 : 0);
+      return { align: me ? 'flex-end' : 'flex-start', gapTop: firstOfRun && i ? '10px' : '0', author: m[0], authorD: cc.isGroup && !me && firstOfRun ? 'block' : 'none',
+        textD: m[1] === 'text' ? 'block' : 'none', photoD: m[1] === 'photo' ? 'flex' : 'none', videoD: m[1] === 'video' ? 'flex' : 'none', inviteD: m[1] === 'invite' ? 'flex' : 'none', stadiumD: m[1] === 'stadium' ? 'flex' : 'none', profileD: m[1] === 'profile' ? 'flex' : 'none',
+        text: m[2].replace('', ''), time: m[3], metaD: lastOfRun ? 'block' : 'none',
+        rad: me ? `18px 18px ${lastOfRun ? '6px' : '18px'} 18px` : `18px 18px 18px ${lastOfRun ? '6px' : '18px'}`,
+        bg: me ? 'var(--bubble-me)' : 'var(--surface)', fg: me ? 'var(--on-bubble-me)' : 'var(--text-1)',
+        bar: Array.from({ length: 10 }, (_, k) => k < filled ? 'var(--brand-ink)' : 'var(--border)'),
+        onJoin: () => this.setState({ joined: !s.joined }), joinLabel: s.joined ? 'You’re in' : 'Join · 30 000 so‘m', joinBg: s.joined ? 'transparent' : 'var(--primary)', joinFg: s.joined ? 'var(--text-1)' : 'var(--on-primary)', joinRing: s.joined ? 'inset 0 0 0 1.5px var(--border-strong)' : 'none' };
+    });
+    const push = (type, text) => { const id = cc.id, now = new Date(), t = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+      this.setState(st => ({ extra: { ...st.extra, [id]: [...(st.extra[id] || []), ['me', type, text, t]] }, draft: '', attach: false }));
+      if (!cc.isGroup) { clearTimeout(this.t1); clearTimeout(this.t2); this.t1 = setTimeout(() => this.setState({ typing: id }), 600);
+        this.t2 = setTimeout(() => this.setState(st => ({ typing: null, extra: { ...st.extra, [id]: [...(st.extra[id] || []), ['them', 'text', type === 'invite' ? 'Count me in!' : 'Sounds good'.replace('', ''), t]] } })), 2200); } };
+    const send = () => { const d = s.draft.trim(); if (d) push('text', d); };
+    const col = (mob ? 'minmax(0,1fr)' : '340px minmax(0,1fr)') + (wide && s.info ? ' 300px' : '');
+    return {
+      themeVars: light ? LV : {}, isLight: light, toggleTheme, themeIcon: light ? 'dark_mode' : 'light_mode', themeTitle: light ? 'Night mode' : 'Day mode',
+      markInk: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)', markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)',
+      headerD: mob ? 'none' : 'flex',
+      topNav: [['Home', 'FOOG Home.dc.html'], ['Stadiums', 'FOOG Stadiums.dc.html'], ['Discover', 'FOOG Discover.dc.html'], ['Reels', 'FOOG Reels.dc.html'], ['Messages', '#']].map(([label, href]) => ({ label, href, fg: label === 'Messages' ? 'var(--on-inverse)' : 'var(--text-2)', bg: label === 'Messages' ? 'var(--inverse)' : 'transparent' })),
+      cols: col, listD: mob && s.mobConv ? 'none' : 'flex', convD: mob && !s.mobConv ? 'none' : 'flex', infoD: wide && s.info ? 'flex' : 'none',
+      mobBackD: mob ? 'flex' : 'none', backD: mob ? 'flex' : 'none', backToList: () => this.setState({ mobConv: false }),
+      query: s.query, onQuery: e => this.setState({ query: e.target.value }),
+      filters: ['All', 'Direct', 'Teams', 'Matches', 'Communities'].map((label, i) => ({ label, onClick: () => this.setState({ filter: i }), bg: i === s.filter ? 'var(--inverse)' : 'transparent', fg: i === s.filter ? 'var(--on-inverse)' : 'var(--text-1)', ring: i === s.filter ? 'none' : 'inset 0 0 0 1px var(--border-strong)' })),
+      convs, cur: { ...cc, members: cc.members ?? '', radBig: cc.rad === '50%' ? '50%' : '22px', subColor: cc.online ? 'var(--success)' : 'var(--text-2)' }, msgs, scrollRef: this.scrollRef,
+      typingD: s.typing === cc.id || (cc.typing && !s.extra[cc.id]) ? 'block' : 'none', typingName: cc.name.split(' ')[0],
+      toggleInfo: () => this.setState({ info: !s.info }), infoBtnBg: s.info && wide ? 'var(--inverse)' : 'var(--surface)', infoBtnFg: s.info && wide ? 'var(--on-inverse)' : 'var(--text-1)',
+      ctxMatchD: cc.hasMatch ? 'flex' : 'none', ctxMembersD: cc.isGroup ? 'flex' : 'none',
+      members: [['Marco Ruiz', 'CB', 'oklch(0.78 0.12 320)'], ['Jonas Keller', 'GK', 'oklch(0.72 0.12 200)'], ['Lea Wing', 'LW', 'oklch(0.8 0.12 40)'], ['Teo Brandt', 'RW', 'oklch(0.78 0.1 10)'], ['You', 'CM', 'oklch(0.75 0.12 262)']].map(([name, pos, av]) => ({ name, pos, av })),
+      media: [1, 2, 3, 4, 5, 6],
+      draft: s.draft, onDraft: e => this.setState({ draft: e.target.value }), onKey: e => { if (e.key === 'Enter') send(); }, send, cantSend: !s.draft.trim(),
+      sendBg: s.draft.trim() ? 'var(--primary)' : 'var(--surface)', sendFg: s.draft.trim() ? 'var(--on-primary)' : 'var(--text-3)',
+      attachOpen: s.attach, toggleAttach: () => this.setState({ attach: !s.attach }), attachRot: s.attach ? 45 : 0, attachBg: s.attach ? 'var(--inverse)' : 'var(--surface)', attachFg: s.attach ? 'var(--on-inverse)' : 'var(--text-1)',
+      attachments: [['photo', 'Photo', 'var(--accent)', 'photo'], ['videocam', 'Video', 'var(--error)', 'video'], ['sports_soccer', 'Match invite', 'var(--brand-ink)', 'invite'], ['stadium', 'Stadium', 'var(--success)', 'stadium'], ['person', 'Player card', 'var(--warning)', 'profile']].map(([icon, label, color, type]) => ({ icon, label, color, onClick: () => push(type, '') }))
+    };
+  }
+}
+</script>
+</body>
+</html>

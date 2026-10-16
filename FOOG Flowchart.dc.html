@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#050815;-webkit-font-smoothing:antialiased}a{color:#629BFF;text-decoration:none}a:hover{color:#8DB5FF}</style>
+</helmet>
+<div data-screen-label="Flowchart" style="width:1960px;box-sizing:border-box;padding:56px 48px 56px;background:#050815;color:#F3F5F9;font-family:Archivo,system-ui,sans-serif;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <dc-import name="FoogMark" ink="#F3F5F9" primary="#C8F53A" accent="#F3F5F9" style="width:120px" hint-size="120px,30px"></dc-import>
+      <h1 style="margin:0;font-size:52px;line-height:56px;font-weight:800;letter-spacing:-.03em">Flowchart · Asosiy jarayonlar</h1>
+      <p style="margin:0;max-width:860px;font-size:18px;line-height:1.5;color:#A5ABB8">Har bir ustun – kim bajaradi: foydalanuvchi, sayt yoki tizim (backend). Strelkalar bosqichlar ketma-ketligini ko‘rsatadi.</p>
+    </div>
+    <div style="display:flex;gap:20px;align-items:center;font-size:14px;color:#A5ABB8">
+      <span style="display:flex;align-items:center;gap:8px"><span style="width:44px;height:22px;border-radius:999px;background:#C8F53A"></span>Boshlanish</span>
+      <span style="display:flex;align-items:center;gap:8px"><span style="width:44px;height:22px;border-radius:999px;background:#F3F5F9"></span>Tugash</span>
+      <span style="display:flex;align-items:center;gap:8px"><span style="width:44px;height:22px;border-radius:6px;background:#151B2C;box-shadow:inset 0 0 0 1px #3B4253"></span>Harakat</span>
+      <span style="display:flex;align-items:center;gap:8px"><span style="width:44px;height:22px;border-radius:6px;background:color-mix(in oklab,#629BFF 16%,#0D1221);box-shadow:inset 0 0 0 1px color-mix(in oklab,#629BFF 50%,transparent)"></span>Tizim jarayoni</span>
+      <span style="display:flex;align-items:center;gap:8px"><svg width="44" height="24" viewBox="0 0 44 24"><polygon points="22,1 43,12 22,23 1,12" fill="#2A2716" stroke="#FABB41" stroke-width="1.5"></polygon></svg>Qaror</span>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+    <sc-for list="{{ flows }}" as="f" hint-placeholder-count="6">
+      <section style="padding:22px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:4px;max-width:{{ f.w }}"><span style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#C8F53A">{{ f.k }}</span><h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em">{{ f.t }}</h2><span style="font-size:14px;line-height:1.5;color:#A5ABB8">{{ f.d }}</span></div>
+        <div style="display:flex;width:{{ f.w }}">
+          <sc-for list="{{ f.lanes }}" as="l" hint-placeholder-count="3"><div style="width:260px;height:40px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:10px 10px 0 0;background:{{ l.bg }};font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:{{ l.c }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ l.c }}"></span>{{ l.t }}</div></sc-for>
+        </div>
+        <div style="position:relative;width:{{ f.w }};height:{{ f.h }};margin-top:-16px">
+          <div style="position:absolute;inset:0;display:flex">
+            <sc-for list="{{ f.lanes }}" as="l" hint-placeholder-count="3"><div style="width:260px;height:100%;background:{{ l.bg }};border-radius:0 0 10px 10px"></div></sc-for>
+          </div>
+          <svg width="{{ f.w }}" height="{{ f.h }}" style="position:absolute;inset:0;overflow:visible">
+            <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#A5ABB8"></path></marker></defs>
+            <sc-for list="{{ f.edges }}" as="e" hint-placeholder-count="8">
+              <g>
+                <path d="{{ e.d }}" stroke="{{ e.c }}" stroke-width="1.6" fill="none" stroke-dasharray="{{ e.dash }}" marker-end="url(#ah)"></path>
+              </g>
+            </sc-for>
+          </svg>
+          <sc-for list="{{ f.edges }}" as="e" hint-placeholder-count="8"><span style="display:{{ e.labD }};position:absolute;left:{{ e.lxp }};top:{{ e.lyp }};transform:{{ e.tf }};padding:1px 6px;border-radius:6px;background:#0D1221;font:500 12px 'JetBrains Mono',monospace;color:{{ e.lc }};white-space:nowrap;z-index:2">{{ e.label }}</span></sc-for>
+          <sc-for list="{{ f.nodes }}" as="n" hint-placeholder-count="8">
+            <div style="position:absolute;left:{{ n.x }};top:{{ n.y }};width:220px;height:{{ n.h }};box-sizing:border-box;border-radius:{{ n.r }};background:{{ n.bg }};box-shadow:{{ n.ring }};color:{{ n.fg }};display:flex;align-items:center;justify-content:center;text-align:center;padding:{{ n.pad }};font-size:{{ n.fs }};font-weight:{{ n.fw }};line-height:1.35;text-wrap:balance">
+              <svg width="220" height="84" viewBox="0 0 220 84" style="display:{{ n.diaD }};position:absolute;inset:0"><polygon points="110,1 219,42 110,83 1,42" fill="#2A2716" stroke="#FABB41" stroke-width="1.5"></polygon></svg>
+              <span style="position:relative">{{ n.t }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LW = 260, NW = 220, RH = 104, TOP = 16;
+const LANE = { user:['#C8F53A','#111728'], ui:['#A5ABB8','#0F1424'], sys:['#629BFF','#101830'], ext:['#FABB41','#14151C'] };
+const H = { start:52, end:52, p:64, d:84 };
+const FLOWS = [
+  { k:'01', t:'Telegram orqali kirish', d:'Parol yo‘q. Foydalanuvchi Telegram botda raqamini ulashadi va saytga qaytadi.',
+    lanes:[['Foydalanuvchi','user'],['Sayt','ui'],['Backend','sys'],['Telegram bot','ext']],
+    nodes:[['a',0,0,'start','Saytga kiradi'],['b',0,1,'p','«Telegram orqali kirish» tugmasini bosadi'],['c',1,2,'p','Bir martalik kirish havolasini so‘raydi'],['d',2,2,'p','Token yaratadi (3 daqiqa amal qiladi)'],['e',3,3,'p','Bot ochiladi: «Raqamingizni ulashing»'],['f',0,4,'p','«Raqamni ulashish» ni bosadi'],['g',2,5,'p','Raqam va telegram_id ni tokenga bog‘laydi'],['h',2,6,'d','Bazada bormi?'],['i',1,6,'p','Rol tanlaydi: futbolchi yoki stadion egasi'],['j',2,7,'p','Kirish tokenini beradi'],['k',1,8,'end','Rolga qarab: /home, /owner yoki /admin']],
+    edges:[['a','b'],['b','c'],['c','d'],['d','e'],['e','f'],['f','g'],['g','h'],['h','i','Yo‘q'],['h','j','Ha'],['i','j'],['j','k']] },
+  { k:'02', t:'O‘yinga qo‘shilish', d:'Discover → O‘yinlar. Bo‘sh joy bo‘lsa – darhol qo‘shiladi.',
+    lanes:[['Futbolchi','user'],['Sayt','ui'],['Backend','sys']],
+    nodes:[['a',0,0,'start','Discover → «O‘yinlar» bo‘limi'],['b',0,1,'p','Sana, joy va daraja filtrlarini tanlaydi'],['c',1,2,'p','Ochiq o‘yinlar va bo‘sh joylar ro‘yxati'],['d',0,3,'p','O‘yinni ochib «O‘yinga qo‘shilish» ni bosadi'],['e',2,4,'d','Bo‘sh joy bormi?'],['f',1,4,'end','«O‘yin to‘ldi» xabari'],['g',2,5,'p','O‘yinchilar ro‘yxati va o‘yin chatiga qo‘shadi'],['h',1,6,'p','«Siz o‘yindasiz» tasdig‘i'],['i',0,7,'end','O‘yin chatini ochadi']],
+    edges:[['a','b'],['b','c'],['c','d'],['d','e'],['e','f','Yo‘q'],['e','g','Ha'],['g','h'],['h','i']] },
+  { k:'03', t:'Stadion bron qilish', d:'Futbolchi so‘rov yuboradi, stadion egasi tasdiqlaydi. To‘lov – o‘yin kuni stadionda.',
+    lanes:[['Futbolchi','user'],['Sayt','ui'],['Backend','sys'],['Stadion egasi','ext']],
+    nodes:[['a',0,0,'start','«Stadionlar» sahifasini ochadi'],['b',0,1,'p','Sana, vaqt, narx va o‘lcham filtrlari'],['c',1,2,'p','Stadionlar ro‘yxati va xarita'],['d',0,3,'p','Stadionni ochadi: sana → vaqt → maydon'],['e',1,4,'p','Bron xulosasi: «To‘lov stadionda»'],['f',0,5,'p','«Bronni tasdiqlash» ni bosadi'],['g',2,6,'d','Soat hali bo‘shmi?'],['h',1,6,'p','«Bu soat band bo‘ldi» – boshqa soat'],['i',2,7,'p','Bron yaratiladi: holat «kutilmoqda»'],['j',3,8,'p','Telegram va panelga yangi so‘rov keladi'],['k',3,9,'d','Egasi tasdiqladimi?'],['l',2,10,'p','Holat «tasdiqlangan»'],['m',3,10,'end','Rad etildi yoki 2 soatda bekor – futbolchiga xabar'],['n',0,11,'end','«Bron tasdiqlandi» xabari keladi']],
+    edges:[['a','b'],['b','c'],['c','d'],['d','e'],['e','f'],['f','g'],['g','h','Yo‘q'],['h','d'],['g','i','Ha'],['i','j'],['j','k'],['k','l','Ha'],['k','m','Yo‘q'],['l','n']] },
+  { k:'04', t:'Reel joylash', d:'Futbolchi ham, stadion egasi ham joylay oladi. Video yuklangach qayta ishlanadi.',
+    lanes:[['Foydalanuvchi','user'],['Sayt','ui'],['Backend','sys']],
+    nodes:[['a',0,0,'start','Profil yoki Reels → «Yaratish»'],['b',0,1,'p','Video tanlaydi, izoh va turini yozadi'],['c',1,2,'d','Video bor, izoh to‘g‘rimi?'],['d',0,2,'p','Xatoni tuzatadi'],['e',2,3,'p','Videoni yuklaydi, holat «processing»'],['f',2,4,'p','Video saytda ko‘rish formatiga o‘tkaziladi'],['g',2,5,'d','Muvaffaqiyatlimi?'],['h',1,5,'p','«Yuklash xatosi · Qayta urinish»'],['i',2,6,'p','Holat «published», lentaga qo‘shiladi'],['j',1,7,'end','«Reel joylandi» – profil va lentada']],
+    edges:[['a','b'],['b','c'],['c','d','Yo‘q'],['d','b'],['c','e','Ha'],['e','f'],['f','g'],['g','h','Yo‘q'],['h','e'],['g','i','Ha'],['i','j']] },
+  { k:'05', t:'Stadion egasi: bron va o‘yin kuni', d:'Panel → Bronlar. Tasdiqlash, rad etish, keyin «Keldi» yoki «Kelmadi».',
+    lanes:[['Stadion egasi','ext'],['Panel','ui'],['Backend','sys']],
+    nodes:[['a',0,0,'start','«Bronlar» → «Kutilmoqda»'],['b',0,1,'d','So‘rovni qabul qiladimi?'],['c',1,1,'p','Rad etish sababini tanlaydi'],['d',0,2,'p','«Tasdiqlash» ni bosadi'],['e',2,2,'end','Holat «rad etilgan», futbolchiga sabab'],['f',2,3,'p','Holat «tasdiqlangan», futbolchiga xabar'],['g',0,4,'d','O‘yin kuni: futbolchi keldimi?'],['h',1,4,'p','«Kelmadi» ni bosadi'],['i',0,5,'p','«Keldi» – to‘lovni stadionda oladi'],['j',2,5,'end','Kelmaganlar soni +1, admin ko‘radi'],['k',2,6,'p','Summa hisobotga qo‘shiladi'],['l',1,7,'end','Hisobot yangilandi']],
+    edges:[['a','b'],['b','c','Yo‘q'],['c','e'],['b','d','Ha'],['d','f'],['f','g'],['g','h','Yo‘q'],['h','j'],['g','i','Ha'],['i','k'],['k','l']] },
+  { k:'06', t:'Admin: stadion moderatsiyasi', d:'Yangi stadion faqat admin tekshirgandan keyin saytda ko‘rinadi.',
+    lanes:[['Stadion egasi','ext'],['Backend','sys'],['Admin','user']],
+    nodes:[['a',0,0,'start','Stadion qo‘shadi: nom, manzil, rasm, maydon, narx'],['b',1,1,'p','Holat «moderatsiyada», admin navbatiga'],['c',2,2,'p','Arizani ochadi, tekshiruv ro‘yxatini belgilaydi'],['d',2,3,'d','Hammasi to‘g‘rimi?'],['e',1,4,'p','Holat «faol» – stadion saytda ko‘rinadi'],['f',0,4,'end','Telegram: «Stadioningiz tasdiqlandi»'],['g',2,4,'p','Rad etish sababini tanlaydi'],['h',1,5,'p','Holat «rad etilgan», egasiga sabab'],['i',0,6,'p','Sababni tuzatib qayta yuboradi']],
+    edges:[['a','b'],['b','c'],['c','d'],['d','e','Ha'],['e','f'],['d','g','Yo‘q'],['g','h'],['h','i'],['i','b']] }
+];
+class Component extends DCLogic {
+  renderVals() {
+    const flows = FLOWS.map(fl => {
+      const N = {}; let maxRow = 0;
+      fl.nodes.forEach(([id, lane, row, type, t]) => { const h = H[type], cx = lane * LW + LW / 2, cy = TOP + row * RH + RH / 2; N[id] = { lane, row, type, h, cx, cy, top: cy - h / 2, bot: cy + h / 2, l: cx - NW / 2, r: cx + NW / 2 }; maxRow = Math.max(maxRow, row); });
+      const edges = fl.edges.map(([a, b, label]) => {
+        const A = N[a], B = N[b]; let d, lx, ly, anchor = 'start';
+        if (B.row === A.row) { const right = B.cx > A.cx, sx = right ? A.r : A.l, ex = right ? B.l : B.r; d = `M${sx} ${A.cy}H${ex}`; lx = sx + (right ? 10 : -10); ly = A.cy - 8; anchor = right ? 'start' : 'end'; }
+        else if (B.row > A.row && A.type === 'd' && B.lane !== A.lane) {
+          const right = B.cx > A.cx, sx = right ? A.r : A.l;
+          d = `M${sx} ${A.cy}H${B.cx}V${B.top}`; lx = sx + (right ? 10 : -10); ly = A.cy - 8; anchor = right ? 'start' : 'end';
+        }
+        else if (B.row > A.row) {
+          if (B.lane === A.lane) d = `M${A.cx} ${A.bot}V${B.top}`;
+          else { const my = B.row === A.row + 1 ? B.top - 20 : A.bot + 20; d = `M${A.cx} ${A.bot}V${my}H${B.cx}V${B.top}`; }
+          lx = A.cx + 8; ly = A.bot + 15;
+        } else { const xl = Math.min(A.l, B.l) - 14; d = `M${A.l} ${A.cy}H${xl}V${B.cy}H${B.l}`; lx = A.l - 6; ly = A.cy - 8; anchor = 'end'; }
+        const yes = label === 'Ha', no = label === 'Yo‘q', back = B.row < A.row;
+        return { d, label: label || '', labD: label ? 'block' : 'none', lxp: lx + 'px', lyp: ly + 'px', tf: anchor === 'end' ? 'translate(-100%,-100%)' : 'translate(0,-100%)', lc: yes ? '#48CD8C' : '#FF645F', c: no ? '#8A5A5E' : back ? '#6F7583' : '#A5ABB8', dash: back ? '5 4' : 'none' };
+      });
+      const nodes = fl.nodes.map(([id, lane, row, type, t]) => { const n = N[id], kind = fl.lanes[lane][1];
+        const st = type === 'start' ? { bg:'#C8F53A', fg:'#091025', ring:'none', r:'999px', fw:700 }
+          : type === 'end' ? { bg:'#F3F5F9', fg:'#091025', ring:'none', r:'999px', fw:700 }
+          : type === 'd' ? { bg:'transparent', fg:'#F3F5F9', ring:'none', r:'0', fw:600 }
+          : kind === 'sys' ? { bg:'color-mix(in oklab,#629BFF 16%,#0D1221)', fg:'#F3F5F9', ring:'inset 0 0 0 1px color-mix(in oklab,#629BFF 50%,transparent)', r:'12px', fw:500 }
+          : { bg:'#151B2C', fg:'#F3F5F9', ring:'inset 0 0 0 1px #3B4253', r:'12px', fw:500 };
+        return { t, ...st, x: n.l + 'px', y: n.top + 'px', h: n.h + 'px', diaD: type === 'd' ? 'block' : 'none', pad: type === 'd' ? '0 46px' : '0 16px', fs: type === 'd' ? '13px' : '14px' }; });
+      return { k: `Oqim ${fl.k}`, t: fl.t, d: fl.d, w: fl.lanes.length * LW + 'px', h: TOP * 2 + (maxRow + 1) * RH + 'px',
+        lanes: fl.lanes.map(([t, k]) => ({ t, c: LANE[k][0], bg: LANE[k][1] })), nodes, edges };
+    });
+    return { flows };
+  }
+}
+</script>
+</body>
+</html>

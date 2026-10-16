@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.14 0.028 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}@keyframes foogkick{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}</style>
+</helmet>
+<div style="--bg:oklch(0.14 0.028 268);--surface:oklch(0.185 0.032 268);--surface-2:oklch(0.225 0.034 268);--border:oklch(0.28 0.03 268);--border-strong:oklch(0.38 0.03 268);--text-1:oklch(0.97 0.005 265);--text-2:oklch(0.74 0.02 265);--text-3:oklch(0.6 0.02 265);--primary:oklch(0.91 0.2 124);--primary-hover:oklch(0.95 0.17 124);--on-primary:oklch(0.18 0.045 268);--brand-ink:oklch(0.91 0.2 124);--accent:oklch(0.7 0.17 262);--success:oklch(0.76 0.15 158);--warning:oklch(0.83 0.15 80);--error:oklch(0.7 0.19 25);--hover:oklch(1 0 0 / .06);--inverse:oklch(0.97 0.005 265);--on-inverse:oklch(0.18 0.045 268);--ph:repeating-linear-gradient(135deg,oklch(0.25 0.034 268) 0 2px,oklch(0.21 0.032 268) 2px 12px)">
+<div style="{{ themeVars }}">
+<div style="background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif;min-height:100vh" data-screen-label="Discover">
+
+  <dc-import name="FoogTopBar" active="discover" light="{{ isLight }}" on-toggle-theme="{{ toggleTheme }}" style="position:sticky;top:0;z-index:20;display:block" hint-size="100%,68px"></dc-import>
+
+  <div style="max-width:1280px;margin:0 auto;padding:28px 24px 100px;display:flex;flex-direction:column;gap:20px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">Toshkent · within 5 km</div>
+        <h1 style="margin:0;font-size:36px;line-height:40px;font-weight:800;letter-spacing:-.02em">Find your game</h1>
+      </div>
+      <div style="height:48px;width:min(100%,420px);border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--border);display:flex;align-items:center;gap:10px;padding:0 16px;box-sizing:border-box">
+        <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--text-2)">search</span>
+        <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="{{ searchPh }}" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--text-1);font:400 16px Archivo">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:28px;border-bottom:1px solid var(--border)">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.onClick }}" style="background:none;border:none;padding:0 0 14px;font:700 17px Archivo;color:{{ t.color }};box-shadow:{{ t.line }};cursor:pointer;display:flex;align-items:center;gap:8px;white-space:nowrap">{{ t.label }}<span style="font:500 12px 'JetBrains Mono',monospace;padding:2px 7px;border-radius:999px;background:var(--surface-2);color:var(--text-2)">{{ t.n }}</span></button>
+      </sc-for>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <sc-for list="{{ filterGroups }}" as="g" hint-placeholder-count="3">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div style="width:96px;flex-shrink:0;font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">{{ g.label }}</div>
+          <sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+            <button onClick="{{ o.onClick }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;font:600 14px Archivo;white-space:nowrap;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};box-shadow:{{ o.ring }}">{{ o.label }}</button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:56px 24px;border-radius:20px;border:1.5px dashed var(--border-strong);display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+        <span style="font-family:'Material Symbols Rounded';font-size:40px;line-height:1;color:var(--text-3)">person_search</span>
+        <div style="font-size:18px;font-weight:700">Nothing matches yet</div>
+        <div style="font-size:15px;color:var(--text-2);max-width:380px">Widen your filters, or start your own match and let players find you.</div>
+        <div style="display:flex;gap:8px"><button onClick="{{ clearFilters }}" style="height:44px;padding:0 20px;border-radius:999px;border:none;background:transparent;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 15px Archivo;cursor:pointer">Clear filters</button><button style="height:44px;padding:0 20px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 15px Archivo">Create match</button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isPlayers }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px">
+        <sc-for list="{{ players }}" as="p" hint-placeholder-count="6">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <a href="FOOG Profile.dc.html" style="display:flex;gap:14px;align-items:center;color:var(--text-1)">
+              <div style="position:relative;width:56px;height:56px;border-radius:50%;background:{{ p.av }};flex-shrink:0"><span style="display:{{ p.onlineD }};position:absolute;right:1px;bottom:1px;width:12px;height:12px;border-radius:50%;background:var(--success);box-shadow:0 0 0 3px var(--surface)"></span></div>
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <div style="font-size:17px;font-weight:700">{{ p.name }}</div>
+                <div style="font-size:14px;color:var(--text-2)">{{ p.area }} · {{ p.dist }} km</div>
+              </div>
+            </a>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span style="height:24px;padding:0 10px;display:inline-flex;align-items:center;border-radius:6px;background:var(--inverse);color:var(--on-inverse);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em">{{ p.pos }}</span>
+              <span style="height:24px;padding:0 10px;display:inline-flex;align-items:center;border-radius:6px;box-shadow:inset 0 0 0 1px var(--border-strong);color:var(--text-2);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase">{{ p.level }}</span>
+              <span style="height:24px;padding:0 10px;display:inline-flex;align-items:center;border-radius:6px;background:color-mix(in oklch,var(--success) 16%,transparent);color:var(--success);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase">{{ p.avail }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+              <div><div style="font:500 20px 'JetBrains Mono',monospace">{{ p.m }}</div><div style="font-size:12px;color:var(--text-2)">Matches</div></div>
+              <div><div style="font:500 20px 'JetBrains Mono',monospace">{{ p.g }}</div><div style="font-size:12px;color:var(--text-2)">Goals</div></div>
+              <div><div style="font:500 20px 'JetBrains Mono',monospace">{{ p.r }}</div><div style="font-size:12px;color:var(--text-2)">Rating</div></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ p.onInvite }}" style="flex:1;height:44px;border-radius:999px;border:none;font:600 15px Archivo;white-space:nowrap;cursor:pointer;background:{{ p.invBg }};color:{{ p.invFg }};box-shadow:{{ p.invRing }}">{{ p.invLabel }}</button>
+              <button onClick="{{ p.onFollow }}" title="Follow" style="width:44px;height:44px;border-radius:999px;border:none;background:transparent;color:{{ p.folFg }};box-shadow:inset 0 0 0 1.5px var(--border-strong);display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">{{ p.folIcon }}</span></button>
+              <a href="FOOG Chat.dc.html" title="Message" style="width:44px;height:44px;border-radius:999px;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">chat_bubble</span></a>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isTeams }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+        <sc-for list="{{ teams }}" as="t" hint-placeholder-count="4">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;gap:14px;align-items:center">
+              <div style="width:56px;height:56px;border-radius:16px;background:{{ t.crestBg }};color:{{ t.crestFg }};display:flex;align-items:center;justify-content:center;font:800 20px Archivo;letter-spacing:-.02em;flex-shrink:0">{{ t.init }}</div>
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><div style="font-size:17px;font-weight:700">{{ t.name }}</div><div style="font-size:14px;color:var(--text-2)">{{ t.level }} · {{ t.area }} · {{ t.size }} players</div></div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:center;font:500 14px 'JetBrains Mono',monospace">
+              <span><span style="color:var(--success)">W</span> {{ t.w }}</span><span><span style="color:var(--text-2)">D</span> {{ t.d }}</span><span><span style="color:var(--error)">L</span> {{ t.l }}</span>
+              <span style="margin-left:auto;font:400 13px Archivo;color:var(--text-2)">Plays {{ t.when }}</span>
+            </div>
+            <div style="padding:12px;border-radius:12px;background:var(--bg);display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2);margin-right:4px">Looking for</div>
+              <sc-for list="{{ t.need }}" as="n" hint-placeholder-count="2"><span style="height:24px;padding:0 10px;display:inline-flex;align-items:center;border-radius:6px;background:var(--inverse);color:var(--on-inverse);font:500 11px 'JetBrains Mono',monospace">{{ n }}</span></sc-for>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ t.onJoin }}" style="flex:1;height:44px;border-radius:999px;border:none;font:600 15px Archivo;white-space:nowrap;cursor:pointer;background:{{ t.jBg }};color:{{ t.jFg }};box-shadow:{{ t.jRing }}">{{ t.jLabel }}</button>
+              <button onClick="{{ t.onFollow }}" style="flex:1;height:44px;border-radius:999px;border:none;font:600 15px Archivo;white-space:nowrap;cursor:pointer;background:transparent;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong)">{{ t.fLabel }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMatches }}" hint-placeholder-val="{{ false }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px">
+        <sc-for list="{{ matches }}" as="m" hint-placeholder-count="4">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-ink)">{{ m.when }}</div>
+              <span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:{{ m.tagBg }};color:{{ m.tagFg }};font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap">{{ m.tag }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px"><div style="font-size:20px;font-weight:700;letter-spacing:-.01em">{{ m.title }}</div><div style="font-size:14px;color:var(--text-2)">{{ m.place }} · {{ m.level }}</div></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:grid;grid-template-columns:repeat({{ m.total }},1fr);gap:4px"><sc-for list="{{ m.bar }}" as="b" hint-placeholder-count="10"><div style="height:6px;border-radius:999px;background:{{ b }}"></div></sc-for></div>
+              <div style="display:flex;justify-content:space-between;font:400 12px 'JetBrains Mono',monospace;color:var(--text-2)"><span>{{ m.filled }} / {{ m.total }} players</span><span>{{ m.feeF }} each</span></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ m.onOpen }}" style="flex:1;height:44px;border-radius:999px;border:none;font:600 15px Archivo;white-space:nowrap;cursor:pointer;background:transparent;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong)">Details</button>
+              <button onClick="{{ m.onJoin }}" disabled="{{ m.full }}" style="flex:1.4;height:44px;border-radius:999px;border:none;font:600 15px Archivo;white-space:nowrap;cursor:{{ m.cursor }};background:{{ m.jBg }};color:{{ m.jFg }};box-shadow:{{ m.jRing }}">{{ m.jLabel }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ detailOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDetail }}" style="position:fixed;inset:0;z-index:50;background:oklch(0.1 0.03 268 / .6);display:flex;align-items:{{ sheetAlign }};justify-content:center;padding:{{ sheetPad }}">
+      <div onClick="{{ stop }}" style="width:100%;max-width:480px;max-height:92vh;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:{{ sheetRadius }};box-shadow:0 24px 64px -12px oklch(0 0 0 / .6);display:flex;flex-direction:column;box-sizing:border-box">
+        <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;height:150px;background:var(--ph);flex-shrink:0">
+            <button onClick="{{ closeDetail }}" style="position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:999px;border:none;background:var(--surface);color:var(--text-1);font-family:'Material Symbols Rounded';font-size:20px;cursor:pointer">close</button>
+          </div>
+          <div style="padding:22px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-ink)">{{ dm.when }}</div>
+              <div style="font-size:26px;font-weight:800;letter-spacing:-.02em">{{ dm.title }}</div>
+              <a href="FOOG Stadium Detail.dc.html" style="font-size:15px;color:var(--text-2);display:flex;align-items:center;gap:4px"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">location_on</span>{{ dm.place }}</a>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-radius:14px;overflow:hidden;border:1px solid var(--border)">
+              <div style="background:var(--bg);padding:12px"><div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">Level</div><div style="font-size:15px;font-weight:700;margin-top:2px">{{ dm.level }}</div></div>
+              <div style="background:var(--bg);padding:12px"><div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">Spots</div><div style="font-size:15px;font-weight:700;margin-top:2px">{{ dm.open }} open</div></div>
+              <div style="background:var(--bg);padding:12px"><div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3)">Fee</div><div style="font-size:15px;font-weight:700;margin-top:2px">{{ dm.feeF }}</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="font-size:15px;font-weight:700">Line-up</div>
+              <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">
+                <sc-for list="{{ dm.roster }}" as="r" hint-placeholder-count="10">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                    <div style="width:44px;height:44px;border-radius:50%;background:{{ r.bg }};box-shadow:{{ r.ring }};display:flex;align-items:center;justify-content:center;color:var(--text-3);font-family:'Material Symbols Rounded';font-size:20px">{{ r.icon }}</div>
+                    <div style="font:500 10px 'JetBrains Mono',monospace;color:var(--text-2)">{{ r.pos }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="font-size:14px;line-height:1.55;color:var(--text-2);padding:12px 14px;border-radius:12px;background:var(--bg)">Organised by <b style="color:var(--text-1)">Marco Ruiz</b>. Bring a white and a dark shirt. Pay at the pitch or in-app.</div>
+            <button onClick="{{ joinFromDetail }}" disabled="{{ dm.full }}" style="height:56px;border-radius:999px;border:none;font:600 16px Archivo;cursor:pointer;background:{{ dm.ctaBg }};color:{{ dm.ctaFg }}">{{ dm.ctaLabel }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showJoined }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:32px 24px 24px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+            {{ successIcon }}
+            <div style="font-size:26px;font-weight:800;letter-spacing:-.02em">You're in</div>
+            <div style="font-size:15px;line-height:1.5;color:var(--text-2)">{{ dm.title }}<br>{{ dm.when }} · {{ dm.place }}</div>
+            <div style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-3)">Added to the match chat · reminder 2h before</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;padding-top:6px">
+              <a href="FOOG Chat.dc.html" style="height:48px;border-radius:999px;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 15px Archivo;display:flex;align-items:center;justify-content:center;gap:6px"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1">forum</span>Match chat</a>
+              <button onClick="{{ closeDetail }}" style="height:48px;border-radius:999px;border:none;background:var(--primary);color:var(--on-primary);font:600 15px Archivo;cursor:pointer">Done</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1000},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;tab&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[0,1,2],&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || this.props.theme || 'dark', tab: this.props.tab ?? 0, f: {}, query: '', invited: {}, follow: {}, joined: {}, detail: null, phase: 'detail', w: typeof window !== 'undefined' ? window.innerWidth : 1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onR(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
+  tog(k, id) { this.setState(s => ({ [k]: { ...s[k], [id]: !s[k][id] } })); }
+  renderVals() {
+    const s = this.state, light = s.theme === 'light', w = s.w;
+    const LV = { '--bg': 'oklch(0.972 0.004 265)', '--surface': 'oklch(1 0 0)', '--surface-2': 'oklch(0.955 0.005 265)', '--border': 'oklch(0.91 0.006 265)', '--border-strong': 'oklch(0.8 0.01 265)', '--text-1': 'oklch(0.18 0.045 268)', '--text-2': 'oklch(0.44 0.025 265)', '--text-3': 'oklch(0.58 0.02 265)', '--primary-hover': 'oklch(0.94 0.18 124)', '--brand-ink': 'oklch(0.18 0.045 268)', '--accent': 'oklch(0.55 0.21 262)', '--success': 'oklch(0.55 0.14 158)', '--warning': 'oklch(0.6 0.15 65)', '--error': 'oklch(0.55 0.21 25)', '--hover': 'oklch(0.18 0.045 268 / .05)', '--inverse': 'oklch(0.18 0.045 268)', '--on-inverse': 'oklch(0.97 0.005 265)', '--ph': 'repeating-linear-gradient(135deg,oklch(0.92 0.006 265) 0 2px,oklch(0.965 0.004 265) 2px 12px)' };
+    if (typeof document !== 'undefined') document.body.style.background = light ? 'oklch(0.972 0.004 265)' : 'oklch(0.14 0.028 268)';
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    const btn = (on, a, b) => on ? { bg: 'transparent', fg: 'var(--text-1)', ring: 'inset 0 0 0 1.5px var(--border-strong)', label: a } : { bg: 'var(--primary)', fg: 'var(--on-primary)', ring: 'none', label: b };
+    const q = s.query.trim().toLowerCase();
+    const avs = ['oklch(0.8 0.12 40)', 'oklch(0.8 0.12 160)', 'oklch(0.78 0.12 320)', 'oklch(0.75 0.12 262)', 'oklch(0.82 0.1 80)', 'oklch(0.72 0.12 200)'];
+    const P = [['Yara Haddad', 'CM', 'Advanced', 'Yunusobod', 1.8, 'Tonight', 128, 41, '8.4', true], ['Jonas Keller', 'GK', 'Intermediate', 'Yakkasaroy', 2.2, 'Fri', 76, 0, '7.9', false], ['Amara Diallo', 'ST', 'Advanced', 'Mitte', 2.9, 'Tonight', 94, 63, '8.6', true], ['Teo Brandt', 'RW', 'Intermediate', 'Neukölln', 3.4, 'Weekends', 51, 18, '7.4', false], ['Lea Wing', 'LB', 'Beginner', 'Wedding', 4.1, 'Weekends', 22, 3, '7.1', true], ['Marco Ruiz', 'CB', 'Advanced', 'Mirzo Ulug‘bek', 4.6, 'Fri', 143, 12, '8.1', false]];
+    const T = [['Northside FC', 'NS', 'Amateur', 'Yunusobod', 14, 12, 3, 5, 'Thu', ['GK', 'LB']], ['Kreuz Rovers', 'KR', 'Intermediate', 'Yakkasaroy', 11, 8, 4, 6, 'Sun', ['ST']], ['Shayxontohur United', 'MU', 'Advanced', 'Mitte', 16, 15, 2, 2, 'Wed', ['CM', 'RW']], ['Spree Social', 'SS', 'Beginner', 'Mirzo Ulug‘bek', 9, 3, 2, 7, 'Sat', ['Any']]];
+    const M = [['m1', 'Tonight · 21:00', 'Friday Night 5-a-side', 'Arena Yunusobod · Pitch 2', 'Intermediate', 8, 10, 6, 'Tonight'], ['m2', 'Sat 4 · 10:00', 'Morning 7v7', 'Bodomzor 7s', 'Beginner', 9, 14, 4, 'Sat'], ['m3', 'Sat 4 · 18:00', 'Advanced 5v5 Ladder', 'Anhor Indoor', 'Advanced', 9, 10, 8, 'Sat'], ['m4', 'Sun 5 · 14:30', 'Yakkasaroy Cup · Group B', 'Yakkasaroy Hall', 'Intermediate', 10, 10, 5, 'Sun']];
+    const groups = [
+      [['pos', 'Position', ['GK', 'DEF', 'MID', 'FWD']], ['lvl', 'Skill', ['Beginner', 'Intermediate', 'Advanced']], ['av', 'Available', ['Tonight', 'Fri', 'Weekends']]],
+      [['lvl', 'Level', ['Beginner', 'Amateur', 'Intermediate', 'Advanced']], ['need', 'Needs', ['GK', 'DEF', 'MID', 'FWD']]],
+      [['day', 'Date', ['Tonight', 'Sat', 'Sun']], ['lvl', 'Skill', ['Beginner', 'Intermediate', 'Advanced']], ['open', 'Spots', ['Has open spots']]]
+    ][s.tab];
+    const fk = (g, o) => `${s.tab}:${g}:${o}`;
+    const sel = g => groups.find(x => x[0] === g)[2].filter(o => s.f[fk(g, o)]);
+    const filterGroups = groups.map(([g, label, opts]) => ({ label, opts: opts.map(o => { const on = !!s.f[fk(g, o)]; return { label: o, onClick: () => this.tog('f', fk(g, o)),
+      bg: on ? 'var(--inverse)' : 'transparent', fg: on ? 'var(--on-inverse)' : 'var(--text-1)', ring: on ? 'none' : 'inset 0 0 0 1px var(--border-strong)' }; }) }));
+    const posMap = { GK: ['GK'], DEF: ['CB', 'LB', 'RB'], MID: ['CM'], FWD: ['ST', 'RW', 'LW'] };
+    const inPos = (p, list) => !list.length || list.some(k => posMap[k].includes(p) || (k === 'MID' && p === 'CM'));
+    let players = [], teams = [], matches = [];
+    if (s.tab === 0) { const ps = sel('pos'), ls = sel('lvl'), as = sel('av');
+      players = P.filter(p => inPos(p[1], ps) && (!ls.length || ls.includes(p[2])) && (!as.length || as.includes(p[5])) && (!q || (p[0] + p[3]).toLowerCase().includes(q))).map((p, i) => { const inv = btn(s.invited[p[0]], 'Invited ✓', 'Invite to Match'), fo = s.follow[p[0]];
+        return { name: p[0], pos: p[1], level: p[2], area: p[3], dist: p[4], avail: p[5] === 'Tonight' ? 'Free tonight' : p[5], m: p[6], g: p[7], r: p[8], onlineD: p[9] ? 'block' : 'none', av: avs[P.indexOf(p)],
+          onInvite: () => this.tog('invited', p[0]), invBg: inv.bg, invFg: inv.fg, invRing: inv.ring, invLabel: inv.label,
+          onFollow: () => this.tog('follow', p[0]), folIcon: fo ? 'how_to_reg' : 'person_add', folFg: fo ? 'var(--brand-ink)' : 'var(--text-1)' }; }); }
+    if (s.tab === 1) { const ls = sel('lvl'), ns = sel('need');
+      teams = T.filter(t => (!ls.length || ls.includes(t[2])) && (!ns.length || t[9].includes('Any') || ns.some(k => t[9].some(n => posMap[k].includes(n)))) && (!q || (t[0] + t[3]).toLowerCase().includes(q))).map((t, i) => { const j = btn(s.joined['t' + t[0]], 'Request sent', 'Request to join');
+        return { name: t[0], init: t[1], level: t[2], area: t[3], size: t[4], w: t[5], d: t[6], l: t[7], when: t[8], need: t[9], crestBg: i % 2 ? 'var(--surface-2)' : 'var(--inverse)', crestFg: i % 2 ? 'var(--text-1)' : 'var(--on-inverse)',
+          onJoin: () => this.tog('joined', 't' + t[0]), jBg: j.bg, jFg: j.fg, jRing: j.ring, jLabel: j.label,
+          onFollow: () => this.tog('follow', 't' + t[0]), fLabel: s.follow['t' + t[0]] ? 'Following' : 'Follow' }; }); }
+    const mObj = m => { const j = !!s.joined[m[0]], filled = m[5] + (j ? 1 : 0), full = filled >= m[6] && !j, open = m[6] - filled;
+      return { feeF: String(m[7] * 5000).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0') + '\u00A0so‘m', id: m[0], when: m[1], title: m[2], place: m[3], level: m[4], filled, total: m[6], fee: m[7], full, open, j,
+        tag: full ? 'Full' : j ? 'Joined' : open + (open === 1 ? ' spot' : ' spots'),
+        tagBg: full ? 'color-mix(in oklch,var(--error) 18%,transparent)' : j ? 'color-mix(in oklch,var(--success) 18%,transparent)' : 'color-mix(in oklch,var(--accent) 18%,transparent)',
+        tagFg: full ? 'var(--error)' : j ? 'var(--success)' : 'var(--accent)' }; };
+    if (s.tab === 2) { const ds = sel('day'), ls = sel('lvl'), os = sel('open');
+      matches = M.filter(m => (!ds.length || ds.includes(m[8])) && (!ls.length || ls.includes(m[4])) && (!os.length || m[5] < m[6] || s.joined[m[0]]) && (!q || (m[2] + m[3]).toLowerCase().includes(q))).map(m => { const o = mObj(m);
+        return { ...o, bar: Array.from({ length: o.total }, (_, i) => i < o.filled ? 'var(--brand-ink)' : 'var(--border)'),
+          onOpen: () => this.setState({ detail: m[0], phase: 'detail' }), onJoin: () => o.j ? this.tog('joined', m[0]) : this.setState({ detail: m[0], phase: 'detail' }),
+          cursor: o.full ? 'not-allowed' : 'pointer', jLabel: o.full ? 'Full' : o.j ? 'Joined ✓' : `Join · ${o.feeF}`,
+          jBg: o.full ? 'var(--surface-2)' : o.j ? 'transparent' : 'var(--primary)', jFg: o.full ? 'var(--text-3)' : o.j ? 'var(--text-1)' : 'var(--on-primary)', jRing: o.j ? 'inset 0 0 0 1.5px var(--border-strong)' : 'none' }; }); }
+    const dmRaw = M.find(m => m[0] === s.detail);
+    let dm = { roster: [] };
+    if (dmRaw) { const o = mObj(dmRaw), pos = ['GK', 'DEF', 'DEF', 'MID', 'MID', 'MID', 'FWD', 'FWD', 'DEF', 'GK', 'MID', 'FWD', 'DEF', 'MID'].slice(0, o.total);
+      dm = { ...o, roster: pos.map((p, i) => ({ pos: i === o.filled - 1 && o.j ? 'YOU' : p, bg: i < o.filled ? (i === o.filled - 1 && o.j ? 'var(--primary)' : avs[i % 6]) : 'transparent', ring: i < o.filled ? 'none' : 'inset 0 0 0 1.5px var(--border-strong)', icon: i < o.filled ? '' : 'add' })),
+        ctaLabel: o.full ? 'Match is full' : o.j ? 'Leave match' : `Join · ${o.feeF}`, ctaBg: o.full ? 'var(--surface-2)' : o.j ? 'transparent' : 'var(--primary)', ctaFg: o.full ? 'var(--text-3)' : o.j ? 'var(--error)' : 'var(--on-primary)' }; }
+    const successIcon = React.createElement('div', { style: { width: 80, height: 80, borderRadius: '50%', background: 'var(--primary)', color: 'var(--on-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'foogkick .5s cubic-bezier(.34,1.56,.64,1) both' } }, React.createElement('span', { style: { fontFamily: "'Material Symbols Rounded'", fontSize: 44, lineHeight: 1 } }, 'check'));
+    const counts = [P.length, T.length, M.length];
+    return {
+      themeVars: light ? LV : {}, isLight: light, toggleTheme, themeIcon: light ? 'dark_mode' : 'light_mode', themeTitle: light ? 'Night mode' : 'Day mode',
+      markInk: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)', markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)',
+      navD: w >= 860 ? 'flex' : 'none',
+      topNav: [['Home', 'FOOG Home.dc.html'], ['Stadiums', 'FOOG Stadiums.dc.html'], ['Discover', '#'], ['Reels', 'FOOG Reels.dc.html'], ['Messages', 'FOOG Chat.dc.html']].map(([label, href]) => ({ label, href, fg: label === 'Discover' ? 'var(--on-inverse)' : 'var(--text-2)', bg: label === 'Discover' ? 'var(--inverse)' : 'transparent' })),
+      query: s.query, onQuery: e => this.setState({ query: e.target.value }), searchPh: ['Search players by name or area', 'Search teams', 'Search matches or venues'][s.tab],
+      tabs: ['Players', 'Teams', 'Matches'].map((label, i) => ({ label, n: counts[i], onClick: () => this.setState({ tab: i, query: '' }), color: i === s.tab ? 'var(--text-1)' : 'var(--text-3)', line: i === s.tab ? 'inset 0 -2px 0 var(--brand-ink)' : 'none' })),
+      filterGroups, isPlayers: s.tab === 0 && players.length > 0, isTeams: s.tab === 1 && teams.length > 0, isMatches: s.tab === 2 && matches.length > 0,
+      empty: [players, teams, matches][s.tab].length === 0, clearFilters: () => this.setState({ f: {}, query: '' }),
+      players, teams, matches, dm,
+      detailOpen: !!dmRaw, showDetail: s.phase === 'detail', showJoined: s.phase === 'joined', successIcon,
+      closeDetail: () => this.setState({ detail: null }), stop: e => e.stopPropagation(),
+      joinFromDetail: () => { if (!dmRaw || dm.full) return; if (dm.j) { this.tog('joined', dmRaw[0]); } else { this.setState(st => ({ joined: { ...st.joined, [dmRaw[0]]: true }, phase: 'joined' })); } },
+      sheetAlign: w < 640 ? 'flex-end' : 'center', sheetPad: w < 640 ? '0' : '24px', sheetRadius: w < 640 ? '28px 28px 0 0' : '28px'
+    };
+  }
+}
+</script>
+</body>
+</html>

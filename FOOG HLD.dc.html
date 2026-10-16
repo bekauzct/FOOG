@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:#050815;-webkit-font-smoothing:antialiased}a{color:#629BFF;text-decoration:none}a:hover{color:#8DB5FF}</style>
+</helmet>
+<div data-screen-label="HLD" style="width:1760px;box-sizing:border-box;padding:56px 40px 56px;background:#050815;color:#F3F5F9;font-family:Archivo,system-ui,sans-serif;display:flex;flex-direction:column;gap:32px">
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <dc-import name="FoogMark" ink="#F3F5F9" primary="#C8F53A" accent="#F3F5F9" style="width:120px" hint-size="120px,30px"></dc-import>
+    <h1 style="margin:0;font-size:52px;line-height:56px;font-weight:800;letter-spacing:-.03em">FOOG qanday ishlaydi · HLD</h1>
+    <p style="margin:0;max-width:900px;font-size:18px;line-height:1.5;color:#A5ABB8">Tizimning umumiy ko‘rinishi – dasturlash tilisiz. Bloklar – tizim qismlari, strelkalar – ma’lumot qayerga boradi, raqamlar – pastdagi izohlar.</p>
+  </div>
+
+  <div style="position:relative;width:1680px;height:960px;border-radius:28px;background:#0A0E1C;box-shadow:inset 0 0 0 1px #222838">
+    <svg width="1680" height="960" style="position:absolute;inset:0">
+      <defs>
+        <marker id="hv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#C8F53A"></path></marker>
+        <marker id="hb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#629BFF"></path></marker>
+        <marker id="hg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#A5ABB8"></path></marker>
+      </defs>
+      <sc-for list="{{ arrows }}" as="a" hint-placeholder-count="12"><path d="{{ a.d }}" stroke="{{ a.c }}" stroke-width="2" fill="none" stroke-dasharray="{{ a.dash }}" marker-end="{{ a.me }}" marker-start="{{ a.ms }}"></path></sc-for>
+    </svg>
+
+    <sc-for list="{{ zones }}" as="z" hint-placeholder-count="4">
+      <div style="position:absolute;left:{{ z.x }};top:24px;font:500 12px 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#7A808D">{{ z.t }}</div>
+    </sc-for>
+
+    <sc-for list="{{ users }}" as="u" hint-placeholder-count="3">
+      <div style="position:absolute;left:40px;top:{{ u.y }};width:250px;height:150px;box-sizing:border-box;padding:18px;border-radius:20px;background:#0D1221;box-shadow:inset 0 0 0 1px #3B4253;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px"><span style="width:40px;height:40px;border-radius:50%;background:{{ u.bg }};display:flex;align-items:center;justify-content:center"><span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:#091025">{{ u.icon }}</span></span><span style="font-size:18px;font-weight:800">{{ u.t }}</span></div>
+        <span style="font-size:14px;line-height:1.45;color:#A5ABB8">{{ u.d }}</span>
+      </div>
+    </sc-for>
+
+    <div style="position:absolute;left:410px;top:60px;width:300px;height:510px;box-sizing:border-box;padding:20px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1.5px #A5ABB8;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1">language</span><span style="font-size:22px;font-weight:800">Veb-sayt</span></div>
+      <span style="font-size:14px;line-height:1.45;color:#A5ABB8">Foydalanuvchi ko‘radigan qism. O‘zi ma’lumot saqlamaydi – hammasini serverdan so‘raydi.</span>
+      <sc-for list="{{ site }}" as="s" hint-placeholder-count="4">
+        <div style="padding:12px 14px;border-radius:14px;background:#151B2C;display:flex;flex-direction:column;gap:3px"><span style="font-size:15px;font-weight:700">{{ s.t }}</span><span style="font-size:13px;line-height:1.4;color:#A5ABB8">{{ s.d }}</span></div>
+      </sc-for>
+    </div>
+
+    <div style="position:absolute;left:830px;top:60px;width:440px;height:640px;box-sizing:border-box;padding:20px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 2px #C8F53A;display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#C8F53A">dns</span><span style="font-size:22px;font-weight:800">Server – tizimning “miyasi”</span></div>
+      <span style="font-size:14px;line-height:1.45;color:#A5ABB8">Har bir so‘rovni tekshiradi: kim so‘rayapti, unga ruxsat bormi. Keyin kerakli bo‘limga yuboradi.</span>
+      <div style="padding:12px 14px;border-radius:14px;background:color-mix(in oklab,#C8F53A 12%,#0D1221);box-shadow:inset 0 0 0 1px color-mix(in oklab,#C8F53A 40%,transparent);display:flex;gap:10px;align-items:center"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:#C8F53A">shield_person</span><span style="font-size:14px;line-height:1.4"><b>Darvozabon:</b> kirganmi, roli nima – futbolchi, egasi yoki admin</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <sc-for list="{{ mods }}" as="m" hint-placeholder-count="8">
+          <div style="padding:12px 14px;border-radius:14px;background:#151B2C;display:flex;flex-direction:column;gap:4px;min-height:84px;box-sizing:border-box"><div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Rounded';font-size:18px;line-height:1;color:#C8F53A">{{ m.icon }}</span><span style="font-size:15px;font-weight:700">{{ m.t }}</span></div><span style="font-size:13px;line-height:1.4;color:#A5ABB8">{{ m.d }}</span></div>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-for list="{{ stores }}" as="s" hint-placeholder-count="3">
+      <div style="position:absolute;left:1390px;top:{{ s.y }};width:250px;height:170px;box-sizing:border-box;padding:18px;border-radius:20px;background:#0D1221;box-shadow:inset 0 0 0 1px #3B4253;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;color:#A5ABB8">{{ s.icon }}</span><span style="font-size:18px;font-weight:800">{{ s.t }}</span></div>
+        <span style="font-size:14px;line-height:1.45;color:#A5ABB8">{{ s.d }}</span>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{ ext }}" as="e" hint-placeholder-count="2">
+      <div style="position:absolute;left:{{ e.x }};top:790px;width:{{ e.w }};height:130px;box-sizing:border-box;padding:18px;border-radius:20px;border:1.5px dashed #FABB41;display:flex;gap:14px;align-items:flex-start">
+        <span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1;color:#FABB41">{{ e.icon }}</span>
+        <div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:18px;font-weight:800">{{ e.t }}</span><span style="font-size:14px;line-height:1.45;color:#A5ABB8">{{ e.d }}</span></div>
+      </div>
+    </sc-for>
+
+    <sc-for list="{{ badges }}" as="b" hint-placeholder-count="9">
+      <span style="position:absolute;left:{{ b.x }};top:{{ b.y }};transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:{{ b.bg }};color:#091025;font:500 13px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px #0A0E1C">{{ b.n }}</span>
+    </sc-for>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+    <sc-for list="{{ notes }}" as="n" hint-placeholder-count="9">
+      <div style="display:flex;gap:14px;padding:18px 20px;border-radius:20px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838">
+        <span style="width:28px;height:28px;border-radius:50%;background:{{ n.bg }};color:#091025;font:500 13px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ n.n }}</span>
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:700">{{ n.t }}</span><span style="font-size:14px;line-height:1.5;color:#A5ABB8">{{ n.d }}</span></div>
+      </div>
+    </sc-for>
+  </div>
+
+  <section style="padding:24px;border-radius:24px;background:#0D1221;box-shadow:inset 0 0 0 1px #222838;display:flex;flex-direction:column;gap:18px">
+    <h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-.01em">Bir misol: futbolchi stadion bron qiladi</h2>
+    <div style="display:flex;align-items:stretch;gap:0">
+      <sc-for list="{{ story }}" as="s" hint-placeholder-count="6">
+        <div style="flex:1;min-width:0;display:flex;align-items:center">
+          <div style="flex:1;min-width:0;padding:16px;border-radius:16px;background:#151B2C;display:flex;flex-direction:column;gap:6px;height:100%;box-sizing:border-box">
+            <span style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:{{ s.c }}">{{ s.who }}</span>
+            <span style="font-size:14px;line-height:1.45">{{ s.t }}</span>
+          </div>
+          <span style="display:{{ s.arrD }};font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:#7A808D;padding:0 6px">arrow_forward</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const V = '#C8F53A', B = '#629BFF', G = '#A5ABB8', Y = '#FABB41';
+    const mk = c => c === V ? 'url(#hv)' : c === B ? 'url(#hb)' : 'url(#hg)';
+    const A = (d, c, both, dash) => ({ d, c, me: mk(c), ms: both ? mk(c) : 'none', dash: dash ? '6 5' : 'none' });
+    return {
+      zones: [{ t:'Foydalanuvchilar', x:'40px' }, { t:'Ko‘rinadigan qism', x:'410px' }, { t:'Ichki qism', x:'830px' }, { t:'Saqlash joylari', x:'1390px' }],
+      users: [
+        { y:'60px', icon:'sports_soccer', t:'Futbolchi', bg:V, d:'Stadion qidiradi, bron qiladi, o‘yinga qo‘shiladi, reel joylaydi, yozishadi.' },
+        { y:'240px', icon:'storefront', t:'Stadion egasi', bg:Y, d:'Bronlarni tasdiqlaydi, bo‘sh soatlarni boshqaradi, daromadni ko‘radi.' },
+        { y:'420px', icon:'admin_panel_settings', t:'Admin', bg:B, d:'Yangi stadionlarni tekshiradi, shikoyatlarni ko‘rib chiqadi.' }
+      ],
+      site: [
+        { t:'Asosiy sayt', d:'Home, Stadionlar, O‘yinlar, Reels, Profil, Chat' },
+        { t:'Stadion egasi paneli', d:'Bronlar, Jadval, Stadionlarim, Hisobot' },
+        { t:'Admin panel', d:'Moderatsiya, foydalanuvchilar, kontent' },
+        { t:'Landing sahifa', d:'Erta kirish va stadion qo‘shish taklifi' }
+      ],
+      mods: [
+        { icon:'key', t:'Kirish', d:'Telegram orqali tanib oladi' },
+        { icon:'stadium', t:'Stadionlar', d:'Maydon, narx, ish vaqti' },
+        { icon:'event_available', t:'Bron', d:'Bo‘sh soat, tasdiq, keldi' },
+        { icon:'groups', t:'O‘yinlar', d:'Ochiq o‘yin, jamoa, natija' },
+        { icon:'smart_display', t:'Postlar va Reels', d:'Joylash, like, izoh' },
+        { icon:'chat', t:'Xabarlar', d:'Shaxsiy va guruh chatlar' },
+        { icon:'notifications', t:'Bildirishnomalar', d:'Kimga, qachon xabar' },
+        { icon:'flag', t:'Nazorat va hisobot', d:'Shikoyat, blok, statistika' }
+      ],
+      stores: [
+        { y:'60px', icon:'database', t:'Ma’lumotlar ombori', d:'Doimiy yozuvlar: foydalanuvchilar, stadionlar, bronlar, o‘yinlar, xabarlar.' },
+        { y:'260px', icon:'perm_media', t:'Fayllar ombori', d:'Rasm va videolar: stadion suratlari, postlar, reellar, avatarlar.' },
+        { y:'460px', icon:'bolt', t:'Tezkor xotira', d:'Tez-tez so‘raladigan ma’lumot va “bu soat hozir band qilinmoqda” belgisi.' }
+      ],
+      ext: [
+        { x:'410px', w:'300px', icon:'map', t:'Xarita xizmati', d:'Stadion joyi, masofa va yo‘nalish.' },
+        { x:'830px', w:'440px', icon:'send', t:'Telegram', d:'Kirish (raqam ulashish) va xabarlar: “yangi bron”, “bron tasdiqlandi”.' }
+      ],
+      arrows: [
+        A('M290 135H410', V), A('M290 315H410', Y === Y ? G : G), A('M290 495H410', G),
+        A('M710 250H830', V, true), A('M710 380H830', B, true, true),
+        A('M1270 145H1390', G, true), A('M1270 345H1390', G, true), A('M1270 545H1390', G, true),
+        A('M1050 700V790', Y === Y ? G : G, true), A('M560 570V790', G)
+      ],
+      badges: [
+        { n:'1', x:'350px', y:'315px', bg:V }, { n:'2', x:'770px', y:'250px', bg:V }, { n:'3', x:'770px', y:'380px', bg:B },
+        { n:'4', x:'1330px', y:'145px', bg:G }, { n:'5', x:'1330px', y:'345px', bg:G }, { n:'6', x:'1330px', y:'545px', bg:G },
+        { n:'7', x:'1050px', y:'745px', bg:Y }, { n:'8', x:'560px', y:'680px', bg:Y }
+      ],
+      notes: [
+        { n:'1', bg:V, t:'Foydalanuvchi saytni ochadi', d:'Uchala rol bitta saytdan kiradi. Kirgandan keyin roliga qarab o‘z bo‘limini ko‘radi.' },
+        { n:'2', bg:V, t:'Sayt so‘raydi, server javob beradi', d:'Har bir tugma bosilganda sayt serverga so‘rov yuboradi va javobni ekranda ko‘rsatadi.' },
+        { n:'3', bg:B, t:'Jonli yangilanish', d:'Chat xabari yoki yangi bron kelsa, server sahifani yangilamasdan darhol yuboradi.' },
+        { n:'4', bg:G, t:'Doimiy saqlash', d:'Bron, profil, o‘yin – hammasi ma’lumotlar omborida. Server o‘chib yonsa ham yo‘qolmaydi.' },
+        { n:'5', bg:G, t:'Rasm va video alohida', d:'Og‘ir fayllar alohida omborda saqlanadi, sayt ularni to‘g‘ridan-to‘g‘ri ko‘rsatadi.' },
+        { n:'6', bg:G, t:'Ikki kishi bitta soatni ololmaydi', d:'Kimdir soatni tanlaganda tezkor xotirada belgi qo‘yiladi – boshqasi “band” degan javob oladi.' },
+        { n:'7', bg:Y, t:'Telegram bilan aloqa', d:'Kirishda raqam Telegram orqali tasdiqlanadi. Muhim xabarlar ham Telegramga boradi.' },
+        { n:'8', bg:Y, t:'Xarita', d:'Stadionlar sahifasidagi xarita tashqi xarita xizmatidan olinadi.' },
+        { n:'—', bg:'#F3F5F9', t:'To‘lov', d:'Saytda onlayn to‘lov yo‘q. Futbolchi o‘yin kuni stadionda to‘laydi, egasi «Keldi» deb belgilaydi.' }
+      ],
+      story: [
+        { who:'Futbolchi', c:V, t:'Stadionni tanlab, sana va soatni belgilaydi' },
+        { who:'Sayt → Server', c:B, t:'«Bu soat bo‘shmi?» deb so‘raydi' },
+        { who:'Server', c:G, t:'Tezkor xotira va omborni tekshiradi, bronni yozadi' },
+        { who:'Telegram', c:Y, t:'Stadion egasiga «Yangi bron» xabari boradi' },
+        { who:'Stadion egasi', c:Y, t:'Panelda «Tasdiqlash» ni bosadi' },
+        { who:'Futbolchi', c:V, t:'«Bron tasdiqlandi» xabarini oladi, o‘yin kuni keladi', last:true }
+      ].map(s => ({ ...s, arrD: s.last ? 'none' : 'block' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

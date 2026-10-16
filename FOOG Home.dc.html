@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block" rel="stylesheet">
+<style>body{margin:0;background:oklch(0.14 0.028 268);-webkit-font-smoothing:antialiased}a{color:oklch(0.7 0.17 262);text-decoration:none}a:hover{color:oklch(0.8 0.12 262)}</style>
+</helmet>
+<div style="--bg:oklch(0.14 0.028 268);--surface:oklch(0.185 0.032 268);--surface-2:oklch(0.225 0.034 268);--border:oklch(0.28 0.03 268);--border-strong:oklch(0.38 0.03 268);--text-1:oklch(0.97 0.005 265);--text-2:oklch(0.74 0.02 265);--text-3:oklch(0.6 0.02 265);--primary:oklch(0.91 0.2 124);--primary-hover:oklch(0.95 0.17 124);--on-primary:oklch(0.18 0.045 268);--brand-ink:oklch(0.91 0.2 124);--accent:oklch(0.7 0.17 262);--success:oklch(0.76 0.15 158);--warning:oklch(0.83 0.15 80);--error:oklch(0.7 0.19 25);--hover:oklch(1 0 0 / .06);--inverse:oklch(0.97 0.005 265);--on-inverse:oklch(0.18 0.045 268);--ph:repeating-linear-gradient(135deg,oklch(0.25 0.034 268) 0 2px,oklch(0.21 0.032 268) 2px 12px)"><div style="{{ themeVars }}"><div style="background:var(--bg);color:var(--text-1);font-family:Archivo,system-ui,sans-serif;min-height:100vh;transition:background .2s" data-screen-label="Home">
+
+  <dc-import name="FoogTopBar" active="home" light="{{ isLight }}" on-toggle-theme="{{ toggleTheme }}" style="position:sticky;top:0;z-index:20;display:block" hint-size="100%,68px"></dc-import>
+
+  <div style="display:grid;grid-template-columns:{{ gridCols }};gap:{{ gridGap }};max-width:1440px;margin:0 auto;padding:0 24px;box-sizing:border-box">
+
+    <aside style="position:sticky;top:68px;align-self:start;max-height:calc(100vh - 68px);overflow-y:auto;scrollbar-width:none;display:{{ leftD }};flex-direction:column;gap:4px;padding:20px 0;box-sizing:border-box">
+      
+      <button style="flex-shrink:0;margin-top:0;height:48px;border-radius:999px;border:none;background:var(--inverse);color:var(--on-inverse);font:600 15px Archivo;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1">add</span><span style="display:{{ labelD }}">Create</span></button>
+      <div style="margin-top:20px;flex-shrink:0;padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--border);display:{{ weekD }};flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">This week</div><div style="font:500 11px 'JetBrains Mono',monospace;color:var(--brand-ink)">LVL 7</div></div>
+        <div style="display:flex;gap:16px">
+          <div><div style="font:500 22px 'JetBrains Mono',monospace">3</div><div style="font-size:12px;color:var(--text-2)">Matches</div></div>
+          <div><div style="font:500 22px 'JetBrains Mono',monospace">2</div><div style="font-size:12px;color:var(--text-2)">Goals</div></div>
+          <div><div style="font:500 22px 'JetBrains Mono',monospace">4.2h</div><div style="font-size:12px;color:var(--text-2)">Played</div></div>
+        </div>
+        <div style="height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden"><div style="width:72%;height:100%;background:var(--primary);border-radius:999px"></div></div>
+        <div style="font-size:12px;color:var(--text-2)">160 XP to Level 8</div>
+      </div>
+    </aside>
+
+    <main style="display:flex;flex-direction:column;gap:20px;padding:28px 0 80px;max-width:640px;width:100%;justify-self:center">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="font:500 12px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--text-2)">Friday 3 Oct · 18°C clear</div>
+        <h1 style="margin:0;font-size:32px;line-height:38px;font-weight:800;letter-spacing:-.02em;text-wrap:pretty">Evening, Alex. <span style="color:var(--text-2)">2 matches near you tonight.</span></h1>
+      </div>
+
+      <div style="display:flex;gap:14px;overflow-x:auto;padding:4px 2px 6px;scrollbar-width:none">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:68px;flex-shrink:0">
+          <div style="width:64px;height:64px;border-radius:50%;border:2px dashed var(--border-strong);box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:var(--text-2)"><span style="font-family:'Material Symbols Rounded';font-size:26px;line-height:1">add</span></div>
+          <div style="font-size:12px;color:var(--text-2)">Your story</div>
+        </div>
+        <sc-for list="{{ stories }}" as="s" hint-placeholder-count="7">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;width:68px;flex-shrink:0;cursor:pointer">
+            <div style="position:relative;width:64px;height:64px;border-radius:50%;padding:3px;box-sizing:border-box;background:{{ s.ring }}"><div style="width:100%;height:100%;border-radius:50%;border:3px solid var(--bg);box-sizing:border-box;background:{{ s.av }}"></div>
+              <span style="display:{{ s.liveD }};position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);height:16px;padding:0 6px;border-radius:999px;background:var(--primary);color:var(--on-primary);font:600 9px 'JetBrains Mono',monospace;letter-spacing:.1em;align-items:center;box-shadow:0 0 0 2px var(--bg)">LIVE</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:68px">{{ s.name }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div style="width:40px;height:40px;border-radius:50%;background:oklch(0.75 0.12 262);flex-shrink:0"></div>
+          <div style="flex:1;height:44px;border-radius:999px;background:var(--bg);display:flex;align-items:center;padding:0 16px;font-size:15px;color:var(--text-3)">Share a goal, a result, or find players…</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <sc-for list="{{ composer }}" as="c" hint-placeholder-count="4">
+            <button style="white-space:nowrap;flex-shrink:0;height:36px;padding:0 12px;border-radius:999px;border:none;background:transparent;color:var(--text-2);font:500 14px Archivo;display:flex;align-items:center;gap:6px;cursor:pointer" style-hover="background:var(--hover);color:var(--text-1)"><span style="font-family:'Material Symbols Rounded';font-size:20px;line-height:1;color:{{ c.color }}">{{ c.icon }}</span>{{ c.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;border-bottom:1px solid var(--border)">
+        <sc-for list="{{ feedTabs }}" as="t" hint-placeholder-count="3">
+          <button onClick="{{ t.onClick }}" style="white-space:nowrap;flex-shrink:0;background:none;border:none;padding:0 4px 12px;margin-right:16px;font:600 15px Archivo;color:{{ t.color }};box-shadow:{{ t.line }};cursor:pointer">{{ t.label }}</button>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;background:var(--primary);color:var(--on-primary);font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase"><span style="width:6px;height:6px;border-radius:50%;background:var(--on-primary)"></span>Live · 67′</span>
+          <div style="font-size:13px;color:var(--text-2)">Yakkasaroy Cup · Group B</div>
+        </div>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:16px">
+          <div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:12px;background:var(--inverse);color:var(--on-inverse);display:flex;align-items:center;justify-content:center;font:800 14px Archivo;flex-shrink:0">NS</div><div style="font-size:16px;font-weight:700">Northside FC</div></div>
+          <div style="font:500 34px 'JetBrains Mono',monospace;letter-spacing:-.02em;white-space:nowrap">2<span style="color:var(--text-3)"> – </span>1</div>
+          <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end"><div style="font-size:16px;font-weight:700;text-align:right">Kreuz Rovers</div><div style="width:40px;height:40px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font:800 14px Archivo;flex-shrink:0">KR</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border);font-size:14px;color:var(--text-2)">
+          <span><span style="font-family:'Material Symbols Rounded';font-size:16px;line-height:1;vertical-align:-3px;color:var(--brand-ink)">sports_soccer</span> Yara Haddad 64′ · you follow 3 players</span>
+          <a href="FOOG Discover.dc.html" style="font-weight:600">Follow live</a>
+        </div>
+      </div>
+
+      <sc-for list="{{ posts }}" as="p" hint-placeholder-count="2">
+        <article style="background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 18px">
+            <div style="width:40px;height:40px;border-radius:50%;background:{{ p.av }};flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+              <div style="display:flex;align-items:center;gap:4px;font-size:15px;font-weight:700">{{ p.name }}<span style="display:{{ p.verD }};font-family:'Material Symbols Rounded';font-size:16px;line-height:1;color:var(--accent);font-variation-settings:'FILL' 1">verified</span></div>
+              <div style="font-size:13px;color:var(--text-2)">{{ p.meta }}</div>
+            </div>
+            <span style="font-family:'Material Symbols Rounded';font-size:22px;line-height:1;color:var(--text-2)">more_horiz</span>
+          </div>
+          <div style="padding:0 18px 14px;font-size:15px;line-height:1.5;text-wrap:pretty">{{ p.text }}</div>
+          <div style="display:{{ p.statsD }};grid-template-columns:repeat(4,1fr);margin:0 18px 14px;border-radius:12px;background:var(--bg);padding:12px 14px">
+            <sc-for list="{{ p.stats }}" as="s" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;gap:2px"><div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--text-2)">{{ s.k }}</div><div style="font:500 17px 'JetBrains Mono',monospace;color:{{ s.color }}">{{ s.v }}</div></div>
+            </sc-for>
+          </div>
+          <div style="aspect-ratio:{{ p.ar }};background:var(--ph);display:flex;align-items:center;justify-content:center;font:400 11px 'JetBrains Mono',monospace;color:var(--text-3)">{{ p.media }}</div>
+          <div style="display:flex;align-items:center;gap:4px;padding:8px 10px">
+            <button onClick="{{ p.onLike }}" style="height:40px;padding:0 10px;border-radius:999px;border:none;background:transparent;display:flex;align-items:center;gap:6px;color:{{ p.likeColor }};font:500 14px 'JetBrains Mono',monospace;cursor:pointer" style-hover="background:var(--hover)"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;font-variation-settings:{{ p.likeFill }}">favorite</span>{{ p.likes }}</button>
+            <button style="height:40px;padding:0 10px;border-radius:999px;border:none;background:transparent;display:flex;align-items:center;gap:6px;color:var(--text-1);font:500 14px 'JetBrains Mono',monospace;cursor:pointer" style-hover="background:var(--hover)"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">chat_bubble</span>{{ p.comments }}</button>
+            <button style="height:40px;width:40px;border-radius:999px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--text-1);cursor:pointer" style-hover="background:var(--hover)"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1">send</span></button>
+            <button onClick="{{ p.onSave }}" style="height:40px;width:40px;margin-left:auto;border-radius:999px;border:none;background:transparent;display:flex;align-items:center;justify-content:center;color:var(--text-1);cursor:pointer" style-hover="background:var(--hover)"><span style="font-family:'Material Symbols Rounded';font-size:24px;line-height:1;font-variation-settings:{{ p.saveFill }}">bookmark</span></button>
+          </div>
+        </article>
+      </sc-for>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px 20px;display:flex;align-items:center;gap:16px">
+        <div style="width:64px;height:64px;border-radius:50%;padding:4px;box-sizing:border-box;background:var(--primary);flex-shrink:0"><div style="width:100%;height:100%;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--brand-ink)"><span style="font-family:'Material Symbols Rounded';font-size:28px;line-height:1;font-variation-settings:'FILL' 1">sports_soccer</span></div></div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0">
+          <div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-ink)">Achievement unlocked</div>
+          <div style="font-size:16px;line-height:1.4"><b>Lea Wing</b> earned <b>Hat-trick Hero</b> — 3 goals vs Shayxontohur United</div>
+          <div style="font-size:13px;color:var(--text-2)">Rare · 4% of players · 5h</div>
+        </div>
+        <button style="height:40px;padding:0 16px;border-radius:999px;border:none;background:transparent;color:var(--text-1);box-shadow:inset 0 0 0 1.5px var(--border-strong);font:600 14px Archivo;white-space:nowrap;cursor:pointer" style-hover="background:var(--hover)">Congrats</button>
+      </div>
+    </main>
+
+    <aside style="display:{{ rightD }};flex-direction:column;gap:20px;padding:28px 0 80px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:17px;font-weight:700">Upcoming</div><a href="FOOG Stadium Detail.dc.html" style="font-size:14px;font-weight:600">All</a></div>
+        <sc-for list="{{ upcoming }}" as="u" hint-placeholder-count="2">
+          <div style="display:flex;gap:12px;align-items:center;padding:10px;margin:0 -10px;border-radius:14px;cursor:pointer" style-hover="background:var(--hover)">
+            <div style="width:52px;height:52px;border-radius:14px;background:var(--bg);box-shadow:inset 0 0 0 1px var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0"><div style="font:500 10px 'JetBrains Mono',monospace;letter-spacing:.1em;color:var(--brand-ink)">{{ u.mon }}</div><div style="font:500 20px 'JetBrains Mono',monospace;line-height:1">{{ u.day }}</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0">
+              <div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ u.title }}</div>
+              <div style="font:400 13px 'JetBrains Mono',monospace;color:var(--text-2)">{{ u.meta }}</div>
+            </div>
+            <span style="display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:{{ u.tagBg }};color:{{ u.tagFg }};font:500 10px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap">{{ u.tag }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:17px;font-weight:700">Open matches nearby</div><a href="FOOG Discover.dc.html" style="font-size:14px;font-weight:600">Explore</a></div>
+        <sc-for list="{{ openMatches }}" as="m" hint-placeholder-count="2">
+          <div style="padding:14px;border-radius:14px;background:var(--bg);display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div style="font:500 11px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-ink)">{{ m.when }}</div><div style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-2)">{{ m.dist }}</div></div>
+            <div style="font-size:15px;font-weight:700">{{ m.title }}</div>
+            <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3px"><sc-for list="{{ m.bar }}" as="b" hint-placeholder-count="10"><div style="height:5px;border-radius:999px;background:{{ b }}"></div></sc-for></div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font:400 12px 'JetBrains Mono',monospace;color:var(--text-2)">{{ m.spots }}</div>
+              <button onClick="{{ m.onJoin }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;font:600 14px Archivo;white-space:nowrap;background:{{ m.btnBg }};color:{{ m.btnFg }};box-shadow:{{ m.btnRing }};cursor:pointer">{{ m.btnLabel }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:17px;font-weight:700">Stadiums near you</div><a href="FOOG Stadiums.dc.html" style="font-size:14px;font-weight:600">Map</a></div>
+        <sc-for list="{{ stadiums }}" as="s" hint-placeholder-count="2">
+          <div style="display:flex;gap:12px;align-items:center;cursor:pointer">
+            <div style="width:72px;height:56px;border-radius:12px;background:var(--ph);flex-shrink:0"></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <div style="display:flex;justify-content:space-between;gap:8px"><div style="font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.name }}</div><div style="font:500 13px 'JetBrains Mono',monospace;flex-shrink:0">{{ s.price }}</div></div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-2)"><span style="width:6px;height:6px;border-radius:50%;background:{{ s.dot }}"></span>{{ s.meta }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-size:17px;font-weight:700">Players to follow</div>
+        <sc-for list="{{ suggested }}" as="s" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:40px;height:40px;border-radius:50%;background:{{ s.av }};flex-shrink:0"></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+              <div style="font-size:15px;font-weight:700">{{ s.name }}</div>
+              <div style="font-size:13px;color:var(--text-2)">{{ s.meta }}</div>
+            </div>
+            <button onClick="{{ s.onFollow }}" style="height:36px;padding:0 14px;border-radius:999px;border:none;font:600 14px Archivo;white-space:nowrap;background:{{ s.bg }};color:{{ s.fg }};box-shadow:{{ s.ring }};cursor:pointer">{{ s.label }}</button>
+          </div>
+        </sc-for>
+      </div>
+    </aside>
+  </div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1100},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { theme: (typeof localStorage !== 'undefined' && localStorage.getItem('foog-theme')) || this.props.theme || 'dark', nav: 0, tab: 0, liked: {}, saved: {}, joined: {}, follow: {}, notifOpen: false, nTab: 0, read: {}, acted: {}, w: typeof window !== 'undefined' ? window.innerWidth : 1440 };
+  componentDidMount() { this.onR = () => this.setState({ w: window.innerWidth }); window.addEventListener('resize', this.onR); this.onR(); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onR); }
+  layout() {
+    const w = this.state.w, right = w >= 1240, rail = w < 1100, left = w >= 640;
+    return { gridCols: [left ? (rail ? '72px' : '248px') : null, 'minmax(0,1fr)', right ? '340px' : null].filter(Boolean).join(' '),
+      gridGap: w < 1100 ? '20px' : '32px', leftD: left ? 'flex' : 'none', rightD: right ? 'flex' : 'none',
+      labelD: rail ? 'none' : 'inline', weekD: rail ? 'none' : 'flex', navJustify: rail ? 'center' : 'flex-start', rail,
+      logoW: rail ? 'auto' : '224px', bookLabelD: w < 900 ? 'none' : 'inline' };
+  }
+  tog(k, id) { this.setState(s => ({ [k]: { ...s[k], [id]: !s[k][id] } })); }
+  renderVals() {
+    const s = this.state, L = this.layout();
+    const rawN = [
+      { id: 'n1', type: 'match', who: 'Northside FC', text: 'invited you to Friday Night 5-a-side · 21:00 at Arena Yunusobod.', time: '4m', icon: 'sports_soccer', icBg: 'var(--primary)', icFg: 'var(--on-primary)', av: 'oklch(0.8 0.12 160)', act: ['Join', 'Joined ✓'] },
+      { id: 'n2', type: 'social', who: 'Yara Haddad', text: 'started following you.', time: '22m', icon: 'person_add', icBg: 'var(--accent)', icFg: 'white', av: 'oklch(0.75 0.12 262)', act: ['Follow back', 'Following'] },
+      { id: 'n3', type: 'booking', who: 'Arena Yunusobod', text: 'confirmed your booking for tonight, Pitch 2 · 20:00–21:00.', time: '1h', icon: 'event_available', icBg: 'var(--success)', icFg: 'white', av: 'oklch(0.72 0.12 200)', href: 'FOOG Stadium Detail.dc.html' },
+      { id: 'n4', type: 'social', who: 'Marco Ruiz', text: 'and 38 others liked your reel.', time: '3h', icon: 'favorite', icBg: 'var(--error)', icFg: 'white', av: 'oklch(0.78 0.12 320)', href: 'FOOG Reels.dc.html' },
+      { id: 'n5', type: 'match', who: 'Yakkasaroy Cup', text: 'posted the lineup for Sunday vs Mitte Utd.', time: 'Yesterday', icon: 'scoreboard', icBg: 'var(--inverse)', icFg: 'var(--on-inverse)', av: 'oklch(0.82 0.1 80)', read: true },
+      { id: 'n6', type: 'booking', who: 'Chilonzor Cage', text: 'has 2 slots left on Saturday morning.', time: '2d', icon: 'stadium', icBg: 'var(--warning)', icFg: 'white', av: 'oklch(0.78 0.1 10)', read: true, href: 'FOOG Stadiums.dc.html' }
+    ];
+    const isRead = n => n.read || s.read[n.id];
+    const unreadN = rawN.filter(n => !isRead(n)).length;
+    const tabTypes = [null, 'match', 'booking', 'social'];
+    const notifTabs = ['All', 'Matches', 'Bookings', 'Social'].map((label, i) => ({ label, onClick: () => this.setState({ nTab: i }),
+      bg: i === s.nTab ? 'var(--inverse)' : 'var(--surface-2)', fg: i === s.nTab ? 'var(--on-inverse)' : 'var(--text-2)' }));
+    const notifs = rawN.filter(n => !tabTypes[s.nTab] || n.type === tabTypes[s.nTab]).map(n => {
+      const r = isRead(n), done = s.acted[n.id];
+      return { ...n, bg: r ? 'transparent' : 'var(--hover)', dot: r ? 'transparent' : 'var(--brand-ink)',
+        onClick: () => { this.setState(st => ({ read: { ...st.read, [n.id]: true } })); if (n.href) window.location.href = n.href; },
+        actD: n.act ? 'flex' : 'none', actLabel: n.act ? n.act[done ? 1 : 0] : '',
+        onAct: e => { e.stopPropagation(); this.setState(st => ({ acted: { ...st.acted, [n.id]: !st.acted[n.id] }, read: { ...st.read, [n.id]: true } })); },
+        actBg: done ? 'transparent' : 'var(--primary)', actFg: done ? 'var(--text-1)' : 'var(--on-primary)', actRing: done ? 'inset 0 0 0 1.5px var(--border-strong)' : 'none' };
+    });
+    const navItems = [['home', 'Home'], ['explore', 'Explore'], ['stadium', 'Stadiums'], ['sports_soccer', 'Matches'], ['smart_display', 'Reels'], ['groups', 'Community'], ['chat_bubble', 'Messages', '3'], ['notifications', 'Notifications', unreadN ? String(unreadN) : ''], ['person', 'Profile']];
+    const nav = navItems.map(([icon, label, badge], i) => {
+      const on = i === 7 ? s.notifOpen : (i === s.nav && !s.notifOpen);
+      return { icon, label, badge: badge || '', badgeD: badge && !L.rail ? 'flex' : 'none', onClick: () => { const h = ['FOOG Home.dc.html','FOOG Discover.dc.html','FOOG Stadiums.dc.html','FOOG Discover.dc.html','FOOG Reels.dc.html','FOOG Chat.dc.html','FOOG Chat.dc.html',null,'FOOG Profile.dc.html'][i]; if (h && i !== 0) window.location.href = h; else if (i === 7) this.setState({ notifOpen: !this.state.notifOpen }); else this.setState({ nav: i }); },
+        bg: on ? 'var(--surface)' : 'transparent', fg: on ? 'var(--text-1)' : 'var(--text-2)', weight: on ? 700 : 500,
+        fill: on ? "'FILL' 1" : "'FILL' 0", ic: on ? 'var(--brand-ink)' : 'currentColor',
+        badgeBg: i === 7 ? 'var(--error)' : 'var(--primary)', badgeFg: i === 7 ? 'white' : 'var(--on-primary)' };
+    });
+    const avs = ['oklch(0.8 0.12 40)', 'oklch(0.8 0.12 160)', 'oklch(0.78 0.12 320)', 'oklch(0.75 0.12 262)', 'oklch(0.82 0.1 80)', 'oklch(0.72 0.12 200)', 'oklch(0.78 0.1 10)'];
+    const stories = ['Lea Wing', 'Northside FC', 'Marco R.', 'Yara H.', 'Jonas K.', 'Amara', 'Teo B.'].map((name, i) => ({ name, av: avs[i],
+      ring: i < 4 ? 'var(--primary)' : 'var(--border-strong)', liveD: i === 1 ? 'flex' : 'none' }));
+    const feedTabs = ['For you', 'Following', 'Nearby'].map((label, i) => ({ label, onClick: () => this.setState({ tab: i }),
+      color: i === s.tab ? 'var(--text-1)' : 'var(--text-3)', line: i === s.tab ? 'inset 0 -2px 0 var(--brand-ink)' : 'none' }));
+    const rawPosts = [
+      { id: 'p1', name: 'Marco Ruiz', ver: true, meta: '2h · Arena Yunusobod, Yunusobod', text: 'Last-minute winner from outside the box. Still can’t believe it went in.', ar: '4/5', media: 'post media · 4:5',
+        stats: [['Result', 'W 4–3', 'var(--text-1)'], ['Played', '62′', 'var(--text-1)'], ['Goals', '2', 'var(--brand-ink)'], ['Assists', '1', 'var(--text-1)']], likes: 1204, comments: 48 },
+      { id: 'p2', name: 'Northside FC', ver: false, meta: '6h · Team', text: 'Trials this Sunday for keepers and left backs. Intermediate level, all ages 18+. Drop a message or join the match below.', ar: '16/10', media: 'team photo · 16:10', stats: null, likes: 312, comments: 27 }
+    ];
+    const posts = rawPosts.map((p, i) => ({ ...p, av: avs[i + 2], verD: p.ver ? 'inline' : 'none', statsD: p.stats ? 'grid' : 'none',
+      stats: (p.stats || []).map(([k, v, color]) => ({ k, v, color })),
+      likes: (p.likes + (s.liked[p.id] ? 1 : 0)).toLocaleString('en'), likeColor: s.liked[p.id] ? 'var(--error)' : 'var(--text-1)', likeFill: s.liked[p.id] ? "'FILL' 1" : "'FILL' 0",
+      saveFill: s.saved[p.id] ? "'FILL' 1" : "'FILL' 0", onLike: () => this.tog('liked', p.id), onSave: () => this.tog('saved', p.id) }));
+    const upcoming = [
+      { mon: 'OCT', day: '03', title: 'Arena Yunusobod · Pitch 2', meta: '20:00 · 5v5 · Booked', tag: 'Tonight', tagBg: 'var(--primary)', tagFg: 'var(--on-primary)' },
+      { mon: 'OCT', day: '05', title: 'Yakkasaroy Cup vs Mitte Utd', meta: '14:30 · 7v7 · Match', tag: 'Sun', tagBg: 'var(--surface-2)', tagFg: 'var(--text-2)' }
+    ];
+    const om = [{ id: 'm1', when: 'Tonight · 21:00', dist: '0.8 km', title: 'Friday Night 5-a-side', filled: 8, need: 'GK, DEF' }, { id: 'm2', when: 'Sat · 10:00', dist: '2.4 km', title: 'Morning 7v7 · Chilonzor', filled: 11, need: 'Any', total: 14 }];
+    const openMatches = om.map(m => {
+      const j = s.joined[m.id], tot = m.total || 10, f = m.filled + (j ? 1 : 0), segs = 10, filledSegs = Math.round(f / tot * segs);
+      return { ...m, bar: Array.from({ length: segs }, (_, i) => i < filledSegs ? 'var(--brand-ink)' : 'var(--border)'),
+        spots: `${f}/${tot} · Need ${m.need}`, onJoin: () => this.tog('joined', m.id),
+        btnLabel: j ? 'Joined ✓' : 'Join', btnBg: j ? 'transparent' : 'var(--primary)', btnFg: j ? 'var(--text-1)' : 'var(--on-primary)', btnRing: j ? 'inset 0 0 0 1.5px var(--border-strong)' : 'none' };
+    });
+    const stadiums = [
+      { name: 'Arena Yunusobod', price: '300 000 so‘m', meta: '1.2 km · 6 slots today', dot: 'var(--success)' },
+      { name: 'Chilonzor Cage', price: '220 000 so‘m', meta: '2.4 km · 2 slots left', dot: 'var(--warning)' },
+      { name: 'Anhor Indoor', price: '400 000 so‘m', meta: '3.1 km · 4 slots today', dot: 'var(--success)' }
+    ];
+    const suggested = [['Amara Diallo', 'ST · Mitte · 3 mutual', 'oklch(0.82 0.1 80)'], ['Jonas Keller', 'GK · Yakkasaroy · plays Fri', 'oklch(0.72 0.12 200)'], ['Teo Brandt', 'RW · Neukölln · Lvl 6', 'oklch(0.78 0.1 10)']].map(([name, meta, av]) => {
+      const on = s.follow[name];
+      return { name, meta, av, onFollow: () => this.tog('follow', name), label: on ? 'Following' : 'Follow',
+        bg: on ? 'transparent' : 'var(--inverse)', fg: on ? 'var(--text-1)' : 'var(--on-inverse)', ring: on ? 'inset 0 0 0 1.5px var(--border-strong)' : 'none' };
+    });
+    const composer = [['photo_camera', 'Photo', 'var(--accent)'], ['smart_display', 'Reel', 'var(--error)'], ['scoreboard', 'Match result', 'var(--brand-ink)'], ['person_search', 'Find players', 'var(--success)']].map(([icon, label, color]) => ({ icon, label, color }));
+    const light = s.theme === 'light';
+    const LV = { '--bg': 'oklch(0.972 0.004 265)', '--surface': 'oklch(1 0 0)', '--surface-2': 'oklch(0.955 0.005 265)', '--border': 'oklch(0.91 0.006 265)', '--border-strong': 'oklch(0.8 0.01 265)', '--text-1': 'oklch(0.18 0.045 268)', '--text-2': 'oklch(0.44 0.025 265)', '--text-3': 'oklch(0.58 0.02 265)', '--primary-hover': 'oklch(0.94 0.18 124)', '--brand-ink': 'oklch(0.18 0.045 268)', '--accent': 'oklch(0.55 0.21 262)', '--success': 'oklch(0.55 0.14 158)', '--warning': 'oklch(0.6 0.15 65)', '--error': 'oklch(0.55 0.21 25)', '--hover': 'oklch(0.18 0.045 268 / .05)', '--inverse': 'oklch(0.18 0.045 268)', '--on-inverse': 'oklch(0.97 0.005 265)', '--ph': 'repeating-linear-gradient(135deg,oklch(0.92 0.006 265) 0 2px,oklch(0.965 0.004 265) 2px 12px)' };
+    if (typeof document !== 'undefined') document.body.style.background = light ? 'oklch(0.972 0.004 265)' : 'oklch(0.14 0.028 268)';
+    const toggleTheme = () => { const t = light ? 'dark' : 'light'; localStorage.setItem('foog-theme', t); this.setState({ theme: t }); };
+    return { ...L, themeVars: light ? LV : {}, isLight: light, toggleTheme, themeIcon: light ? 'dark_mode' : 'light_mode', themeTitle: light ? 'Night mode' : 'Day mode',
+      markInk: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.97 0.005 265)', markO: light ? 'oklch(0.18 0.045 268)' : 'oklch(0.91 0.2 124)',
+      notifOpen: s.notifOpen, toggleNotif: () => this.setState({ notifOpen: !s.notifOpen }), bellBg: s.notifOpen ? 'var(--surface-2)' : 'var(--surface)',
+      markAll: () => this.setState({ read: Object.fromEntries(rawN.map(n => [n.id, true])) }), notifTabs, notifs, emptyD: notifs.length ? 'none' : 'block',
+      unread: unreadN, unreadD: unreadN ? 'flex' : 'none',
+      nav, stories, feedTabs, posts, upcoming, openMatches, stadiums, suggested, composer };
+  }
+}
+</script>
+</body>
+</html>
