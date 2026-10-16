@@ -397,6 +397,8 @@ async function main() {
   // ---------- Erta kirish ----------
   await prisma.earlyAccess.createMany({ data: [{ role: 'player', phone: '+998901231111', district: 'Chilonzor' }, { role: 'owner', phone: '+998901232222', stadiumName: 'Bektemir Sport', district: 'Bektemir' }] });
 
+  // Kelmaganlar hisoblagichi bron tarixiga mos bo‘lsin
+  await prisma.$executeRawUnsafe(`UPDATE users u SET no_shows = GREATEST(u.no_shows, (SELECT count(*) FROM bookings b WHERE b.user_id = u.id AND b.status = 'no_show'))`);
   const counts = await Promise.all([prisma.user.count(), prisma.stadium.count(), prisma.booking.count(), prisma.match.count(), prisma.reel.count()]);
   console.log(`Seed tayyor: ${counts[0]} foydalanuvchi, ${counts[1]} stadion, ${counts[2]} bron, ${counts[3]} o‘yin, ${counts[4]} reel`);
   console.log('Hafta boshi:', mondayOf(today), '· bugun:', today);

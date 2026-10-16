@@ -78,7 +78,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
         { id: '/owner/schedule', href: '/owner/schedule', icon: 'calendar_view_week', label: 'Jadval' },
         { id: '/owner/stadiums', href: '/owner/stadiums', icon: 'stadium', label: 'Stadionlarim' },
         { id: '/owner/reels', href: '/owner/reels', icon: 'smart_display', label: 'Reels' },
-        { id: '/owner/reports', href: '/owner/reports', icon: 'monitoring', label: 'Hisobot' },
+        ...(me?.role === 'owner' || me?.role === 'admin' ? [{ id: '/owner/reports', href: '/owner/reports', icon: 'monitoring', label: 'Hisobot' }] : []),
       ]
       : [
         { id: '/home', href: '/home', icon: 'home', label: 'Asosiy' },

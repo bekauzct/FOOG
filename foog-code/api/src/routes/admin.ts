@@ -33,7 +33,7 @@ adminRouter.get('/overview', ah(async (req, res) => {
     prisma.user.count(), prisma.user.count({ where: { createdAt: { gte: weekAgo } } }),
     prisma.stadium.count({ where: { status: 'live' } }), prisma.stadium.count({ where: { status: 'mod' } }),
     prisma.booking.count({ where: { date: dateVal(today) } }), prisma.booking.count({ where: { date: dateVal(today), status: { in: ['confirmed', 'arrived'] } } }),
-    prisma.report.count({ where: { status: 'open' } }), prisma.dispute.count({ where: { status: 'open' } }),
+    prisma.report.groupBy({ by: ['targetType', 'targetId'], where: { status: 'open' } }).then((g) => g.length), prisma.dispute.count({ where: { status: 'open' } }),
     prisma.user.count({ where: { noShows: { gte: 3 } } }),
   ]);
   const from = addDays(today, -13);

@@ -137,7 +137,7 @@ export default function NotificationsPage() {
         <div className="col" style={{ gap: 12, fontSize: 15 }}>
           <div className="row between"><span>Saytda bildirishnomalar</span><span className="pill-tag success">Yoqilgan</span></div>
           <div className="row between"><span>Telegram: bron javoblari va eslatmalar</span><span className="pill-tag success">Yoqilgan</span></div>
-          <p className="c2 t-small">Telegram xabarlari kirishda ulashgan botingiz orqali keladi. O‘chirish uchun botda «/stop» yozing yoki botni bloklang. Alohida chatlarni ovozsiz qilish – chat ma’lumotlari panelida.</p>
+          <p className="c2 t-small">Telegram xabarlari kirishda ulashgan botingiz orqali keladi. O‘chirish uchun Telegramda botni bloklang. Alohida chatlarni ovozsiz qilish – chat ma’lumotlari panelida.</p>
         </div>
       </Modal>
     </div>

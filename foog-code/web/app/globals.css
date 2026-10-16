@@ -29,6 +29,7 @@
   --mark-ink: oklch(0.97 0.005 265);
   --mark-o: oklch(0.91 0.2 124);
   --overlay: oklch(0.1 0.03 268 / 0.72);
+  --on-dark-accent: var(--volt);
   --shadow-overlay: 0 24px 64px oklch(0.05 0.02 268 / 0.55);
 
   --r-xs: 6px;
@@ -73,6 +74,7 @@
   --mark-ink: oklch(0.18 0.045 268);
   --mark-o: oklch(0.18 0.045 268);
   --overlay: oklch(0.18 0.045 268 / 0.45);
+  --on-dark-accent: #fff; /* kunduzgi rejimda Volt matn rangi emas */
   --shadow-overlay: 0 24px 64px oklch(0.18 0.045 268 / 0.18);
   color-scheme: light;
 }
@@ -562,3 +564,65 @@ h1, h2, h3, h4, p { margin: 0; }
 /* ---------- Bildirishnomalar (FOOG Notifications.dc.html) ---------- */
 .nt-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px 14px; border-radius: 16px; cursor: pointer; transition: background var(--fast); }
 .nt-item:hover { background: var(--hover) !important; }
+
+/* ---------- Stadion egasi / Admin paneli ---------- */
+.ow-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.ow-two { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.ow-side { display: grid; grid-template-columns: 330px minmax(0, 1fr); gap: 20px; align-items: start; }
+.ow-table { width: 100%; border-collapse: collapse; }
+.ow-table th { text-align: left; font: 500 11px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); padding: 14px 20px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.ow-table td { padding: 14px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.ow-table tr:last-child td { border-bottom: none; }
+@media (max-width: 1180px) { .ow-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .ow-two, .ow-side { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) {
+  .ow-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .ow-kpis .card { padding: 14px !important; }
+  .ow-kpis .mono { font-size: 24px !important; }
+  .ow-table thead { display: none; }
+  .ow-table, .ow-table tbody, .ow-table tr, .ow-table td { display: block; width: 100%; }
+  .ow-table tr { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+  .ow-table td { padding: 4px 0; border: none; }
+}
+.sel-mini { appearance: none; height: 34px; padding: 0 6px; width: 62px; text-align: center; border-radius: 8px; border: none; background: var(--bg); box-shadow: inset 0 0 0 1px var(--border); color: var(--text-1); font: 500 13px var(--font-mono); cursor: pointer; }
+@media (max-width: 760px) { .sel-mini { height: 44px; } }
+.os-photos { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 88px 88px; gap: 8px; }
+.os-photos .os-main { grid-row: 1 / 3; }
+@media (max-width: 760px) { .os-photos { grid-template-columns: 1fr 1fr; grid-template-rows: 160px 88px 88px; } .os-photos .os-main { grid-row: auto; grid-column: 1 / 3; } }
+.ow-reels { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 20px; align-items: start; }
+.ow-reels > :first-child { position: sticky; top: calc(var(--topbar-h) + 20px); }
+@media (max-width: 900px) { .ow-reels { grid-template-columns: minmax(0, 1fr); } .ow-reels > :first-child { position: static; max-width: 420px; margin: 0 auto; width: 100%; } }
+
+/* ---------- Landing (FOOG Landing.dc.html) ---------- */
+.ld { --line: oklch(1 0 0 / 0.07); --ow-line: oklch(0.18 0.045 268 / 0.15); }
+[data-theme='light'] .ld { --line: oklch(0.18 0.045 268 / 0.07); --ow-line: oklch(1 0 0 / 0.18); }
+.ld-nav { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 68px; padding: 0 24px; background: color-mix(in oklch, var(--bg) 92%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+.ld-hero { position: relative; display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 120px 24px 128px; overflow: hidden; }
+.ld-lines span { position: absolute; pointer-events: none; }
+.ld-lines .l1 { inset: 32px 24px; border: 1px solid var(--line); border-radius: 28px; }
+.ld-lines .l2 { top: 32px; bottom: 32px; left: 50%; width: 1px; background: var(--line); }
+.ld-lines .l3 { top: 50%; left: 50%; width: 360px; height: 360px; margin: -180px 0 0 -180px; border: 1px solid var(--line); border-radius: 50%; }
+.ld-mark { width: 560px; max-width: 80vw; position: relative; }
+.ld-hero > * { position: relative; }
+.ld-sec { max-width: 1280px; margin: 0 auto; padding: 96px 24px; display: flex; flex-direction: column; gap: 32px; }
+.ld-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-radius: 20px; background: var(--surface); border: 1px solid var(--border); overflow: hidden; }
+.ld-steps > div + div { border-left: 1px solid var(--border); }
+.ld-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; align-items: center; }
+.ld-window { border-radius: 20px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-overlay); overflow: hidden; }
+.ld-owners { background: var(--inverse); color: var(--on-inverse); }
+.ld-owners .t-h1 { color: var(--on-inverse); }
+.ld-access { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding: 56px; }
+@media (max-width: 1100px) { .ld-steps { grid-template-columns: minmax(0, 1fr); } .ld-steps > div + div { border-left: none; border-top: 1px solid var(--border); } .ld-steps > div { min-height: auto !important; } }
+@media (max-width: 900px) { .ld-split, .ld-access { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
+@media (max-width: 640px) {
+  .ld-nav { padding: 0 16px; }
+  .ld-hero { padding: 72px 16px 80px; }
+  .ld-mark { width: 300px; }
+  .ld-lines .l3 { width: 240px; height: 240px; margin: -120px 0 0 -120px; }
+  .ld-sec { padding: 64px 16px; }
+  .ld-access { padding: 28px 20px; }
+}
+.pf-info .tag { white-space: normal; height: auto !important; min-height: 30px; padding-top: 4px !important; padding-bottom: 4px !important; }
+.ad-side { grid-template-columns: 340px minmax(0, 1fr) !important; }
+@media (max-width: 900px) { .ad-side { grid-template-columns: minmax(0, 1fr) !important; } }
+.ad-content { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)) !important; }

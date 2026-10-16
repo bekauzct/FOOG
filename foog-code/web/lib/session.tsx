@@ -7,7 +7,7 @@ export type Me = {
   district: string | null; level: number; xp: number; skill: string | null; bio: string | null; jersey: number | null; available: string[];
   avatarUrl: string | null; coverUrl: string | null; verified: boolean; status: string;
 };
-type Handler = (data: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
+type Handler = (data: any) => void;
 type Ctx = {
   me: Me | null; loading: boolean; staff: boolean; home: string; unread: number; unreadChats: number;
   refresh: () => Promise<void>; logout: () => Promise<void>; on: (type: string, fn: Handler) => () => void; send: (m: object) => boolean;
@@ -60,7 +60,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         s.onopen = () => { retry.current = 0; setConnected(true); };
         s.onmessage = (ev) => {
           try {
-            const m = JSON.parse(ev.data) as { type: string; data: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
+            const m = JSON.parse(ev.data) as { type: string; data: any };
             if (m.type === 'notification' && typeof m.data?.unread === 'number') setUnread(m.data.unread);
             if (m.type === 'message' && m.data?.sender?.id !== me.id) setUnreadChats((n) => n + (handlers.current.get('message:active')?.size ? 0 : 1));
             handlers.current.get(m.type)?.forEach((fn) => fn(m.data));

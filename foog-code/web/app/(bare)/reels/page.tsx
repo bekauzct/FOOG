@@ -93,7 +93,7 @@ function ReelsInner() {
   const rail: [string, string, boolean, string | undefined, () => void][] = r ? [
     ['favorite', compact(r.likes), r.liked, r.liked ? '#FF645F' : undefined, () => like()],
     ['chat_bubble', compact(r.comments), false, undefined, () => setComments(true)],
-    ['bookmark', r.saved ? 'Saqlandi' : 'Saqlash', r.saved, r.saved ? 'var(--volt)' : undefined, save],
+    ['bookmark', r.saved ? 'Saqlandi' : 'Saqlash', r.saved, r.saved ? 'var(--on-dark-accent)' : undefined, save],
     ['send', 'Ulashish', false, undefined, () => setShare(true)],
   ] : [];
 

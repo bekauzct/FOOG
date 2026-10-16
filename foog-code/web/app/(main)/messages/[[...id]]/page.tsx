@@ -12,7 +12,7 @@ import { useToast } from '@/lib/toast';
 import { DOW, agoShort, dayMonth, hhmm, isoDate, relDay, sum, todayStr, addDays, weekday, whenLabel, initials } from '@/lib/format';
 
 type ChatItem = { id: string; type: 'dm' | 'team' | 'match' | 'community'; name: string; short: string | null; avatarUrl: string | null; online: boolean; muted: boolean; last: { text: string; at: string; mine: boolean } | null; unread: number; members: number; at: string };
-type Msg = { id: string; chatId: string; type: string; body: string; mediaUrl: string | null; refId: string | null; card: any; createdAt: string; sender: { id: string; name: string; avatarUrl: string | null; username: string | null } }; // eslint-disable-line @typescript-eslint/no-explicit-any
+type Msg = { id: string; chatId: string; type: string; body: string; mediaUrl: string | null; refId: string | null; card: any; createdAt: string; sender: { id: string; name: string; avatarUrl: string | null; username: string | null } };
 type Info = { id: string; type: string; name: string; muted: boolean; other: (MiniUser & { level: number }) | null; otherTeam: string | null; mutual: number; online: boolean; members: MiniUser[]; media: { id: string; mediaUrl: string; type: string }[]; match: { id: string; title: string; date: string; start: string; stadium: string } | null; team: { id: string; name: string; short: string } | null };
 
 const KIND: Record<string, string> = { team: 'Jamoa', match: 'O‘yin', community: 'Hamjamiyat' };
@@ -92,7 +92,7 @@ function Bubble({ m, mine, showName }: { m: Msg; mine: boolean; showName: boolea
 function Picker({ kind, onPick, onClose }: { kind: 'invite' | 'stadium' | 'profile' | null; onPick: (type: string, refId: string) => void; onClose: () => void }) {
   const [q, setQ] = useState('');
   const path = kind === 'invite' ? '/me/matches' : kind === 'stadium' ? `/stadiums?limit=20${q ? `&q=${encodeURIComponent(q)}` : ''}` : kind === 'profile' ? `/players${q ? `?q=${encodeURIComponent(q)}` : ''}` : null;
-  const r = useApi<any>(path, [q]); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const r = useApi<any>(path, [q]);
   if (!kind) return null;
   const items: { id: string; title: string; sub: string; av?: React.ReactNode }[] = !r.data ? [] : kind === 'invite'
     ? r.data.matches.map((m: { id: string; title: string; date: string; start: string; stadium: { name: string }; filled: number; capacity: number }) => ({ id: m.id, title: m.title, sub: `${whenLabel(m.date, m.start)} · ${m.stadium.name} · ${m.filled}/${m.capacity}`, av: <Icon n="sports_soccer" style={{ color: 'var(--brand-ink)' }} /> }))

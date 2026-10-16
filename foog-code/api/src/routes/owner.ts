@@ -108,10 +108,11 @@ ownerRouter.get('/bookings', ah(async (req, res) => {
     today: { date: today, status: { in: ['pending', 'confirmed', 'arrived', 'no_show'] } },
     confirmed: { status: 'confirmed' },
     history: { status: { in: ['arrived', 'no_show', 'rejected', 'expired', 'cancelled'] } },
+    all: {},
   };
   const where: Prisma.BookingWhereInput = { ...base, ...(F[filter] ?? F.pending) };
   if (q) where.OR = [{ code: { contains: q, mode: 'insensitive' } }, { user: { name: { contains: q, mode: 'insensitive' } } }, { user: { phone: { contains: q.replace(/\s/g, '') } } }];
-  const rows = await prisma.booking.findMany({ where, include: bInclude, orderBy: filter === 'history' ? [{ date: 'desc' }, { startTime: 'desc' }] : filter === 'pending' ? { createdAt: 'desc' } : [{ date: 'asc' }, { startTime: 'asc' }], take: 200 });
+  const rows = await prisma.booking.findMany({ where, include: bInclude, orderBy: filter === 'history' || filter === 'all' ? [{ date: 'desc' }, { startTime: 'desc' }] : filter === 'pending' ? { createdAt: 'desc' } : [{ date: 'asc' }, { startTime: 'asc' }], take: 200 });
   const counts = { pending: await prisma.booking.count({ where: { ...base, status: 'pending' } }) };
   res.json({ stadium: { id: st.id, name: st.name }, items: rows.map(bookingOut), counts });
 }));
@@ -169,6 +170,8 @@ ownerRouter.delete('/schedule/block/:id', ah(async (req, res) => {
 ownerRouter.get('/reports', ah(async (req, res) => {
   const st = await pickStadium(req);
   if (!st) return res.json({ empty: true });
+  // Hisobot va biznes ma’lumotlarini faqat egasi ko‘radi (xodim – yo‘q)
+  await assertStadiumAccess(req.user!.id, req.user!.role, st.id, true);
   const range = qstr(req.query.range) === 'year' ? 'year' : 'week';
   const today = tashkentParts().date;
   const full = await prisma.stadium.findUniqueOrThrow({ where: { id: st.id }, include: { pitches: { where: { active: true }, orderBy: { name: 'asc' } } } });

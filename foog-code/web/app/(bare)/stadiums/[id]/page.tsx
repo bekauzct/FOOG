@@ -249,7 +249,7 @@ function DetailInner() {
                     const ok = hour !== null && free(p, hour);
                     const pr = hour !== null && hour >= p.peakFrom ? p.peakPrice : p.price;
                     return (
-                      <button key={p.id} disabled={!ok} onClick={() => setPitchId(p.id)} className="row" aria-pressed={pitchId === p.id}
+                      <button key={p.id} disabled={!ok} onClick={() => setPitchId(p.id)} className="row sd-pitch" aria-pressed={pitchId === p.id}
                         style={{ gap: 12, padding: '10px 14px', minHeight: 52, borderRadius: 14, border: 'none', textAlign: 'left', color: 'var(--text-1)', opacity: hour !== null && !ok ? 0.5 : 1, background: pitchId === p.id ? 'color-mix(in oklch,var(--primary) 12%,var(--bg))' : 'var(--bg)', boxShadow: pitchId === p.id ? 'inset 0 0 0 2px var(--brand-ink)' : 'inset 0 0 0 1px var(--border)' }}>
                         <span className="col grow"><b style={{ fontSize: 15 }}>{p.name} <span className="c2" style={{ fontWeight: 500 }}>· {SIZE_LABEL[p.size]}</span></b><span className="c2" style={{ fontSize: 12 }}>{hour !== null && !ok ? 'Bu vaqtda band' : `${p.note ?? SURFACE_LABEL[p.surface]} · ${sum(pr)}`}</span></span>
                         <span style={{ width: 22, height: 22, borderRadius: '50%', boxShadow: pitchId === p.id ? 'inset 0 0 0 2px var(--brand-ink)' : 'inset 0 0 0 1.5px var(--border-strong)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{pitchId === p.id && <span style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--brand-ink)' }} />}</span>
@@ -382,7 +382,7 @@ function Header({ saved, onSave, onShare }: { saved?: boolean; onSave?: () => vo
   return (
     <header className="row between" style={{ position: 'sticky', top: 0, zIndex: 40, height: 68, padding: '0 20px', background: 'color-mix(in oklch,var(--bg) 92%,transparent)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border)' }}>
       <button className="btn btn-surface btn-sm" onClick={() => (history.length > 1 ? router.back() : router.push('/stadiums'))}><Icon n="arrow_back" size={20} />Stadionlar</button>
-      <Link href="/home" style={{ width: 96, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }} aria-label="FOOG"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></Link>
+      <Link href="/home" className="hide-mobile" style={{ width: 96, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }} aria-label="FOOG"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></Link>
       <div className="row" style={{ gap: 8 }}>
         <ThemeButton />
         {onShare && <button className="icon-btn" onClick={onShare} aria-label="Ulashish"><Icon n="ios_share" size={22} /></button>}
