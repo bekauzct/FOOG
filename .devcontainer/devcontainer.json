@@ -1,0 +1,16 @@
+{
+  "name": "FOOG",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bookworm",
+  "hostRequirements": { "cpus": 2, "memory": "4gb" },
+  "forwardPorts": [3000, 4000],
+  "portsAttributes": {
+    "3000": { "label": "FOOG sayt", "onAutoForward": "openBrowser" },
+    "4000": { "label": "FOOG API (WebSocket)", "onAutoForward": "silent" }
+  },
+  "secrets": {
+    "TELEGRAM_BOT_TOKEN": { "description": "@BotFather tokeni (ixtiyoriy – bo‘lmasa «Sinov rejimi · botsiz» ishlaydi)" },
+    "TELEGRAM_BOT_USERNAME": { "description": "Bot username, @ belgisiz (masalan foogtest55bot)" }
+  },
+  "postCreateCommand": "bash foog-code/scripts/codespace.sh setup",
+  "postStartCommand": "bash foog-code/scripts/codespace.sh start"
+}

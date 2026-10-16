@@ -46,6 +46,14 @@ Yangi raqam kiritilsa – rol tanlash (futbolchi / stadion egasi) ekrani ochilad
 * **Rollar**: `player` → `/home…`, `owner` (va stadion xodimlari) → `/owner`, `admin` → `/admin`. Next.js middleware yo‘naltiradi, API har so‘rovda rolni va stadionga egalikni tekshiradi.
 * **Real vaqt**: `/ws` WebSocket (qisqa muddatli token bilan). Hodisalar Redis pub/sub orqali tarqatiladi – bir nechta API nusxasi bilan ham ishlaydi.
 
+## GitHub Codespaces’da sinash
+
+Omborda `.devcontainer` bor. GitHub’da **Code → Codespaces → Create codespace** ni bosing. Birinchi ochilishda PostgreSQL, Redis, ffmpeg o‘rnatiladi, keyin migratsiya va seed ishga tushadi (5–8 daqiqa). Shundan so‘ng sayt **Ports** oynasidagi 3000-port havolasida ochiladi.
+
+* Botni ulash uchun: GitHub → Settings → Codespaces → Secrets ga `TELEGRAM_BOT_TOKEN` va `TELEGRAM_BOT_USERNAME` ni qo‘shing, keyin codespace’ni qayta ishga tushiring. Bot bo‘lmasa ham kirish sahifasidagi «Sinov rejimi · botsiz» orqali yuqoridagi sinov raqamlari bilan kirsa bo‘ladi.
+* WebSocket (chat, bildirishnomalar) uchun 4000-port **Public** bo‘lishi kerak. Skript buni o‘zi qiladi; ishlamasa, Ports oynasida 4000 → Port Visibility → Public.
+* Qayta ishga tushirish: `bash foog-code/scripts/codespace.sh start`. Loglar: `/tmp/foog/api.log`, `/tmp/foog/web.log`.
+
 ## Build
 
 ```bash
