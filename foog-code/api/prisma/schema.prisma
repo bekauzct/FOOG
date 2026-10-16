@@ -1,0 +1,682 @@
+// FOOG ma’lumotlar bazasi – "FOOG ERD" dizayniga mos.
+// ERD dagi 21 jadval + ERDda yo‘q, lekin dizayn sahifalari talab qilgan
+// qo‘shimcha jadvallar (izohda "ERD+" deb belgilangan).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  player
+  owner
+  admin
+}
+
+enum Foot {
+  left
+  right
+  both
+}
+
+enum UserStatus {
+  active
+  blocked
+}
+
+enum StadiumStatus {
+  mod
+  live
+  off
+  rejected
+}
+
+enum PitchSize {
+  s5x5  @map("5x5")
+  s7x7  @map("7x7")
+  s11x11 @map("11x11")
+}
+
+enum ScheduleType {
+  hours
+  blocked
+}
+
+enum BookingStatus {
+  pending
+  confirmed
+  rejected
+  expired
+  cancelled
+  arrived
+  no_show
+}
+
+enum MatchStatus {
+  open
+  full
+  done
+  cancelled
+}
+
+enum Side {
+  home
+  away
+}
+
+enum ChatType {
+  dm
+  team
+  match
+  community
+}
+
+enum MessageType {
+  text
+  photo
+  video
+  match_invite
+  stadium
+  profile
+  reel
+  system
+}
+
+enum ReelStatus {
+  processing
+  published
+  failed
+}
+
+enum ReportTarget {
+  post
+  reel
+  comment
+  user
+}
+
+enum ReportStatus {
+  open
+  kept
+  removed
+  warned
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  declined
+}
+
+enum DisputeStatus {
+  open
+  owner
+  player
+}
+
+model User {
+  id          String     @id @default(uuid()) @db.Uuid
+  telegramId  BigInt?    @unique @map("telegram_id")
+  phone       String?    @unique
+  name        String
+  username    String?    @unique
+  role        Role       @default(player)
+  position    String?
+  foot        Foot?
+  district    String?
+  level       Int        @default(1)
+  xp          Int        @default(0)
+  skill       String?    // beginner | intermediate | advanced
+  bio         String?
+  jersey      Int?
+  available   String[]   @default([]) // tonight | fri | weekends | ...
+  avatarUrl   String?    @map("avatar_url")
+  coverUrl    String?    @map("cover_url")
+  verified    Boolean    @default(false)
+  status      UserStatus @default(active)
+  blockedUntil DateTime? @map("blocked_until") @db.Timestamptz
+  blockReason String?    @map("block_reason")
+  noShows     Int        @default(0) @map("no_shows")
+  lastSeenAt  DateTime?  @map("last_seen_at") @db.Timestamptz
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz
+
+  followers      Follow[]        @relation("following")
+  following      Follow[]        @relation("follower")
+  posts          Post[]
+  reels          Reel[]
+  stories        Story[]
+  comments       Comment[]
+  likes          Like[]
+  saves          Save[]
+  reports        Report[]
+  notifications  Notification[]  @relation("notifUser")
+  stadiums       Stadium[]
+  staffOf        StadiumStaff[]
+  bookings       Booking[]
+  reviews        Review[]
+  captainOf      Team[]
+  teamMembers    TeamMember[]
+  organized      Match[]         @relation("organizer")
+  mvpOf          Match[]         @relation("mvp")
+  matchPlayers   MatchPlayer[]
+  chatMembers    ChatMember[]
+  messages       Message[]
+  achievements   UserAchievement[]
+  invitesSent    MatchInvite[]   @relation("inviteFrom")
+  invitesGot     MatchInvite[]   @relation("inviteTo")
+  ownerProfile   OwnerProfile?
+  audit          AuditLog[]
+  disputes       Dispute[]
+
+  @@map("users")
+}
+
+model Follow {
+  followerId  String   @map("follower_id") @db.Uuid
+  followingId String   @map("following_id") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@map("follows")
+}
+
+model Post {
+  id        String   @id @default(uuid()) @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  stadiumId String?  @map("stadium_id") @db.Uuid
+  text      String
+  mediaUrl  String?  @map("media_url")
+  mediaType String?  @map("media_type") // image | video
+  kind      String   @default("post") // post | result | find_players
+  stats     Json?    // { result, played, goals, assists }
+  hidden    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  stadium   Stadium? @relation(fields: [stadiumId], references: [id], onDelete: SetNull)
+  comments  Comment[]
+  likes     Like[]
+  saves     Save[]
+
+  @@index([createdAt])
+  @@map("posts")
+}
+
+// ERD+: Home sahifasidagi "hikoyalar" (24 soat yashaydi)
+model Story {
+  id        String   @id @default(uuid()) @db.Uuid
+  authorId  String   @map("author_id") @db.Uuid
+  mediaUrl  String?  @map("media_url")
+  text      String?
+  live      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@map("stories")
+}
+
+model Reel {
+  id        String     @id @default(uuid()) @db.Uuid
+  authorId  String     @map("author_id") @db.Uuid
+  stadiumId String?    @map("stadium_id") @db.Uuid
+  videoUrl  String     @map("video_url")
+  posterUrl String?    @map("poster_url")
+  caption   String     @default("")
+  type      String     @default("O‘yin lavhasi")
+  bookCta   Boolean    @default(false) @map("book_cta")
+  status    ReelStatus @default(processing)
+  views     Int        @default(0)
+  hidden    Boolean    @default(false)
+  createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  stadium   Stadium?   @relation(fields: [stadiumId], references: [id], onDelete: SetNull)
+  comments  Comment[]
+  likes     Like[]
+  saves     Save[]
+
+  @@index([createdAt])
+  @@map("reels")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  postId    String?  @map("post_id") @db.Uuid
+  reelId    String?  @map("reel_id") @db.Uuid
+  text      String
+  hidden    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reel      Reel?    @relation(fields: [reelId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  postId    String?  @map("post_id") @db.Uuid
+  reelId    String?  @map("reel_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reel      Reel?    @relation(fields: [reelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@unique([userId, reelId])
+  @@map("likes")
+}
+
+// ERD+: saqlangan post / reel / stadion
+model Save {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  postId    String?  @map("post_id") @db.Uuid
+  reelId    String?  @map("reel_id") @db.Uuid
+  stadiumId String?  @map("stadium_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reel      Reel?    @relation(fields: [reelId], references: [id], onDelete: Cascade)
+  stadium   Stadium? @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+  @@unique([userId, reelId])
+  @@unique([userId, stadiumId])
+  @@map("saves")
+}
+
+model Report {
+  id         String       @id @default(uuid()) @db.Uuid
+  reporterId String       @map("reporter_id") @db.Uuid
+  targetType ReportTarget @map("target_type")
+  targetId   String       @map("target_id") @db.Uuid
+  reason     String
+  text       String?
+  status     ReportStatus @default(open)
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  reporter   User         @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([targetType, targetId])
+  @@map("reports")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  type      String    // invite | match | booking | social
+  kind      String    @default("info") // aniq turi: booking_confirmed, follow, like ...
+  title     String
+  body      String?
+  actorId   String?   @map("actor_id") @db.Uuid
+  refType   String?   @map("ref_type")
+  refId     String?   @map("ref_id") @db.Uuid
+  data      Json?
+  readAt    DateTime? @map("read_at") @db.Timestamptz
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  user      User      @relation("notifUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+model Stadium {
+  id           String        @id @default(uuid()) @db.Uuid
+  code         String        @unique // ST-0071
+  ownerId      String        @map("owner_id") @db.Uuid
+  name         String
+  address      String
+  district     String
+  lat          Decimal       @db.Decimal(9, 6)
+  lng          Decimal       @db.Decimal(9, 6)
+  phone        String?
+  description  String?
+  metro        String?
+  amenities    String[]      @default([])
+  cancelPolicy String        @default("24 soat oldin bepul bekor qilish") @map("cancel_policy")
+  status       StadiumStatus @default(mod)
+  accepting    Boolean       @default(true)
+  partner      Boolean       @default(false)
+  checklist    Json?
+  rejectReason String?       @map("reject_reason")
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  owner        User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  staff        StadiumStaff[]
+  pitches      Pitch[]
+  schedule     Schedule[]
+  reviews      Review[]
+  posts        Post[]
+  reels        Reel[]
+  photos       StadiumPhoto[]
+  saves        Save[]
+
+  @@map("stadiums")
+}
+
+// ERD+: stadion rasmlari (Fayl saqlash)
+model StadiumPhoto {
+  id        String   @id @default(uuid()) @db.Uuid
+  stadiumId String   @map("stadium_id") @db.Uuid
+  url       String
+  caption   String?
+  sort      Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  stadium   Stadium  @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+
+  @@map("stadium_photos")
+}
+
+model StadiumStaff {
+  stadiumId String  @map("stadium_id") @db.Uuid
+  userId    String  @map("user_id") @db.Uuid
+  role      String  @default("admin")
+  stadium   Stadium @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([stadiumId, userId])
+  @@map("stadium_staff")
+}
+
+model Pitch {
+  id        String     @id @default(uuid()) @db.Uuid
+  stadiumId String     @map("stadium_id") @db.Uuid
+  name      String
+  size      PitchSize
+  surface   String     // turf | grass | hybrid | futsal
+  indoor    Boolean    @default(false)
+  price     Int
+  peakPrice Int        @map("peak_price")
+  peakFrom  Int        @default(18) @map("peak_from") // shu soatdan boshlab peak narx
+  note      String?
+  active    Boolean    @default(true)
+  stadium   Stadium    @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+  schedule  Schedule[]
+  bookings  Booking[]
+
+  @@map("pitches")
+}
+
+model Schedule {
+  id        String       @id @default(uuid()) @db.Uuid
+  stadiumId String       @map("stadium_id") @db.Uuid
+  pitchId   String?      @map("pitch_id") @db.Uuid
+  type      ScheduleType
+  weekday   Int?         // 0 = Dushanba ... 6 = Yakshanba
+  date      DateTime?    @db.Date
+  startTime DateTime     @map("start_time") @db.Time(0)
+  endTime   DateTime     @map("end_time") @db.Time(0)
+  closed    Boolean      @default(false) // hours: dam olish kuni
+  stadium   Stadium      @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+  pitch     Pitch?       @relation(fields: [pitchId], references: [id], onDelete: Cascade)
+
+  @@index([stadiumId, type])
+  @@map("schedule")
+}
+
+model Booking {
+  id           String        @id @default(uuid()) @db.Uuid
+  code         String        @unique
+  userId       String        @map("user_id") @db.Uuid
+  pitchId      String        @map("pitch_id") @db.Uuid
+  date         DateTime      @db.Date
+  startTime    DateTime      @map("start_time") @db.Time(0)
+  endTime      DateTime      @map("end_time") @db.Time(0)
+  price        Int
+  status       BookingStatus @default(pending)
+  rejectReason String?       @map("reject_reason")
+  note         String?
+  sourceReelId String?       @map("source_reel_id") @db.Uuid // ERD+: bron reel orqali kelganmi (Reels statistikasi)
+  decidedAt    DateTime?     @map("decided_at") @db.Timestamptz
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pitch        Pitch         @relation(fields: [pitchId], references: [id], onDelete: Cascade)
+  review       Review?
+  match        Match?
+  disputes     Dispute[]
+
+  @@index([pitchId, date])
+  @@index([status, createdAt])
+  @@map("bookings")
+}
+
+model Review {
+  id          String    @id @default(uuid()) @db.Uuid
+  userId      String    @map("user_id") @db.Uuid
+  stadiumId   String    @map("stadium_id") @db.Uuid
+  bookingId   String?   @unique @map("booking_id") @db.Uuid
+  rating      Int
+  rPitch      Int?      @map("r_pitch")
+  rFacilities Int?      @map("r_facilities")
+  rValue      Int?      @map("r_value")
+  rBooking    Int?      @map("r_booking")
+  text        String
+  reply       String?
+  repliedAt   DateTime? @map("replied_at") @db.Timestamptz
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stadium     Stadium   @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
+  booking     Booking?  @relation(fields: [bookingId], references: [id], onDelete: SetNull)
+
+  @@map("reviews")
+}
+
+model Team {
+  id         String       @id @default(uuid()) @db.Uuid
+  name       String
+  short      String
+  captainId  String       @map("captain_id") @db.Uuid
+  district   String?
+  level      String       @default("intermediate")
+  lookingFor String[]     @default([]) @map("looking_for")
+  plays      String?      // "Payshanba kechqurun"
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  captain    User         @relation(fields: [captainId], references: [id], onDelete: Cascade)
+  members    TeamMember[]
+  homeGames  Match[]      @relation("home")
+  awayGames  Match[]      @relation("away")
+  chats      Chat[]
+
+  @@map("teams")
+}
+
+model TeamMember {
+  teamId   String   @map("team_id") @db.Uuid
+  userId   String   @map("user_id") @db.Uuid
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamptz
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, userId])
+  @@map("team_members")
+}
+
+model Match {
+  id          String        @id @default(uuid()) @db.Uuid
+  bookingId   String        @unique @map("booking_id") @db.Uuid
+  organizerId String        @map("organizer_id") @db.Uuid
+  title       String
+  homeTeamId  String?       @map("home_team_id") @db.Uuid
+  awayTeamId  String?       @map("away_team_id") @db.Uuid
+  capacity    Int
+  priceEach   Int           @map("price_each")
+  level       String        @default("any")
+  needs       String[]      @default([])
+  homeScore   Int?          @map("home_score")
+  awayScore   Int?          @map("away_score")
+  mvpId       String?       @map("mvp_id") @db.Uuid
+  status      MatchStatus   @default(open)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  booking     Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  organizer   User          @relation("organizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  homeTeam    Team?         @relation("home", fields: [homeTeamId], references: [id], onDelete: SetNull)
+  awayTeam    Team?         @relation("away", fields: [awayTeamId], references: [id], onDelete: SetNull)
+  mvp         User?         @relation("mvp", fields: [mvpId], references: [id], onDelete: SetNull)
+  players     MatchPlayer[]
+  chats       Chat[]
+  invites     MatchInvite[]
+
+  @@map("matches")
+}
+
+model MatchPlayer {
+  matchId  String   @map("match_id") @db.Uuid
+  userId   String   @map("user_id") @db.Uuid
+  side     Side     @default(home)
+  goals    Int      @default(0)
+  assists  Int      @default(0)
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamptz
+  match    Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([matchId, userId])
+  @@map("match_players")
+}
+
+// ERD+: "O‘yinga taklif qilish" – taklif holatini saqlash
+model MatchInvite {
+  id        String       @id @default(uuid()) @db.Uuid
+  matchId   String       @map("match_id") @db.Uuid
+  fromId    String       @map("from_id") @db.Uuid
+  toId      String       @map("to_id") @db.Uuid
+  status    InviteStatus @default(pending)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  match     Match        @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  from      User         @relation("inviteFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to        User         @relation("inviteTo", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@unique([matchId, toId])
+  @@map("match_invites")
+}
+
+model Chat {
+  id        String       @id @default(uuid()) @db.Uuid
+  type      ChatType
+  teamId    String?      @map("team_id") @db.Uuid
+  matchId   String?      @map("match_id") @db.Uuid
+  name      String?
+  dmKey     String?      @unique @map("dm_key")
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  team      Team?        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  match     Match?       @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  members   ChatMember[]
+  messages  Message[]
+
+  @@map("chats")
+}
+
+model ChatMember {
+  chatId     String    @map("chat_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  lastReadAt DateTime? @map("last_read_at") @db.Timestamptz
+  muted      Boolean   @default(false)
+  chat       Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([chatId, userId])
+  @@map("chat_members")
+}
+
+model Message {
+  id        String      @id @default(uuid()) @db.Uuid
+  chatId    String      @map("chat_id") @db.Uuid
+  senderId  String      @map("sender_id") @db.Uuid
+  type      MessageType @default(text)
+  body      String      @default("")
+  refId     String?     @map("ref_id") @db.Uuid
+  mediaUrl  String?     @map("media_url")
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz
+  chat      Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender    User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+  @@map("messages")
+}
+
+// ERD+: yutuqlar (Profil → Yutuqlar)
+model Achievement {
+  id          String            @id // hat_trick, mvp10 ...
+  title       String
+  description String
+  icon        String
+  rarity      String            // Oddiy | Kam uchraydi | Epik
+  goal        Int               @default(1)
+  users       UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  userId        String      @map("user_id") @db.Uuid
+  achievementId String      @map("achievement_id")
+  progress      Int         @default(0)
+  earnedAt      DateTime?   @map("earned_at") @db.Timestamptz
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@id([userId, achievementId])
+  @@map("user_achievements")
+}
+
+// ERD+: stadion egasining biznes ma’lumotlari
+model OwnerProfile {
+  userId       String  @id @map("user_id") @db.Uuid
+  company      String?
+  stir         String?
+  legalAddress String? @map("legal_address")
+  payMethods   String  @default("Stadionda: naqd, Payme yoki Click orqali") @map("pay_methods")
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("owner_profiles")
+}
+
+// ERD+: Landing → "Erta kirish" va "Stadioningizni qo‘shing"
+model EarlyAccess {
+  id          String   @id @default(uuid()) @db.Uuid
+  role        String   // player | owner
+  name        String?
+  phone       String
+  district    String?
+  stadiumName String?  @map("stadium_name")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@unique([phone, role])
+  @@map("early_access")
+}
+
+// ERD+: Admin → Jurnal
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String
+  targetType String?  @map("target_type")
+  targetId   String?  @map("target_id")
+  text       String
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ERD+: Admin → Bron nizolari («Kelmadi» bahslari)
+model Dispute {
+  id         String        @id @default(uuid()) @db.Uuid
+  bookingId  String        @map("booking_id") @db.Uuid
+  openedById String        @map("opened_by_id") @db.Uuid
+  reason     String
+  status     DisputeStatus @default(open)
+  resolution String?
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  resolvedAt DateTime?     @map("resolved_at") @db.Timestamptz
+  booking    Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  openedBy   User          @relation(fields: [openedById], references: [id], onDelete: Cascade)
+
+  @@map("disputes")
+}
