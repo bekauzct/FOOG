@@ -63,6 +63,16 @@ cd web && npm run build     # next build
 
 ## Serverga chiqarish (Ubuntu 22.04/24.04, bitta domen)
 
+**Tez yo‘l – bitta skript.** Ubuntu VPS’ga root sifatida kiring va:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bekauzct/FOOG/claude/practical-hypatia-trzo8f/foog-code/deploy/install.sh -o install.sh
+sudo bash install.sh
+```
+
+Skript domen, email, bot tokeni va demo rejimini so‘raydi. Keyin Node.js 20, PostgreSQL, Redis, ffmpeg, nginx va PM2 ni o‘rnatadi, `.env` ga tasodifiy parol va kalitlarni yozadi, migratsiya va buildni bajaradi, Let’s Encrypt SSL oladi va Telegram webhook’ni ulaydi. Qayta ishga tushirilsa, kodni yangilaydi (`.env` saqlanadi). Quyida xuddi shu ishning qo‘lda bajariladigan qadamlari.
+
+
 1. **Server**: Node.js 20, PostgreSQL 16, Redis 7, ffmpeg, nginx, certbot, pm2 (`npm i -g pm2`).
 2. **Kod**: `git clone … && cd foog-code`.
 3. **API `.env`** (`api/.env`):
