@@ -346,7 +346,7 @@ h1, h2, h3, h4, p { margin: 0; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* ---------- Leaflet (xarita) ---------- */
-.leaflet-container { background: var(--surface) !important; font-family: var(--font-ui) !important; }
+.leaflet-container { isolation: isolate; z-index: 0; background: var(--surface) !important; font-family: var(--font-ui) !important; }
 :root:not([data-theme='light']) .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) brightness(0.62) saturate(0.55) contrast(1.05); }
 .leaflet-control-zoom a { background: var(--surface) !important; color: var(--text-1) !important; border-color: var(--border) !important; width: 40px !important; height: 40px !important; line-height: 40px !important; }
 .leaflet-control-attribution { background: color-mix(in oklch, var(--surface) 80%, transparent) !important; color: var(--text-3) !important; font-size: 10px !important; }
