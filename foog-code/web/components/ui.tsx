@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { avatarColor, initials } from '@/lib/format';
 
 export const Icon = ({ n, fill, size, style, className = '' }: { n: string; fill?: boolean; size?: number; style?: CSSProperties; className?: string }) => (
@@ -77,15 +78,17 @@ export function Modal({ open, onClose, title, children, wide, footer }: { open: 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
-    const k = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    // Escape faqat eng ustdagi oynani yopadi
+    const k = (e: KeyboardEvent) => { if (e.key !== 'Escape') return; const all = document.querySelectorAll('.overlay'); if (all[all.length - 1] === ref.current?.parentElement) onClose(); };
     window.addEventListener('keydown', k);
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     ref.current?.focus();
     return () => { window.removeEventListener('keydown', k); document.body.style.overflow = prev; };
   }, [open]);
-  if (!open) return null;
-  return (
+  if (!open || typeof document === 'undefined') return null;
+  // Portal: ichma-ich ochilgan oynalar ham butun ekranni egallaydi (ota oynaning transform’i ta’sir qilmaydi)
+  return createPortal(
     <div className="overlay" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className={`modal ${wide ? 'wide' : ''}`} role="dialog" aria-modal="true" tabIndex={-1} ref={ref}>
         {title !== undefined && (
@@ -97,7 +100,8 @@ export function Modal({ open, onClose, title, children, wide, footer }: { open: 
         {children}
         {footer}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

@@ -4,10 +4,11 @@ import type { Prisma } from '@prisma/client';
 import { prisma } from '../db';
 import { ah, bad, notFound, parse, qstr } from '../http';
 import { requireRole } from '../auth';
-import { addDays, dateStr, dateVal, tashkentParts } from '../time';
+import { addDays, dateStr, dateVal, tashkentParts, timeStr } from '../time';
 import { bookingOut, sizeOut } from '../serialize';
 import { audit, notify } from '../notify';
 import { daySlots } from '../services/slots';
+import { deleteTeam } from './matches';
 
 export const adminRouter = Router();
 adminRouter.use(requireRole('admin'));
@@ -225,6 +226,41 @@ adminRouter.patch('/disputes/:id', ah(async (req, res) => {
   await notify(b.userId, { type: 'booking', kind: 'dispute_resolved', title: `${b.code} nizosi ${verdict} yopildi`, body: body.note, refType: 'booking', refId: b.id });
   await notify(b.pitch.stadium.ownerId, { type: 'booking', kind: 'dispute_resolved', title: `${b.code} nizosi ${verdict} yopildi`, body: body.note, refType: 'booking', refId: b.id });
   await audit(req.user!.id, 'dispute.resolve', `${b.code} nizosini ${verdict} yopdi`, 'booking', b.id);
+  res.json({ ok: true });
+}));
+
+// ---------- Jamoalar va o‘yinlar ----------
+adminRouter.get('/teams', ah(async (req, res) => {
+  const q = qstr(req.query.q);
+  const rows = await prisma.team.findMany({ where: q ? { OR: [{ name: { contains: q, mode: 'insensitive' } }, { captain: { name: { contains: q, mode: 'insensitive' } } }] } : {}, include: { captain: { select: { id: true, name: true, username: true } }, _count: { select: { members: true } } }, orderBy: { createdAt: 'desc' }, take: 200 });
+  res.json({ items: rows.map((t) => ({ id: t.id, name: t.name, short: t.short, district: t.district, level: t.level, members: t._count.members, captain: t.captain, createdAt: t.createdAt })) });
+}));
+
+adminRouter.delete('/teams/:id', ah(async (req, res) => {
+  const t = await prisma.team.findUnique({ where: { id: req.params.id } });
+  if (!t) throw notFound('Jamoa topilmadi');
+  await deleteTeam(t, req.user!.id, `«${t.name}» jamoasi moderator tomonidan o‘chirildi`);
+  await notify(t.captainId, { type: 'system', kind: 'removed', title: `«${t.name}» jamoangiz qoidabuzarlik sababli o‘chirildi` });
+  await audit(req.user!.id, 'team.delete', `«${t.name}» jamoasini o‘chirdi`, 'team', t.id);
+  res.json({ ok: true });
+}));
+
+adminRouter.get('/matches', ah(async (req, res) => {
+  const status = qstr(req.query.status) ?? 'active';
+  const q = qstr(req.query.q);
+  const where: Prisma.MatchWhereInput = status === 'active' ? { status: { in: ['open', 'full'] } } : status === 'all' ? {} : { status: status as 'done' | 'cancelled' };
+  if (q) where.OR = [{ title: { contains: q, mode: 'insensitive' } }, { organizer: { name: { contains: q, mode: 'insensitive' } } }];
+  const rows = await prisma.match.findMany({ where, include: { organizer: { select: { id: true, name: true, username: true } }, booking: { include: { pitch: { include: { stadium: { select: { name: true } } } } } }, _count: { select: { players: true } } }, orderBy: { createdAt: 'desc' }, take: 200 });
+  res.json({ items: rows.map((m) => ({ id: m.id, title: m.title, status: m.status, capacity: m.capacity, filled: m._count.players, date: dateStr(m.booking.date), start: timeStr(m.booking.startTime), stadium: m.booking.pitch.stadium.name, organizer: m.organizer, createdAt: m.createdAt })) });
+}));
+
+adminRouter.post('/matches/:id/cancel', ah(async (req, res) => {
+  const m = await prisma.match.findUnique({ where: { id: req.params.id }, include: { players: true } });
+  if (!m) throw notFound('O‘yin topilmadi');
+  if (!['open', 'full'].includes(m.status)) throw bad('O‘yin allaqachon yakunlangan yoki bekor qilingan');
+  await prisma.match.update({ where: { id: m.id }, data: { status: 'cancelled' } });
+  await Promise.all(m.players.map((p) => notify(p.userId, { type: 'match', kind: 'match_cancelled', title: `«${m.title}» o‘yini moderator tomonidan bekor qilindi`, body: p.userId === m.organizerId ? 'Stadiondagi bron saqlanib qoldi – kerak bo‘lmasa uni bekor qiling.' : undefined, refType: 'match', refId: m.id })));
+  await audit(req.user!.id, 'match.cancel', `«${m.title}» o‘yinini bekor qildi`, 'match', m.id);
   res.json({ ok: true });
 }));
 

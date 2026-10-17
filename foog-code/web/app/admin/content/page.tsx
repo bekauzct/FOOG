@@ -1,16 +1,17 @@
 'use client';
+import Link from 'next/link';
 import { useState } from 'react';
-import { Async, Btn, Empty, Loading } from '@/components/ui';
+import { Async, Btn, Empty, Icon, Loading, Modal, Seg } from '@/components/ui';
 import { AdminHeader } from '@/components/admin';
 import { useApi } from '@/lib/useApi';
-import { patch } from '@/lib/api';
+import { del, patch, post, qs } from '@/lib/api';
 import { useToast } from '@/lib/toast';
-import { ago } from '@/lib/format';
+import { SKILL_LABEL, ago, dayMonth } from '@/lib/format';
 
 type Rep = { targetType: 'post' | 'reel' | 'comment' | 'user'; targetId: string; count: number; reason: string; note: string | null; author: { id: string; name: string; username: string | null }; text: string; mediaUrl: string | null; video: string | null; hidden: boolean; firstAt: string };
 const KIND: Record<string, string> = { post: 'Post', reel: 'Reel', comment: 'Izoh', user: 'Profil' };
 
-export default function AdminContent() {
+function Reports() {
   const q = useApi<{ items: Rep[] }>('/admin/reports');
   const [busy, setBusy] = useState<string | null>(null);
   const toast = useToast();
@@ -21,7 +22,6 @@ export default function AdminContent() {
   };
   return (
     <>
-      <AdminHeader title="Kontent moderatsiyasi" />
       <div className="row between wrap" style={{ gap: 8 }}><p className="c2" style={{ fontSize: 15 }}>Foydalanuvchilar shikoyat qilgan postlar, reellar va izohlar. 5+ shikoyat – avtomatik yashiriladi.</p>{q.data && <span className="mono c2" style={{ fontSize: 13 }}>{q.data.items.length} ta ochiq</span>}</div>
       <Async q={q} loading={<Loading rows={3} />} empty={(d) => !d.items.length && <div className="card"><Empty icon="verified_user" title="Ochiq shikoyat yo‘q" text="Hamma shikoyatlar ko‘rib chiqildi." /></div>}>
         {(d) => (
@@ -48,6 +48,111 @@ export default function AdminContent() {
           </div>
         )}
       </Async>
+    </>
+  );
+}
+
+type TeamRow = { id: string; name: string; short: string; district: string | null; level: string; members: number; captain: { id: string; name: string; username: string | null }; createdAt: string };
+type MatchRow = { id: string; title: string; status: string; capacity: number; filled: number; date: string; start: string; stadium: string; organizer: { id: string; name: string; username: string | null }; createdAt: string };
+const MST: Record<string, [string, string]> = { open: ['Ochiq', 'success'], full: ['To‘ldi', 'warning'], done: ['Yakunlangan', 'muted'], cancelled: ['Bekor qilingan', 'error'] };
+
+function Confirm({ text, label, busy, onYes, onNo }: { text: string; label: string; busy: boolean; onYes: () => void; onNo: () => void }) {
+  return (
+    <Modal open onClose={onNo} title="Tasdiqlang">
+      <p className="c2" style={{ fontSize: 15, lineHeight: 1.5 }}>{text}</p>
+      <div className="row" style={{ gap: 8 }}><button className="btn btn-outline grow" onClick={onNo}>Bekor qilish</button><Btn className="btn btn-danger grow" loading={busy} onClick={onYes}>{label}</Btn></div>
+    </Modal>
+  );
+}
+
+function Search({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+  return <div className="search" style={{ width: 'min(360px,100%)' }}><Icon n="search" size={22} /><input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} aria-label="Qidirish" /></div>;
+}
+
+function Teams() {
+  const [q, setQ] = useState('');
+  const r = useApi<{ items: TeamRow[] }>(`/admin/teams${qs({ q: q.trim() || undefined })}`);
+  const [sel, setSel] = useState<TeamRow | null>(null);
+  const [busy, setBusy] = useState(false);
+  const toast = useToast();
+  const remove = async () => {
+    if (!sel) return;
+    setBusy(true);
+    try { await del(`/admin/teams/${sel.id}`); toast(`«${sel.name}» o‘chirildi · kapitan va a’zolarga xabar ketdi`, { kind: 'warn' }); setSel(null); r.reload(); }
+    catch (e) { toast((e as Error).message, { kind: 'err' }); } finally { setBusy(false); }
+  };
+  return (
+    <>
+      <div className="row between wrap" style={{ gap: 8 }}><Search value={q} onChange={setQ} placeholder="Jamoa yoki kapitan nomi" />{r.data && <span className="mono c2" style={{ fontSize: 13 }}>{r.data.items.length} ta jamoa</span>}</div>
+      <Async q={r} loading={<Loading rows={3} />} empty={(d) => !d.items.length && <div className="card"><Empty icon="groups" title="Jamoa topilmadi" /></div>}>
+        {(d) => (
+          <div className="card col" style={{ padding: 0 }}>
+            {d.items.map((t) => (
+              <div key={t.id} className="row" style={{ gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--border)', minHeight: 64 }}>
+                <span style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--inverse)', color: 'var(--on-inverse)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 14px var(--font-ui)', flexShrink: 0 }}>{t.short}</span>
+                <span className="col grow" style={{ minWidth: 0 }}>
+                  <b className="ellipsis" style={{ fontSize: 15 }}>{t.name}</b>
+                  <span className="c2 ellipsis" style={{ fontSize: 13 }}>Kapitan: {t.captain.username ? <Link href={`/u/${t.captain.username}`}>{t.captain.name}</Link> : t.captain.name} · {t.members} a’zo · {SKILL_LABEL[t.level]}{t.district ? ` · ${t.district}` : ''}</span>
+                  <span className="mono c3" style={{ fontSize: 11 }}>Tuzilgan: {ago(t.createdAt)}</span>
+                </span>
+                <button className="btn btn-danger-outline btn-sm" onClick={() => setSel(t)}>O‘chirish</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </Async>
+      {sel && <Confirm text={`«${sel.name}» jamoasini o‘chirasizmi? Jamoa chati ham o‘chadi, kapitan va ${sel.members - 1} a’zoga xabar boradi. Amal audit jurnaliga yoziladi.`} label="O‘chirish" busy={busy} onYes={remove} onNo={() => setSel(null)} />}
+    </>
+  );
+}
+
+function Matches() {
+  const [q, setQ] = useState('');
+  const [status, setStatus] = useState<'active' | 'done' | 'cancelled'>('active');
+  const r = useApi<{ items: MatchRow[] }>(`/admin/matches${qs({ status, q: q.trim() || undefined })}`);
+  const [sel, setSel] = useState<MatchRow | null>(null);
+  const [busy, setBusy] = useState(false);
+  const toast = useToast();
+  const cancel = async () => {
+    if (!sel) return;
+    setBusy(true);
+    try { await post(`/admin/matches/${sel.id}/cancel`); toast(`«${sel.title}» bekor qilindi · o‘yinchilarga xabar ketdi`, { kind: 'warn' }); setSel(null); r.reload(); }
+    catch (e) { toast((e as Error).message, { kind: 'err' }); } finally { setBusy(false); }
+  };
+  return (
+    <>
+      <div className="row between wrap" style={{ gap: 8 }}>
+        <Search value={q} onChange={setQ} placeholder="O‘yin yoki tashkilotchi nomi" />
+        <div className="row" style={{ gap: 8 }}>{([['active', 'Faol'], ['done', 'Yakunlangan'], ['cancelled', 'Bekor qilingan']] as const).map(([k, l]) => <button key={k} className={`chip ${status === k ? 'on' : ''}`} aria-pressed={status === k} onClick={() => setStatus(k)}>{l}</button>)}</div>
+      </div>
+      <Async q={r} loading={<Loading rows={3} />} empty={(d) => !d.items.length && <div className="card"><Empty icon="sports_soccer" title="O‘yin topilmadi" /></div>}>
+        {(d) => (
+          <div className="card col" style={{ padding: 0 }}>
+            {d.items.map((m) => (
+              <div key={m.id} className="row" style={{ gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--border)', minHeight: 64 }}>
+                <span className="col grow" style={{ minWidth: 0 }}>
+                  <span className="row" style={{ gap: 8, minWidth: 0 }}><Link href={`/matches/${m.id}`} className="ellipsis" style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-1)' }}>{m.title}</Link><span className={`pill-tag ${MST[m.status][1]}`}>{MST[m.status][0]}</span></span>
+                  <span className="c2 ellipsis" style={{ fontSize: 13 }}>Tashkilotchi: {m.organizer.username ? <Link href={`/u/${m.organizer.username}`}>{m.organizer.name}</Link> : m.organizer.name} · {m.stadium}</span>
+                  <span className="mono c3" style={{ fontSize: 11 }}>{dayMonth(m.date)} · {m.start} · {m.filled}/{m.capacity} o‘yinchi</span>
+                </span>
+                {['open', 'full'].includes(m.status) && <button className="btn btn-danger-outline btn-sm" onClick={() => setSel(m)}>Bekor qilish</button>}
+              </div>
+            ))}
+          </div>
+        )}
+      </Async>
+      {sel && <Confirm text={`«${sel.title}» o‘yinini bekor qilasizmi? ${sel.filled} o‘yinchiga xabar boradi. Stadiondagi bron o‘zgarmaydi. Amal audit jurnaliga yoziladi.`} label="Bekor qilish" busy={busy} onYes={cancel} onNo={() => setSel(null)} />}
+    </>
+  );
+}
+
+export default function AdminContent() {
+  const [tab, setTab] = useState<'reports' | 'teams' | 'matches'>('reports');
+  return (
+    <>
+      <AdminHeader title="Kontent moderatsiyasi" />
+      <Seg value={tab} onChange={setTab} items={[['reports', 'Shikoyatlar'], ['teams', 'Jamoalar'], ['matches', 'O‘yinlar']]} />
+      {tab === 'reports' ? <Reports /> : tab === 'teams' ? <Teams /> : <Matches />}
     </>
   );
 }

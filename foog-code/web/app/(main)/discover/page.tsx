@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { Btn, ErrorState, Icon, Loading, Modal } from '@/components/ui';
 import { MatchCard, PlayerCard, type MatchT, type PlayerT } from '@/components/cards';
 import { InviteModal } from '@/components/invite';
+import { TeamForm, TeamSheet } from '@/components/team';
 import { useApi } from '@/lib/useApi';
 import { post, qs } from '@/lib/api';
 import { useToast } from '@/lib/toast';
@@ -33,6 +34,7 @@ function Filters({ groups }: { groups: { label: string; opts: [string, string][]
 
 function TeamCard({ t, onChange }: { t: Team; onChange: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [sheet, setSheet] = useState(false);
   const toast = useToast();
   const router = useRouter();
   const join = async () => {
@@ -45,10 +47,11 @@ function TeamCard({ t, onChange }: { t: Team; onChange: () => void }) {
   };
   return (
     <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div className="row" style={{ gap: 14 }}>
+      <button className="row" style={{ gap: 14, background: 'none', border: 'none', padding: 0, textAlign: 'left', color: 'var(--text-1)', cursor: 'pointer' }} onClick={() => setSheet(true)} aria-label={`${t.name} tarkibini ko‘rish`}>
         <div style={{ width: 56, height: 56, borderRadius: 14, background: 'var(--inverse)', color: 'var(--on-inverse)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 20px var(--font-ui)', flexShrink: 0 }}>{t.short}</div>
         <div className="col grow"><b style={{ fontSize: 17 }} className="ellipsis">{t.name}</b><span className="c2 ellipsis" style={{ fontSize: 14 }}>{SKILL_LABEL[t.level]} · {t.district ?? 'Toshkent'} · {t.members} o‘yinchi</span></div>
-      </div>
+        <Icon n="chevron_right" />
+      </button>
       <div className="row between mono" style={{ fontSize: 15 }}>
         <span className="row" style={{ gap: 14 }}><span><span style={{ color: 'var(--success)', fontSize: 12 }}>G</span> {t.wins}</span><span><span className="c3" style={{ fontSize: 12 }}>D</span> {t.draws}</span><span><span style={{ color: 'var(--error)', fontSize: 12 }}>M</span> {t.losses}</span></span>
         {t.plays && <span className="c2" style={{ fontFamily: 'var(--font-ui)', fontSize: 13 }}>{t.plays}</span>}
@@ -58,31 +61,10 @@ function TeamCard({ t, onChange }: { t: Team; onChange: () => void }) {
         {t.isMember ? <Link href={t.chatId ? `/messages/${t.chatId}` : '/messages'} className="btn btn-outline" style={{ flex: 1 }}><Icon n="chat" size={18} />Jamoa chati</Link>
           : <Btn className="btn btn-primary" style={{ flex: 1 }} loading={busy} onClick={join}>Jamoaga qo‘shilish</Btn>}
         {!t.isMember && <button className="btn btn-outline" style={{ flex: 1 }} onClick={msgCaptain}>Sardorga yozish</button>}
+        {t.isMember && <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSheet(true)}><Icon n="group" size={18} />Tarkib</button>}
       </div>
+      {sheet && <TeamSheet id={t.id} onClose={() => setSheet(false)} onChange={onChange} />}
     </div>
-  );
-}
-
-function TeamCreate({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone: () => void }) {
-  const [f, setF] = useState({ name: '', short: '', district: 'Yunusobod', level: 'intermediate', plays: '', lookingFor: [] as string[] });
-  const [busy, setBusy] = useState(false);
-  const toast = useToast();
-  const go = async () => {
-    setBusy(true);
-    try { await post('/teams', { ...f, plays: f.plays || undefined }); toast('Jamoa tuzildi · jamoa chati ochildi'); onDone(); onClose(); } catch (e) { toast((e as Error).message, { kind: 'err' }); } finally { setBusy(false); }
-  };
-  return (
-    <Modal open={open} onClose={onClose} title="Jamoa tuzish">
-      <div className="row" style={{ gap: 8 }}>
-        <label className="field grow"><span>Nomi</span><input className="input" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} placeholder="Yunusobod Lions" maxLength={40} /></label>
-        <label className="field" style={{ width: 100 }}><span>Qisqa</span><input className="input" value={f.short} onChange={(e) => setF({ ...f, short: e.target.value.toUpperCase().slice(0, 3) })} placeholder="YL" /></label>
-      </div>
-      <label className="field"><span>Tuman</span><select className="select" value={f.district} onChange={(e) => setF({ ...f, district: e.target.value })}>{DISTRICTS.map((d) => <option key={d}>{d}</option>)}</select></label>
-      <div className="field"><span>Daraja</span><div className="row" style={{ gap: 8 }}>{(['beginner', 'intermediate', 'advanced'] as const).map((k) => <button key={k} className={`chip ${f.level === k ? 'on' : ''}`} onClick={() => setF({ ...f, level: k })}>{SKILL_LABEL[k]}</button>)}</div></div>
-      <div className="field"><span>Kim kerak</span><div className="row wrap" style={{ gap: 8 }}>{['GK', 'DEF', 'MID', 'FWD'].map((k) => <button key={k} className={`chip ${f.lookingFor.includes(k) ? 'on' : ''}`} onClick={() => setF({ ...f, lookingFor: f.lookingFor.includes(k) ? f.lookingFor.filter((x) => x !== k) : [...f.lookingFor, k] })}>{k}</button>)}</div></div>
-      <label className="field"><span>Qachon o‘ynaydi</span><input className="input" value={f.plays} onChange={(e) => setF({ ...f, plays: e.target.value })} placeholder="Payshanba kechqurun" /></label>
-      <Btn className="btn btn-primary btn-block" loading={busy} disabled={f.name.trim().length < 2 || f.short.length < 2} onClick={go}>Jamoa tuzish</Btn>
-    </Modal>
   );
 }
 
@@ -192,7 +174,7 @@ function DiscoverInner() {
         </>
       )}
       <InviteModal user={invite} onClose={() => setInvite(null)} />
-      <TeamCreate open={teamNew} onClose={() => setTeamNew(false)} onDone={teams.reload} />
+      {teamNew && <TeamForm open onClose={() => setTeamNew(false)} onDone={teams.reload} />}
     </div>
   );
 }
