@@ -162,8 +162,9 @@ SSL=0
 if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then SSL=1
 else
   say "SSL sertifikat (Let’s Encrypt)…"
-  if certbot --nginx -n --agree-tos --redirect ${EMAIL:+-m "$EMAIL"} ${EMAIL:---register-unsafely-without-email} -d "$DOMAIN" -d "www.$DOMAIN"; then SSL=1
-  elif certbot --nginx -n --agree-tos --redirect ${EMAIL:+-m "$EMAIL"} ${EMAIL:---register-unsafely-without-email} -d "$DOMAIN"; then SSL=1
+  if [ -n "${EMAIL:-}" ]; then CB_MAIL=(-m "$EMAIL"); else CB_MAIL=(--register-unsafely-without-email); fi
+  if certbot --nginx -n --agree-tos --redirect "${CB_MAIL[@]}" -d "$DOMAIN" -d "www.$DOMAIN"; then SSL=1
+  elif certbot --nginx -n --agree-tos --redirect "${CB_MAIL[@]}" -d "$DOMAIN"; then SSL=1
   else warn "SSL olinmadi: $DOMAIN DNS’da hali bu server IP siga yo‘nalmagan bo‘lishi mumkin. DNS tayyor bo‘lgach skriptni qayta ishga tushiring."
   fi
 fi
