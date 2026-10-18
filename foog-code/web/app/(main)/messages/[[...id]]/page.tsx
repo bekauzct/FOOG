@@ -72,7 +72,7 @@ function Bubble({ m, mine, showName }: { m: Msg; mine: boolean; showName: boolea
   ) : <i className="c3">Profil topilmadi</i>;
   else if (m.type === 'reel') content = c ? (
     <Link href={`/reels?start=${c.id}`} style={{ position: 'relative', display: 'block', width: 180, aspectRatio: '9/16', borderRadius: 16, overflow: 'hidden', background: c.posterUrl ? `center/cover url("${c.posterUrl}")` : 'var(--ph)' }}>
-      <span className="ms fill" style={{ position: 'absolute', left: '50%', top: '45%', transform: 'translate(-50%,-50%)', fontSize: 44, color: '#fff' }}>play_arrow</span>
+      <Icon n="play_arrow" fill size={44} style={{ position: 'absolute', left: '50%', top: '45%', transform: 'translate(-50%,-50%)', color: '#fff' }} />
       <span style={{ position: 'absolute', left: 8, right: 8, bottom: 8, fontSize: 12, color: '#fff', textShadow: '0 1px 6px rgba(0,0,0,.6)' }}>@{c.author.username} · {c.caption.slice(0, 50)}</span>
     </Link>
   ) : <i className="c3">Reel o‘chirilgan</i>;

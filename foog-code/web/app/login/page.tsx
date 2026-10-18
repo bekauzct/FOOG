@@ -6,12 +6,14 @@ import FoogMark from '@/components/FoogMark';
 import { ThemeButton } from '@/components/TopBar';
 import { Btn, Icon } from '@/components/ui';
 import { api, ApiError, post } from '@/lib/api';
+import { LangSwitch, useT } from '@/lib/i18n';
 
 type Start = { token: string; url: string; expiresIn: number; devShare: boolean };
 type Status = { status: 'pending' } | { status: 'need_role'; name: string } | { status: 'done'; redirect: string };
 
 function LoginInner() {
   const sp = useSearchParams();
+  const t = useT();
   const next = sp.get('next');
   const [start, setStart] = useState<Start | null>(null);
   const [state, setState] = useState<'idle' | 'starting' | 'waiting' | 'role' | 'done' | 'expired'>('idle');
@@ -88,7 +90,7 @@ function LoginInner() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <header className="row between" style={{ padding: '14px 16px' }}>
         <Link href="/" style={{ width: 104, display: 'block', minHeight: 44, paddingTop: 10 }} aria-label="FOOG"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></Link>
-        <ThemeButton />
+        <span className="row" style={{ gap: 8 }}><LangSwitch /><ThemeButton /></span>
       </header>
       <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px 64px' }}>
         <div className="card" style={{ width: '100%', maxWidth: 440, padding: 32, display: 'flex', flexDirection: 'column', gap: 20 }}>
@@ -96,57 +98,57 @@ function LoginInner() {
           {state !== 'role' ? (
             <>
               <div className="col" style={{ gap: 8 }}>
-                <h1 style={{ fontSize: 28, lineHeight: '34px', fontWeight: 800, letterSpacing: '-.02em' }}>FOOG ga kirish</h1>
-                <p className="c2" style={{ fontSize: 15, lineHeight: 1.5 }}>Parol kerak emas. Telegram botda raqamingizni ulashing – sayt sizni avtomatik tanib oladi.</p>
+                <h1 style={{ fontSize: 28, lineHeight: '34px', fontWeight: 800, letterSpacing: '-.02em' }}>{t('FOOG ga kirish')}</h1>
+                <p className="c2" style={{ fontSize: 15, lineHeight: 1.5 }}>{t('Parol kerak emas. Telegram botda raqamingizni ulashing – sayt sizni avtomatik tanib oladi.')}</p>
               </div>
               {state === 'waiting' ? (
                 <div className="well col" style={{ padding: 16, gap: 12 }}>
-                  <div className="row" style={{ gap: 10 }}><span className="spin" style={{ color: 'var(--accent)' }} /><b style={{ fontSize: 15 }}>Telegram botda raqamingizni ulashing</b></div>
+                  <div className="row" style={{ gap: 10 }}><span className="spin" style={{ color: 'var(--accent)' }} /><b style={{ fontSize: 15 }}>{t('Telegram botda raqamingizni ulashing')}</b></div>
                   <ol className="c2" style={{ margin: 0, paddingLeft: 20, fontSize: 14, lineHeight: 1.7 }}>
-                    <li>Bot ochildi: <b>«Start»</b> ni bosing</li>
-                    <li><b>«Raqamni ulashish»</b> tugmasini bosing</li>
-                    <li>Shu sahifaga qayting – kirish davom etadi</li>
+                    <li>{t('Bot ochildi:')} <b>«Start»</b> {t('ni bosing')}</li>
+                    <li><b>{t('«Raqamni ulashish»')}</b> {t('tugmasini bosing')}</li>
+                    <li>{t('Shu sahifaga qayting – kirish davom etadi')}</li>
                   </ol>
-                  <div className="row between t-small"><a href={start?.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>Botni qayta ochish</a><span className="mono c3">{mm}</span></div>
+                  <div className="row between t-small"><a href={start?.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>{t('Botni qayta ochish')}</a><span className="mono c3">{mm}</span></div>
                 </div>
               ) : state === 'expired' ? (
-                <div className="well row" style={{ padding: 14, gap: 10, color: 'var(--warning)' }}><Icon n="timer_off" /><span style={{ fontSize: 14 }}>Havola muddati tugadi (3 daqiqa). Qaytadan urinib ko‘ring.</span></div>
+                <div className="well row" style={{ padding: 14, gap: 10, color: 'var(--warning)' }}><Icon n="timer_off" /><span style={{ fontSize: 14 }}>{t('Havola muddati tugadi (3 daqiqa). Qaytadan urinib ko‘ring.')}</span></div>
               ) : null}
               {state !== 'waiting' && (
                 <Btn className="btn btn-lg btn-block" style={{ background: '#2AABEE', color: '#fff' }} onClick={begin} loading={state === 'starting'}>
                   <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.4c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.2-8.3c.4-.4-.1-.6-.6-.2L6.2 13 1.4 11.5c-1-.3-1-1 .2-1.5L20.6 2.8c.9-.3 1.6.2 1.3 1.5Z" /></svg>
-                  Telegram orqali kirish
+                  {t('Telegram orqali kirish')}
                 </Btn>
               )}
               {devAllowed && state === 'waiting' && (
                 <div className="col" style={{ gap: 8, padding: 14, borderRadius: 14, boxShadow: 'inset 0 0 0 1px var(--border-strong)' }}>
-                  <span className="label-sm">Sinov rejimi · botsiz</span>
+                  <span className="label-sm">{t('Sinov rejimi · botsiz')}</span>
                   <div className="row" style={{ gap: 8 }}>
-                    <input className="input" inputMode="tel" placeholder="+998 90 111 22 33" value={devPhone} onChange={(e) => setDevPhone(e.target.value)} aria-label="Telefon raqam" />
-                    <Btn className="btn btn-outline" onClick={devShare} loading={busy} disabled={devPhone.replace(/\D/g, '').length < 9}>Ulashish</Btn>
+                    <input className="input" inputMode="tel" placeholder="+998 90 111 22 33" value={devPhone} onChange={(e) => setDevPhone(e.target.value)} aria-label={t('Telefon raqam')} />
+                    <Btn className="btn btn-outline" onClick={devShare} loading={busy} disabled={devPhone.replace(/\D/g, '').length < 9}>{t('Ulashish')}</Btn>
                   </div>
                 </div>
               )}
               {err && <div role="alert" className="row" style={{ gap: 8, color: 'var(--error)', fontSize: 14 }}><Icon n="error" size={20} />{err}</div>}
-              <p className="c3 t-cap" style={{ lineHeight: 1.6 }}>Kirish orqali siz FOOG foydalanish shartlariga rozilik bildirasiz. Raqamingiz faqat stadion bilan bog‘lanish uchun ishlatiladi. To‘lov – stadionda.</p>
+              <p className="c3 t-cap" style={{ lineHeight: 1.6 }}>{t('Kirish orqali siz FOOG foydalanish shartlariga rozilik bildirasiz. Raqamingiz faqat stadion bilan bog‘lanish uchun ishlatiladi. To‘lov – stadionda.')}</p>
             </>
           ) : (
             <>
               <div className="col" style={{ gap: 8 }}>
-                <h1 style={{ fontSize: 28, lineHeight: '34px', fontWeight: 800, letterSpacing: '-.02em' }}>Xush kelibsiz!</h1>
-                <p className="c2" style={{ fontSize: 15 }}>Raqamingiz tasdiqlandi. FOOG dan qanday foydalanasiz?</p>
+                <h1 style={{ fontSize: 28, lineHeight: '34px', fontWeight: 800, letterSpacing: '-.02em' }}>{t('Xush kelibsiz!')}</h1>
+                <p className="c2" style={{ fontSize: 15 }}>{t('Raqamingiz tasdiqlandi. FOOG dan qanday foydalanasiz?')}</p>
               </div>
               <div className="col" style={{ gap: 10 }}>
-                {([['player', 'sports_soccer', 'Futbolchiman', 'Stadion bron qilaman, o‘yinlarga qo‘shilaman'], ['owner', 'storefront', 'Stadion egasiman', 'Bronlarni qabul qilaman, jadvalni boshqaraman']] as const).map(([k, ic, t, d]) => (
+                {([['player', 'sports_soccer', 'Futbolchiman', 'Stadion bron qilaman, o‘yinlarga qo‘shilaman'], ['owner', 'storefront', 'Stadion egasiman', 'Bronlarni qabul qilaman, jadvalni boshqaraman']] as const).map(([k, ic, title, d]) => (
                   <button key={k} onClick={() => setRole(k)} className="row" style={{ gap: 14, padding: 16, borderRadius: 16, border: 'none', textAlign: 'left', background: role === k ? 'var(--surface-2)' : 'transparent', boxShadow: role === k ? 'inset 0 0 0 2px var(--brand-ink)' : 'inset 0 0 0 1px var(--border-strong)', color: 'var(--text-1)' }} aria-pressed={role === k}>
                     <span style={{ width: 44, height: 44, borderRadius: 12, background: role === k ? 'var(--primary)' : 'var(--surface-2)', color: role === k ? 'var(--on-primary)' : 'var(--text-1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon n={ic} fill={role === k} /></span>
-                    <span className="col grow"><b style={{ fontSize: 16 }}>{t}</b><span className="c2 t-small">{d}</span></span>
+                    <span className="col grow"><b style={{ fontSize: 16 }}>{t(title)}</b><span className="c2 t-small">{t(d)}</span></span>
                   </button>
                 ))}
               </div>
-              <label className="field"><span>Ismingiz</span><input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ism Familiya" autoComplete="name" /></label>
+              <label className="field"><span>{t('Ismingiz')}</span><input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder={t('Ism Familiya')} autoComplete="name" /></label>
               {err && <div role="alert" className="row" style={{ gap: 8, color: 'var(--error)', fontSize: 14 }}><Icon n="error" size={20} />{err}</div>}
-              <Btn className="btn btn-primary btn-lg btn-block" onClick={complete} loading={busy} disabled={name.trim().length < 2}>Davom etish</Btn>
+              <Btn className="btn btn-primary btn-lg btn-block" onClick={complete} loading={busy} disabled={name.trim().length < 2}>{t('Davom etish')}</Btn>
             </>
           )}
         </div>

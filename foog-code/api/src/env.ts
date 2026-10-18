@@ -19,6 +19,8 @@ export const env = {
   botMode: (process.env.TELEGRAM_MODE ?? 'polling') as 'polling' | 'webhook',
   webhookUrl: process.env.TELEGRAM_WEBHOOK_URL ?? '',
   webhookSecret: process.env.TELEGRAM_WEBHOOK_SECRET ?? '',
+  // Erta kirish arizalari shu chatlarga keladi (vergul bilan). Admin rolidagi, Telegram ulangan foydalanuvchilarga ham boradi.
+  adminChatIds: (process.env.TELEGRAM_ADMIN_CHAT_IDS ?? '').split(',').map((x) => x.trim()).filter((x) => /^-?\d+$/.test(x)),
   devLogin: process.env.AUTH_DEV_LOGIN === 'true',
   bookingTtlMin: Number(process.env.BOOKING_TTL_MINUTES ?? 120),
 };

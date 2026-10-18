@@ -12,6 +12,7 @@ import { dateVal, mondayOf, tashkentParts, timeHour } from '../time';
 import { daySlots } from '../services/slots';
 import { matchCard } from './matches';
 import { env } from '../env';
+import { tg } from '../telegram';
 
 export const socialRouter = Router();
 
@@ -219,12 +220,41 @@ socialRouter.get('/search', ah(async (req, res) => {
 
 // ---------- Landing: Erta kirish va Stadion qo‘shish arizasi ----------
 socialRouter.post('/early-access', ah(async (req, res) => {
-  const body = parse(z.object({ role: z.enum(['player', 'owner']), phone: z.string().regex(/^\+?[\d\s()-]{9,20}$/, 'Telefon raqam noto‘g‘ri'), name: z.string().max(80).optional(), district: z.string().max(40).optional(), stadiumName: z.string().max(80).optional() }), req.body);
+  const body = parse(z.object({
+    role: z.enum(['player', 'owner']),
+    phone: z.string().regex(/^\+?[\d\s()-]{9,20}$/, 'Telefon raqam noto‘g‘ri'),
+    name: z.string().trim().min(2, 'Ismingizni kiriting').max(80),
+    telegram: z.string().trim().max(40).regex(/^@?[A-Za-z0-9_]{0,32}$/, 'Telegram username noto‘g‘ri').optional().transform((v) => (v ? v.replace(/^@/, '') : undefined)),
+    district: z.string().max(40).optional(),
+    stadiumName: z.string().max(80).optional(),
+  }), req.body);
   const phone = '+' + body.phone.replace(/\D/g, '').replace(/^(?=\d{9}$)/, '998');
-  await prisma.earlyAccess.upsert({ where: { phone_role: { phone, role: body.role } }, update: { name: body.name, district: body.district, stadiumName: body.stadiumName }, create: { ...body, phone } });
+  const before = await prisma.earlyAccess.findUnique({ where: { phone_role: { phone, role: body.role } } });
+  const data = { name: body.name, telegram: body.telegram ?? null, district: body.district, stadiumName: body.stadiumName };
+  await prisma.earlyAccess.upsert({ where: { phone_role: { phone, role: body.role } }, update: data, create: { ...data, role: body.role, phone } });
   const total = await prisma.earlyAccess.count();
+  void alertAdmins([
+    `${body.role === 'owner' ? '🏟 <b>Yangi stadion egasi</b>' : '⚽️ <b>Yangi erta kirish arizasi</b>'}${before ? ' (qayta yubordi)' : ''}`,
+    `👤 ${esc(body.name)}`,
+    `📞 ${fmtPhone(phone)}`,
+    body.telegram ? `✈️ @${esc(body.telegram)}` : '✈️ Telegram ko‘rsatilmagan',
+    body.role === 'owner' ? `🏟 ${esc(body.stadiumName ?? '—')}` : `📍 ${esc(body.district ?? 'Tuman ko‘rsatilmagan')}`,
+    `Jami arizalar: ${total}`,
+  ].join('\n'));
   res.status(201).json({ ok: true, total, bot: `https://t.me/${env.botUsername}` });
 }));
+
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const fmtPhone = (p: string) => (/^\+998\d{9}$/.test(p) ? `+998 ${p.slice(4, 6)} ${p.slice(6, 9)} ${p.slice(9, 11)} ${p.slice(11)}` : p);
+
+/** Arizani adminlarga Telegram orqali yuborish: .env dagi chatlar + Telegram ulangan adminlar */
+async function alertAdmins(text: string) {
+  const admins = await prisma.user.findMany({ where: { role: 'admin', telegramId: { not: null } }, select: { telegramId: true } });
+  const ids = new Set([...env.adminChatIds, ...admins.map((a) => a.telegramId!.toString())]);
+  if (!ids.size) console.warn('[early-access] adminlar chati sozlanmagan: TELEGRAM_ADMIN_CHAT_IDS');
+  await Promise.all([...ids].map((id) => tg('sendMessage', { chat_id: id, text, parse_mode: 'HTML', disable_web_page_preview: true })));
+}
+
 socialRouter.get('/early-access/stats', ah(async (_req, res) => {
   const [players, owners, stadiums] = await Promise.all([
     prisma.user.count({ where: { role: 'player' } }).then(async (n) => n + (await prisma.earlyAccess.count({ where: { role: 'player' } }))),

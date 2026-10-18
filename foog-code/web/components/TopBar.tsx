@@ -8,6 +8,7 @@ import { useSession } from '@/lib/session';
 import { getTheme, setTheme, type Theme } from '@/lib/theme';
 import { get } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
+import { LangSwitch, useT } from '@/lib/i18n';
 
 type Mode = 'player' | 'owner' | 'admin';
 type Item = { id: string; href: string; icon: string; label: string; badge?: number };
@@ -24,10 +25,12 @@ export function useThemeState() {
 }
 
 export function ThemeButton() {
-  const [t, toggle] = useThemeState();
+  const [th, toggle] = useThemeState();
+  const t = useT();
+  const label = t(th === 'dark' ? 'Kunduzgi rejim' : 'Tungi rejim');
   return (
-    <button className="icon-btn theme-btn" onClick={toggle} title={t === 'dark' ? 'Kunduzgi rejim' : 'Tungi rejim'} aria-label={t === 'dark' ? 'Kunduzgi rejim' : 'Tungi rejim'}>
-      <Icon n={t === 'dark' ? 'light_mode' : 'dark_mode'} size={22} />
+    <button className="icon-btn theme-btn" onClick={toggle} title={label} aria-label={label}>
+      <Icon n={th === 'dark' ? 'light_mode' : 'dark_mode'} size={22} />
     </button>
   );
 }
@@ -41,6 +44,7 @@ function useBadges(mode: Mode) {
 
 export default function TopBar({ mode: forced }: { mode?: Mode }) {
   const { me, unread, unreadChats, logout, staff } = useSession();
+  const t = useT();
   const path = usePathname();
   const router = useRouter();
   const mode: Mode = forced ?? (me?.role === 'admin' ? 'admin' : me?.role === 'owner' ? 'owner' : 'player');
@@ -91,7 +95,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
   const biz = mode !== 'player';
   const homeHref = mode === 'admin' ? '/admin' : mode === 'owner' ? '/owner' : '/home';
   const profHref = mode === 'owner' ? '/owner/profile' : mode === 'admin' ? '/admin' : '/profile';
-  const searchPh = mode === 'admin' ? 'Foydalanuvchi, stadion, ID' : mode === 'owner' ? 'Mijoz yoki bron raqami' : 'FOOG’da qidirish';
+  const searchPh = t(mode === 'admin' ? 'Foydalanuvchi, stadion, ID' : mode === 'owner' ? 'Mijoz yoki bron raqami' : 'FOOG’da qidirish');
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const v = q.trim();
@@ -101,9 +105,9 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
     else router.push(`/discover?q=${encodeURIComponent(v)}`);
   };
   const nav = (cls: string) => items.map((n) => (
-    <Link key={n.id} href={n.href} className={isOn(n.id) ? 'on' : ''} title={n.label} aria-current={isOn(n.id) ? 'page' : undefined}>
+    <Link key={n.id} href={n.href} className={isOn(n.id) ? 'on' : ''} title={t(n.label)} aria-current={isOn(n.id) ? 'page' : undefined}>
       <Icon n={n.icon} className="nav-ic" />
-      <span className={cls}>{n.label}</span>
+      <span className={cls}>{t(n.label)}</span>
       {!!n.badge && !isOn(n.id) && <span className="badge-n">{n.badge}</span>}
     </Link>
   ));
@@ -111,11 +115,11 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
   return (
     <header className={`topbar ${biz ? 'biz' : ''}`}>
       <div className="topbar-in">
-        <Link href={me ? homeHref : '/'} className="brand" aria-label="FOOG – bosh sahifa">
+        <Link href={me ? homeHref : '/'} className="brand" aria-label={t('FOOG – bosh sahifa')}>
           <span className="mk"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></span>
-          {biz && <span className="biz">{mode === 'admin' ? 'Admin' : 'Biznes'}</span>}
+          {biz && <span className="biz">{t(mode === 'admin' ? 'Admin' : 'Biznes')}</span>}
         </Link>
-        {me && <nav className={`topnav ${biz ? 'biz-nav' : ''}`} aria-label="Asosiy navigatsiya">{nav('nav-lb')}</nav>}
+        {me && <nav className={`topnav ${biz ? 'biz-nav' : ''}`} aria-label={t('Asosiy navigatsiya')}>{nav('nav-lb')}</nav>}
         <div className="tools" ref={menuRef}>
           {me && (
             <form className="tsearch" onSubmit={onSearch} role="search">
@@ -130,15 +134,16 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
               {res.teams.map((t) => <Link key={t.id} href={`/discover?tab=teams&q=${encodeURIComponent(t.name)}`}><Avatar name={t.short} size={28} square /><span className="grow ellipsis">{t.name}</span></Link>)}
             </div>
           )}
-          {mode === 'player' && me && <Link href="/discover" className="icon-btn only-mobile" aria-label="Qidirish"><Icon n="search" size={22} /></Link>}
+          {mode === 'player' && me && <Link href="/discover" className="icon-btn only-mobile" aria-label={t('Qidirish')}><Icon n="search" size={22} /></Link>}
+          <LangSwitch />
           <ThemeButton />
           {me ? (
             <>
-              <Link href="/notifications" className={`icon-btn bell ${path === '/notifications' ? 'on' : ''}`} title="Bildirishnomalar" aria-label={`Bildirishnomalar${unread ? `, ${unread} ta yangi` : ''}`}>
+              <Link href="/notifications" className={`icon-btn bell ${path === '/notifications' ? 'on' : ''}`} title={t('Bildirishnomalar')} aria-label={`${t('Bildirishnomalar')}${unread ? `, ${t('{n} ta yangi', { n: unread })}` : ''}`}>
                 <Icon n="notifications" size={22} fill={path === '/notifications'} />
                 {!!unread && path !== '/notifications' && <span className="cnt">{unread > 99 ? '99+' : unread}</span>}
               </Link>
-              <button className={`me ${path === profHref || path === `/u/${me.username}` ? 'on' : ''}`} onClick={() => setMenu((v) => !v)} aria-label="Profil menyusi" aria-expanded={menu}>
+              <button className={`me ${path === profHref || path === `/u/${me.username}` ? 'on' : ''}`} onClick={() => setMenu((v) => !v)} aria-label={t('Profil menyusi')} aria-expanded={menu}>
                 <span style={{ background: me.avatarUrl ? `center/cover url("${me.avatarUrl}")` : mode === 'admin' ? 'oklch(0.75 0.12 200)' : mode === 'owner' ? 'oklch(0.72 0.1 40)' : 'oklch(0.75 0.12 262)' }}>
                   {!me.avatarUrl && me.name.split(' ').map((w) => w[0]).join('').slice(0, 2)}
                 </span>
@@ -147,27 +152,27 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
                 <div className="menu" style={{ top: 52, right: 0 }}>
                   <div style={{ padding: '8px 10px 10px' }}>
                     <div style={{ fontWeight: 700 }}>{me.name}</div>
-                    <div className="c3 t-cap">@{me.username} · {me.role === 'admin' ? 'Administrator' : me.role === 'owner' ? 'Stadion egasi' : staff ? 'Stadion xodimi' : 'Futbolchi'}</div>
+                    <div className="c3 t-cap">@{me.username} · {t(me.role === 'admin' ? 'Administrator' : me.role === 'owner' ? 'Stadion egasi' : staff ? 'Stadion xodimi' : 'Futbolchi')}</div>
                   </div>
-                  {mode !== 'admin' && <Link href={profHref}><Icon n="person" />Profil</Link>}
-                  {mode === 'player' && <Link href="/bookings"><Icon n="event_available" />Bronlarim</Link>}
-                  {mode === 'player' && <Link href="/profile/edit"><Icon n="edit" />Profilni tahrirlash</Link>}
-                  {mode === 'owner' && <Link href="/owner/reviews"><Icon n="reviews" />Sharhlar</Link>}
-                  {mode === 'owner' && <Link href="/owner/profile#staff"><Icon n="badge" />Xodimlar</Link>}
-                  {staff && mode === 'player' && <Link href="/owner"><Icon n="storefront" />Stadion paneli</Link>}
-                  {mode === 'owner' && me.role !== 'owner' && <Link href="/home"><Icon n="sports_soccer" />Futbolchi sahifasi</Link>}
-                  <button onClick={() => setTheme(getTheme() === 'dark' ? 'light' : 'dark')}><Icon n="contrast" />Tungi / kunduzgi rejim</button>
-                  <button className="danger" onClick={logout}><Icon n="logout" />Chiqish</button>
+                  {mode !== 'admin' && <Link href={profHref}><Icon n="person" />{t('Profil')}</Link>}
+                  {mode === 'player' && <Link href="/bookings"><Icon n="event_available" />{t('Bronlarim')}</Link>}
+                  {mode === 'player' && <Link href="/profile/edit"><Icon n="edit" />{t('Profilni tahrirlash')}</Link>}
+                  {mode === 'owner' && <Link href="/owner/reviews"><Icon n="reviews" />{t('Sharhlar')}</Link>}
+                  {mode === 'owner' && <Link href="/owner/profile#staff"><Icon n="badge" />{t('Xodimlar')}</Link>}
+                  {staff && mode === 'player' && <Link href="/owner"><Icon n="storefront" />{t('Stadion paneli')}</Link>}
+                  {mode === 'owner' && me.role !== 'owner' && <Link href="/home"><Icon n="sports_soccer" />{t('Futbolchi sahifasi')}</Link>}
+                  <button onClick={() => setTheme(getTheme() === 'dark' ? 'light' : 'dark')}><Icon n="contrast" />{t('Tungi / kunduzgi rejim')}</button>
+                  <button className="danger" onClick={logout}><Icon n="logout" />{t('Chiqish')}</button>
                 </div>
               )}
             </>
           ) : (
-            <Link href={`/login?next=${encodeURIComponent(path)}`} className="btn btn-primary btn-sm">Kirish</Link>
+            <Link href={`/login?next=${encodeURIComponent(path)}`} className="btn btn-primary btn-sm">{t('Kirish')}</Link>
           )}
         </div>
       </div>
-      {me && <nav className="subnav" aria-label="Asosiy navigatsiya (mobil)">{items.map((n) => (
-        <Link key={n.id} href={n.href} className={isOn(n.id) ? 'on' : ''}><Icon n={n.icon} fill={isOn(n.id)} />{n.label}{!!n.badge && !isOn(n.id) && <span className="badge-n">{n.badge}</span>}</Link>
+      {me && <nav className="subnav" aria-label={t('Asosiy navigatsiya (mobil)')}>{items.map((n) => (
+        <Link key={n.id} href={n.href} className={isOn(n.id) ? 'on' : ''}><Icon n={n.icon} fill={isOn(n.id)} />{t(n.label)}{!!n.badge && !isOn(n.id) && <span className="badge-n">{n.badge}</span>}</Link>
       ))}</nav>}
     </header>
   );

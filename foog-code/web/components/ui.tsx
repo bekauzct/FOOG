@@ -2,10 +2,18 @@
 import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { avatarColor, initials } from '@/lib/format';
+import { ICONS } from './icons.generated';
+import { useT } from '@/lib/i18n';
 
-export const Icon = ({ n, fill, size, style, className = '' }: { n: string; fill?: boolean; size?: number; style?: CSSProperties; className?: string }) => (
-  <span className={`ms ${fill ? 'fill' : ''} ${className}`} style={{ fontSize: size, ...style }} aria-hidden="true">{n}</span>
-);
+/** SVG ikonka (Material Symbols Rounded). Yangi nom qo‘shilsa: npm run icons */
+export const Icon = ({ n, fill, size, style, className = '' }: { n: string; fill?: boolean; size?: number; style?: CSSProperties; className?: string }) => {
+  const p = ICONS[n];
+  return (
+    <svg className={`ms ${className}`} style={{ fontSize: size, ...style }} viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
+      {p && <path d={fill ? p[1] ?? p[0] : p[0]} />}
+    </svg>
+  );
+};
 
 export function Avatar({ name = '', url, size = 40, ring, square, style, online }: { name?: string; url?: string | null; size?: number; ring?: string; square?: boolean; style?: CSSProperties; online?: boolean }) {
   const inner = (
@@ -30,8 +38,9 @@ export function Skeleton({ h = 16, w = '100%', r = 8, style }: { h?: number | st
 }
 
 export function Loading({ rows = 3, card = true, label = 'Yuklanmoqda…' }: { rows?: number; card?: boolean; label?: string }) {
+  const t = useT();
   return (
-    <div aria-busy="true" aria-label={label} className="col" style={{ gap: 12 }}>
+    <div aria-busy="true" aria-label={t(label)} className="col" style={{ gap: 12 }}>
       {Array.from({ length: rows }, (_, i) => (
         <div key={i} className={card ? 'card' : ''} style={{ padding: card ? 18 : 0, display: 'flex', gap: 12, alignItems: 'center' }}>
           <Skeleton h={44} w={44} r={22} />
@@ -43,23 +52,25 @@ export function Loading({ rows = 3, card = true, label = 'Yuklanmoqda…' }: { r
 }
 
 export function Empty({ icon = 'inbox', title, text, action }: { icon?: string; title: string; text?: string; action?: ReactNode }) {
+  const t = useT();
   return (
     <div className="state">
       <Icon n={icon} />
-      <h3>{title}</h3>
-      {text && <p style={{ maxWidth: 420, fontSize: 14, lineHeight: 1.5 }}>{text}</p>}
+      <h3>{t(title)}</h3>
+      {text && <p style={{ maxWidth: 420, fontSize: 14, lineHeight: 1.5 }}>{t(text)}</p>}
       {action}
     </div>
   );
 }
 
 export function ErrorState({ error, onRetry }: { error?: { message: string; status?: number } | null; onRetry?: () => void }) {
+  const t = useT();
   return (
     <div className="state" role="alert">
       <Icon n={error?.status === 0 ? 'wifi_off' : 'error'} style={{ color: 'var(--error)' }} />
-      <h3>{error?.status === 403 ? 'Ruxsat yo‘q' : error?.status === 404 ? 'Topilmadi' : 'Yuklab bo‘lmadi'}</h3>
-      <p style={{ fontSize: 14 }}>{error?.message ?? 'Xatolik yuz berdi'}</p>
-      {onRetry && <button className="btn btn-outline btn-sm" onClick={onRetry}><Icon n="refresh" />Qayta urinish</button>}
+      <h3>{t(error?.status === 403 ? 'Ruxsat yo‘q' : error?.status === 404 ? 'Topilmadi' : 'Yuklab bo‘lmadi')}</h3>
+      <p style={{ fontSize: 14 }}>{t(error?.message ?? 'Xatolik yuz berdi')}</p>
+      {onRetry && <button className="btn btn-outline btn-sm" onClick={onRetry}><Icon n="refresh" />{t('Qayta urinish')}</button>}
     </div>
   );
 }
@@ -94,7 +105,7 @@ export function Modal({ open, onClose, title, children, wide, footer }: { open: 
         {title !== undefined && (
           <div className="row between" style={{ gap: 12 }}>
             <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-.01em' }}>{title}</div>
-            <button className="icon-btn ghost sm" onClick={onClose} aria-label="Yopish"><Icon n="close" /></button>
+            <CloseBtn onClose={onClose} />
           </div>
         )}
         {children}
@@ -103,6 +114,11 @@ export function Modal({ open, onClose, title, children, wide, footer }: { open: 
     </div>,
     document.body,
   );
+}
+
+function CloseBtn({ onClose }: { onClose: () => void }) {
+  const t = useT();
+  return <button className="icon-btn ghost sm" onClick={onClose} aria-label={t('Yopish')}><Icon n="close" /></button>;
 }
 
 export function Toggle({ on, onChange, label }: { on: boolean; onChange: (v: boolean) => void; label?: string }) {

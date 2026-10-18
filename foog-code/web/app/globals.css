@@ -132,25 +132,17 @@ h1, h2, h3, h4, p { margin: 0; }
   .t-page { font-size: 26px; line-height: 32px; }
 }
 
-/* ---------- Icons (Material Symbols Rounded, wght 400, opsz 24) ---------- */
+/* ---------- Icons (Material Symbols Rounded, inline SVG – shrift yuklanishini kutmaydi) ---------- */
 .ms {
-  font-family: 'Material Symbols Rounded';
-  font-weight: normal;
-  font-style: normal;
   font-size: 24px;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
+  width: 1em;
+  height: 1em;
   display: inline-block;
-  white-space: nowrap;
-  direction: ltr;
-  font-feature-settings: 'liga';
-  -webkit-font-smoothing: antialiased;
-  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-  user-select: none;
+  vertical-align: middle;
+  fill: currentColor;
   flex-shrink: 0;
+  user-select: none;
 }
-.ms.fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
 /* ---------- Buttons (pill, heights 36 / 44 / 52, bitta asosiy harakat) ---------- */
 .btn {
@@ -368,7 +360,6 @@ h1, h2, h3, h4, p { margin: 0; }
 .topnav a:hover { color: var(--text-1); }
 .topnav a.on { color: var(--on-inverse); background: var(--inverse); }
 .topnav a .ms { font-size: 20px; }
-.topnav a.on .ms { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 .topnav .nav-ic { display: none; }
 @media (min-width: 1180px) { .topnav .nav-ic { display: inline; } }
 .topnav.biz-nav .nav-ic { display: inline; }

@@ -644,6 +644,7 @@ model EarlyAccess {
   phone       String
   district    String?
   stadiumName String?  @map("stadium_name")
+  telegram    String?
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([phone, role])
