@@ -149,6 +149,8 @@ chatRouter.get('/:id/messages', ah(async (req, res) => {
 
 chatRouter.post('/:id/messages', mediaUpload('chat', 50).single('media'), ah(async (req, res) => {
   await assertMember(req.params.id, req.user!.id);
+  const team = (await prisma.chat.findUnique({ where: { id: req.params.id }, select: { team: { select: { status: true } } } }))?.team;
+  if (team?.status === 'frozen') throw forbidden('Jamoa muzlatilgan: chat oylik obuna to‘langach ochiladi');
   const body = parse(z.object({ type: z.enum(['text', 'photo', 'video', 'match_invite', 'stadium', 'profile', 'reel']).default('text'), body: z.string().max(4000).optional(), refId: z.string().uuid().optional() }), req.body);
   let type: MessageType = body.type;
   let mediaUrl: string | undefined;

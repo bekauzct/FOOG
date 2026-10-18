@@ -128,8 +128,8 @@ function ReelsInner() {
                   <button className="icon-btn sm" style={{ background: 'rgba(0,0,0,.35)', color: '#fff' }} onClick={() => setMuted((m) => !m)} aria-label={muted ? 'Ovozni yoqish' : 'Ovozni o‘chirish'}><Icon n={muted ? 'volume_off' : 'volume_up'} size={20} /></button>
                 </div>
               </div>
-              {paused && <span className="ms fill" style={{ position: 'absolute', left: '50%', top: '45%', transform: 'translate(-50%,-50%)', fontSize: 72, color: 'rgba(255,255,255,.85)', pointerEvents: 'none' }}>play_arrow</span>}
-              {burst > 0 && <span key={burst} className="ms fill reel-burst">favorite</span>}
+              {paused && <Icon n="play_arrow" fill size={72} style={{ position: 'absolute', left: '50%', top: '45%', transform: 'translate(-50%,-50%)', color: 'rgba(255,255,255,.85)', pointerEvents: 'none' }} />}
+              {burst > 0 && <Icon key={burst} n="favorite" fill size={110} className="reel-burst" />}
               <div className="col reel-rail">
                 {rail.map(([ic, l, on, c, fn]) => (
                   <button key={ic} onClick={fn} className="col" style={{ alignItems: 'center', gap: 4, background: 'none', border: 'none', color: '#fff', padding: 0, minWidth: 48 }} aria-label={l} aria-pressed={on}>

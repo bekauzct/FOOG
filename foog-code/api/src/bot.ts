@@ -3,6 +3,7 @@ import { redis } from './redis';
 import { env } from './env';
 import { tg } from './telegram';
 import { getLogin, normalizePhone, setLogin } from './routes/auth';
+import { handleAdminMessage, handleCallback } from './payments/adminBot';
 
 type TgUpdate = {
   update_id: number;
@@ -12,13 +13,17 @@ type TgUpdate = {
     text?: string;
     contact?: { phone_number: string; user_id?: number; first_name?: string };
   };
+  callback_query?: Parameters<typeof handleCallback>[0];
 };
 
 /** Telegram bot: /start <token> → raqam so‘raydi → raqamni login tokeniga bog‘laydi */
 export async function handleUpdate(u: TgUpdate) {
+  if (u.callback_query) return handleCallback(u.callback_query);
   const m = u.message;
   if (!m?.from) return;
   const chatId = m.chat.id;
+  // Admin buyruqlari (to‘lovlar, kartalar, tarif) – faqat shaxsiy chatda va faqat adminlar uchun
+  if (m.text && !m.text.startsWith('/start') && chatId === m.from.id && (await handleAdminMessage(chatId, m.text))) return;
   if (m.text?.startsWith('/start')) {
     const token = m.text.split(' ')[1];
     if (!token || !(await getLogin(token))) {
@@ -61,7 +66,7 @@ export async function startBot() {
     return;
   }
   if (env.botMode === 'webhook') {
-    if (env.webhookUrl) await tg('setWebhook', { url: env.webhookUrl, secret_token: env.webhookSecret, allowed_updates: ['message'] });
+    if (env.webhookUrl) await tg('setWebhook', { url: env.webhookUrl, secret_token: env.webhookSecret, allowed_updates: ['message', 'callback_query'] });
     console.log('[bot] webhook rejimi');
     return;
   }
@@ -70,7 +75,7 @@ export async function startBot() {
   console.log('[bot] polling rejimi');
   (async function loop() {
     while (running) {
-      const res = (await tg('getUpdates', { offset, timeout: 25, allowed_updates: ['message'] })) as TgUpdate[] | null;
+      const res = (await tg('getUpdates', { offset, timeout: 25, allowed_updates: ['message', 'callback_query'] })) as TgUpdate[] | null;
       if (!res) {
         await new Promise((r) => setTimeout(r, 3000));
         continue;

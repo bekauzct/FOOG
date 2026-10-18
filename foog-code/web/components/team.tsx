@@ -61,7 +61,7 @@ export function TeamSheet({ id, onClose, onChange }: { id: string; onClose: () =
           <div className="col" style={{ gap: 16 }}>
             <div className="row between wrap" style={{ gap: 8 }}>
               <span className="c2" style={{ fontSize: 14 }}>{SKILL_LABEL[t.level]} · {t.district ?? 'Toshkent'}{t.plays ? ` · ${t.plays}` : ''}</span>
-              {t.isCaptain && <button className="btn btn-outline btn-sm" onClick={() => setEdit(true)}><Icon n="edit" size={18} />Tahrirlash</button>}
+              {t.isCaptain && <span className="row" style={{ gap: 8 }}><Link href="/team" className="btn btn-primary btn-sm"><Icon n="shield" size={18} />Boshqarish</Link><button className="btn btn-outline btn-sm" onClick={() => setEdit(true)}><Icon n="edit" size={18} />Tahrirlash</button></span>}
             </div>
             <div className="col" style={{ gap: 4 }}>
               <span className="label-sm c3">Tarkib · {t.members.length}</span>

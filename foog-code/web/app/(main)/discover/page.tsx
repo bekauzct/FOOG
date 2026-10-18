@@ -5,13 +5,13 @@ import { Suspense, useEffect, useState } from 'react';
 import { Btn, ErrorState, Icon, Loading, Modal } from '@/components/ui';
 import { MatchCard, PlayerCard, type MatchT, type PlayerT } from '@/components/cards';
 import { InviteModal } from '@/components/invite';
-import { TeamForm, TeamSheet } from '@/components/team';
+import { TeamSheet } from '@/components/team';
 import { useApi } from '@/lib/useApi';
 import { post, qs } from '@/lib/api';
 import { useToast } from '@/lib/toast';
 import { DISTRICTS, SKILL_LABEL, addDays, todayStr, weekday } from '@/lib/format';
 
-type Team = { id: string; name: string; short: string; captainId: string; district: string | null; level: string; lookingFor: string[]; plays: string | null; members: number; isMember: boolean; chatId: string | null; wins: number; draws: number; losses: number; form: string[] };
+type Team = { id: string; name: string; short: string; captainId: string; district: string | null; level: string; lookingFor: string[]; plays: string | null; members: number; limit: number; status: 'active' | 'frozen'; isMember: boolean; chatId: string | null; wins: number; draws: number; losses: number; form: string[] };
 type Tab = 'players' | 'teams' | 'matches';
 
 function Filters({ groups }: { groups: { label: string; opts: [string, string][]; value: string[]; set: (v: string[]) => void; single?: boolean }[] }) {
@@ -49,7 +49,8 @@ function TeamCard({ t, onChange }: { t: Team; onChange: () => void }) {
     <div className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
       <button className="row" style={{ gap: 14, background: 'none', border: 'none', padding: 0, textAlign: 'left', color: 'var(--text-1)', cursor: 'pointer' }} onClick={() => setSheet(true)} aria-label={`${t.name} tarkibini ko‘rish`}>
         <div style={{ width: 56, height: 56, borderRadius: 14, background: 'var(--inverse)', color: 'var(--on-inverse)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 20px var(--font-ui)', flexShrink: 0 }}>{t.short}</div>
-        <div className="col grow"><b style={{ fontSize: 17 }} className="ellipsis">{t.name}</b><span className="c2 ellipsis" style={{ fontSize: 14 }}>{SKILL_LABEL[t.level]} · {t.district ?? 'Toshkent'} · {t.members} o‘yinchi</span></div>
+        <div className="col grow"><b style={{ fontSize: 17 }} className="ellipsis">{t.name}</b><span className="c2 ellipsis" style={{ fontSize: 14 }}>{SKILL_LABEL[t.level]} · {t.district ?? 'Toshkent'} · {t.members} / {t.limit} o‘yinchi</span></div>
+        {t.status === 'frozen' && <span className="pill-tag warning">MUZLATILGAN</span>}
         <Icon n="chevron_right" />
       </button>
       <div className="row between mono" style={{ fontSize: 15 }}>
@@ -59,7 +60,7 @@ function TeamCard({ t, onChange }: { t: Team; onChange: () => void }) {
       <div className="well row wrap" style={{ padding: '10px 12px', gap: 8 }}><span className="label-sm c2">Qidirmoqda</span>{(t.lookingFor.length ? t.lookingFor : ['—']).map((n) => <span key={n} className="tag solid">{n}</span>)}</div>
       <div className="row" style={{ gap: 8 }}>
         {t.isMember ? <Link href={t.chatId ? `/messages/${t.chatId}` : '/messages'} className="btn btn-outline" style={{ flex: 1 }}><Icon n="chat" size={18} />Jamoa chati</Link>
-          : <Btn className="btn btn-primary" style={{ flex: 1 }} loading={busy} onClick={join}>Jamoaga qo‘shilish</Btn>}
+          : <Btn className="btn btn-primary" style={{ flex: 1 }} loading={busy} disabled={t.members >= t.limit} onClick={join}>{t.members >= t.limit ? 'Joy qolmagan' : 'Jamoaga qo‘shilish'}</Btn>}
         {!t.isMember && <button className="btn btn-outline" style={{ flex: 1 }} onClick={msgCaptain}>Sardorga yozish</button>}
         {t.isMember && <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSheet(true)}><Icon n="group" size={18} />Tarkib</button>}
       </div>
@@ -85,7 +86,6 @@ function DiscoverInner() {
   const [mSpots, setMSpots] = useState<string[]>([]);
   const [mDistrict, setMDistrict] = useState<string[]>([]);
   const [invite, setInvite] = useState<PlayerT | null>(null);
-  const [teamNew, setTeamNew] = useState(false);
   const inviteMatch = sp.get('invite');
   useEffect(() => { const t = setTimeout(() => setDq(q), 300); return () => clearTimeout(t); }, [q]);
   useEffect(() => { router.replace(`/discover${qs({ tab: tab === 'players' ? undefined : tab, q: dq, invite: inviteMatch ?? undefined })}`, { scroll: false }); }, [tab, dq]);
@@ -134,7 +134,7 @@ function DiscoverInner() {
         {([['players', 'O‘yinchilar'], ['teams', 'Jamoalar'], ['matches', 'O‘yinlar']] as const).map(([k, l]) => (
           <button key={k} role="tab" aria-selected={tab === k} className={`tab ${tab === k ? 'on' : ''}`} style={{ fontSize: 17, fontWeight: 700 }} onClick={() => setTab(k)}>{l}<span className="n">{counts[k]}</span></button>
         ))}
-        {tab === 'teams' && <button className="btn btn-outline btn-sm" style={{ marginLeft: 'auto', marginBottom: 8 }} onClick={() => setTeamNew(true)}><Icon n="add" size={18} />Jamoa tuzish</button>}
+        {tab === 'teams' && <Link href="/team" className="btn btn-outline btn-sm" style={{ marginLeft: 'auto', marginBottom: 8 }}><Icon n="shield" size={18} />Jamoam</Link>}
       </div>
 
       {tab === 'players' && (
@@ -174,7 +174,6 @@ function DiscoverInner() {
         </>
       )}
       <InviteModal user={invite} onClose={() => setInvite(null)} />
-      {teamNew && <TeamForm open onClose={() => setTeamNew(false)} onDone={teams.reload} />}
     </div>
   );
 }

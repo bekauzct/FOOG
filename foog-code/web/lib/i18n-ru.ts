@@ -133,6 +133,8 @@ export const RU: Record<string, string> = {
   'Profil menyusi': 'Меню профиля',
   'Profil': 'Профиль',
   'Bronlarim': 'Мои брони',
+  'Jamoam': 'Моя команда',
+  'To‘lovlar': 'Платежи',
   'Profilni tahrirlash': 'Редактировать профиль',
   'Sharhlar': 'Отзывы',
   'Xodimlar': 'Сотрудники',

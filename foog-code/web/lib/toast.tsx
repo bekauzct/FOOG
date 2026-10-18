@@ -1,4 +1,5 @@
 'use client';
+import { Icon } from '@/components/ui';
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
 
 type T = { id: number; text: string; kind: 'ok' | 'warn' | 'err'; undo?: () => void; action?: { label: string; fn: () => void } };
@@ -19,9 +20,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div className="toast-wrap" role="status" aria-live="polite">
         {items.map((t) => (
           <div className="toast" key={t.id}>
-            <span className="ms fill" style={{ color: t.kind === 'ok' ? 'var(--success)' : t.kind === 'warn' ? 'var(--warning)' : 'var(--error)' }}>
-              {t.kind === 'ok' ? 'check_circle' : t.kind === 'warn' ? 'info' : 'error'}
-            </span>
+            {t.kind === 'ok' ? <Icon n="check_circle" fill style={{ color: 'var(--success)' }} /> : t.kind === 'warn' ? <Icon n="info" fill style={{ color: 'var(--warning)' }} /> : <Icon n="error" fill style={{ color: 'var(--error)' }} />}
             <span>{t.text}</span>
             {t.undo && <button onClick={() => { t.undo!(); setItems((s) => s.filter((x) => x.id !== t.id)); }}>Bekor qilish</button>}
             {t.action && <button onClick={() => { t.action!.fn(); setItems((s) => s.filter((x) => x.id !== t.id)); }}>{t.action.label}</button>}

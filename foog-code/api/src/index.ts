@@ -4,6 +4,7 @@ import { createApp } from './app';
 import { startWs } from './ws';
 import { startBot } from './bot';
 import { expirePending } from './routes/bookings';
+import { freezeExpired } from './payments/service';
 import { ensureAchievements } from './services/achievements';
 
 async function main() {
@@ -13,7 +14,10 @@ async function main() {
   await ensureAchievements();
   server.listen(env.port, () => console.log(`FOOG API: http://localhost:${env.port} (ws: /ws)`));
   // 2 soatda javob bo‘lmagan bron so‘rovlarini avtomatik bekor qilish – har daqiqada
-  const tick = () => expirePending().catch((e) => console.error('[expire]', e));
+  const tick = () => {
+    expirePending().catch((e) => console.error('[expire]', e));
+    freezeExpired().catch((e) => console.error('[freeze]', e));
+  };
   tick();
   setInterval(tick, 60 * 1000);
   void startBot();

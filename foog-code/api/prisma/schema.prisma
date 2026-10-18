@@ -36,8 +36,8 @@ enum StadiumStatus {
 }
 
 enum PitchSize {
-  s5x5  @map("5x5")
-  s7x7  @map("7x7")
+  s5x5   @map("5x5")
+  s7x7   @map("7x7")
   s11x11 @map("11x11")
 }
 
@@ -119,58 +119,63 @@ enum DisputeStatus {
 }
 
 model User {
-  id          String     @id @default(uuid()) @db.Uuid
-  telegramId  BigInt?    @unique @map("telegram_id")
-  phone       String?    @unique
-  name        String
-  username    String?    @unique
-  role        Role       @default(player)
-  position    String?
-  foot        Foot?
-  district    String?
-  level       Int        @default(1)
-  xp          Int        @default(0)
-  skill       String?    // beginner | intermediate | advanced
-  bio         String?
-  jersey      Int?
-  available   String[]   @default([]) // tonight | fri | weekends | ...
-  avatarUrl   String?    @map("avatar_url")
-  coverUrl    String?    @map("cover_url")
-  verified    Boolean    @default(false)
-  status      UserStatus @default(active)
-  blockedUntil DateTime? @map("blocked_until") @db.Timestamptz
-  blockReason String?    @map("block_reason")
-  noShows     Int        @default(0) @map("no_shows")
-  lastSeenAt  DateTime?  @map("last_seen_at") @db.Timestamptz
-  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz
+  id           String     @id @default(uuid()) @db.Uuid
+  telegramId   BigInt?    @unique @map("telegram_id")
+  phone        String?    @unique
+  name         String
+  username     String?    @unique
+  role         Role       @default(player)
+  position     String?
+  foot         Foot?
+  district     String?
+  level        Int        @default(1)
+  xp           Int        @default(0)
+  skill        String? // beginner | intermediate | advanced
+  bio          String?
+  jersey       Int?
+  available    String[]   @default([]) // tonight | fri | weekends | ...
+  avatarUrl    String?    @map("avatar_url")
+  coverUrl     String?    @map("cover_url")
+  verified     Boolean    @default(false)
+  status       UserStatus @default(active)
+  blockedUntil DateTime?  @map("blocked_until") @db.Timestamptz
+  blockReason  String?    @map("block_reason")
+  noShows      Int        @default(0) @map("no_shows")
+  fraudStreak  Int        @default(0) @map("fraud_streak") // ketma-ket «Aldov» deb belgilangan to‘lovlar
+  lastSeenAt   DateTime?  @map("last_seen_at") @db.Timestamptz
+  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz
 
-  followers      Follow[]        @relation("following")
-  following      Follow[]        @relation("follower")
-  posts          Post[]
-  reels          Reel[]
-  stories        Story[]
-  comments       Comment[]
-  likes          Like[]
-  saves          Save[]
-  reports        Report[]
-  notifications  Notification[]  @relation("notifUser")
-  stadiums       Stadium[]
-  staffOf        StadiumStaff[]
-  bookings       Booking[]
-  reviews        Review[]
-  captainOf      Team[]
-  teamMembers    TeamMember[]
-  organized      Match[]         @relation("organizer")
-  mvpOf          Match[]         @relation("mvp")
-  matchPlayers   MatchPlayer[]
-  chatMembers    ChatMember[]
-  messages       Message[]
-  achievements   UserAchievement[]
-  invitesSent    MatchInvite[]   @relation("inviteFrom")
-  invitesGot     MatchInvite[]   @relation("inviteTo")
-  ownerProfile   OwnerProfile?
-  audit          AuditLog[]
-  disputes       Dispute[]
+  followers       Follow[]          @relation("following")
+  following       Follow[]          @relation("follower")
+  posts           Post[]
+  reels           Reel[]
+  stories         Story[]
+  comments        Comment[]
+  likes           Like[]
+  saves           Save[]
+  reports         Report[]
+  notifications   Notification[]    @relation("notifUser")
+  stadiums        Stadium[]
+  staffOf         StadiumStaff[]
+  bookings        Booking[]
+  reviews         Review[]
+  captainOf       Team[]
+  payments        Payment[]         @relation("payer")
+  decidedPayments Payment[]         @relation("paymentDecider")
+  paymentBlocks   PaymentBlock[]    @relation("blocked")
+  liftedBlocks    PaymentBlock[]    @relation("blockLifter")
+  teamMembers     TeamMember[]
+  organized       Match[]           @relation("organizer")
+  mvpOf           Match[]           @relation("mvp")
+  matchPlayers    MatchPlayer[]
+  chatMembers     ChatMember[]
+  messages        Message[]
+  achievements    UserAchievement[]
+  invitesSent     MatchInvite[]     @relation("inviteFrom")
+  invitesGot      MatchInvite[]     @relation("inviteTo")
+  ownerProfile    OwnerProfile?
+  audit           AuditLog[]
+  disputes        Dispute[]
 
   @@map("users")
 }
@@ -183,27 +188,29 @@ model Follow {
   following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@id([followerId, followingId])
+  @@index([followingId])
   @@map("follows")
 }
 
 model Post {
-  id        String   @id @default(uuid()) @db.Uuid
-  authorId  String   @map("author_id") @db.Uuid
-  stadiumId String?  @map("stadium_id") @db.Uuid
+  id        String    @id @default(uuid()) @db.Uuid
+  authorId  String    @map("author_id") @db.Uuid
+  stadiumId String?   @map("stadium_id") @db.Uuid
   text      String
-  mediaUrl  String?  @map("media_url")
-  mediaType String?  @map("media_type") // image | video
-  kind      String   @default("post") // post | result | find_players
-  stats     Json?    // { result, played, goals, assists }
-  hidden    Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  stadium   Stadium? @relation(fields: [stadiumId], references: [id], onDelete: SetNull)
+  mediaUrl  String?   @map("media_url")
+  mediaType String?   @map("media_type") // image | video
+  kind      String    @default("post") // post | result | find_players
+  stats     Json? // { result, played, goals, assists }
+  hidden    Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  stadium   Stadium?  @relation(fields: [stadiumId], references: [id], onDelete: SetNull)
   comments  Comment[]
   likes     Like[]
   saves     Save[]
 
   @@index([createdAt])
+  @@index([authorId, createdAt])
   @@map("posts")
 }
 
@@ -241,6 +248,7 @@ model Reel {
   saves     Save[]
 
   @@index([createdAt])
+  @@index([authorId, createdAt])
   @@map("reels")
 }
 
@@ -256,6 +264,8 @@ model Comment {
   post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
   reel      Reel?    @relation(fields: [reelId], references: [id], onDelete: Cascade)
 
+  @@index([postId, createdAt])
+  @@index([reelId, createdAt])
   @@map("comments")
 }
 
@@ -311,7 +321,7 @@ model Report {
 model Notification {
   id        String    @id @default(uuid()) @db.Uuid
   userId    String    @map("user_id") @db.Uuid
-  type      String    // invite | match | booking | social
+  type      String // invite | match | booking | social
   kind      String    @default("info") // aniq turi: booking_confirmed, follow, like ...
   title     String
   body      String?
@@ -328,26 +338,26 @@ model Notification {
 }
 
 model Stadium {
-  id           String        @id @default(uuid()) @db.Uuid
-  code         String        @unique // ST-0071
-  ownerId      String        @map("owner_id") @db.Uuid
+  id           String         @id @default(uuid()) @db.Uuid
+  code         String         @unique // ST-0071
+  ownerId      String         @map("owner_id") @db.Uuid
   name         String
   address      String
   district     String
-  lat          Decimal       @db.Decimal(9, 6)
-  lng          Decimal       @db.Decimal(9, 6)
+  lat          Decimal        @db.Decimal(9, 6)
+  lng          Decimal        @db.Decimal(9, 6)
   phone        String?
   description  String?
   metro        String?
-  amenities    String[]      @default([])
-  cancelPolicy String        @default("24 soat oldin bepul bekor qilish") @map("cancel_policy")
-  status       StadiumStatus @default(mod)
-  accepting    Boolean       @default(true)
-  partner      Boolean       @default(false)
+  amenities    String[]       @default([])
+  cancelPolicy String         @default("24 soat oldin bepul bekor qilish") @map("cancel_policy")
+  status       StadiumStatus  @default(mod)
+  accepting    Boolean        @default(true)
+  partner      Boolean        @default(false)
   checklist    Json?
-  rejectReason String?       @map("reject_reason")
-  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  owner        User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  rejectReason String?        @map("reject_reason")
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  owner        User           @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   staff        StadiumStaff[]
   pitches      Pitch[]
   schedule     Schedule[]
@@ -357,6 +367,8 @@ model Stadium {
   photos       StadiumPhoto[]
   saves        Save[]
 
+  @@index([status])
+  @@index([ownerId])
   @@map("stadiums")
 }
 
@@ -370,6 +382,7 @@ model StadiumPhoto {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   stadium   Stadium  @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
 
+  @@index([stadiumId])
   @@map("stadium_photos")
 }
 
@@ -381,6 +394,7 @@ model StadiumStaff {
   user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([stadiumId, userId])
+  @@index([userId])
   @@map("stadium_staff")
 }
 
@@ -389,7 +403,7 @@ model Pitch {
   stadiumId String     @map("stadium_id") @db.Uuid
   name      String
   size      PitchSize
-  surface   String     // turf | grass | hybrid | futsal
+  surface   String // turf | grass | hybrid | futsal
   indoor    Boolean    @default(false)
   price     Int
   peakPrice Int        @map("peak_price")
@@ -400,6 +414,7 @@ model Pitch {
   schedule  Schedule[]
   bookings  Booking[]
 
+  @@index([stadiumId])
   @@map("pitches")
 }
 
@@ -408,7 +423,7 @@ model Schedule {
   stadiumId String       @map("stadium_id") @db.Uuid
   pitchId   String?      @map("pitch_id") @db.Uuid
   type      ScheduleType
-  weekday   Int?         // 0 = Dushanba ... 6 = Yakshanba
+  weekday   Int? // 0 = Dushanba ... 6 = Yakshanba
   date      DateTime?    @db.Date
   startTime DateTime     @map("start_time") @db.Time(0)
   endTime   DateTime     @map("end_time") @db.Time(0)
@@ -443,6 +458,7 @@ model Booking {
 
   @@index([pitchId, date])
   @@index([status, createdAt])
+  @@index([userId, date])
   @@map("bookings")
 }
 
@@ -464,25 +480,32 @@ model Review {
   stadium     Stadium   @relation(fields: [stadiumId], references: [id], onDelete: Cascade)
   booking     Booking?  @relation(fields: [bookingId], references: [id], onDelete: SetNull)
 
+  @@index([stadiumId, createdAt])
   @@map("reviews")
 }
 
 model Team {
-  id         String       @id @default(uuid()) @db.Uuid
-  name       String
-  short      String
-  captainId  String       @map("captain_id") @db.Uuid
-  district   String?
-  level      String       @default("intermediate")
-  lookingFor String[]     @default([]) @map("looking_for")
-  plays      String?      // "Payshanba kechqurun"
-  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz
-  captain    User         @relation(fields: [captainId], references: [id], onDelete: Cascade)
-  members    TeamMember[]
-  homeGames  Match[]      @relation("home")
-  awayGames  Match[]      @relation("away")
-  chats      Chat[]
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  short       String
+  captainId   String       @map("captain_id") @db.Uuid
+  district    String?
+  level       String       @default("intermediate")
+  lookingFor  String[]     @default([]) @map("looking_for")
+  plays       String? // "Payshanba kechqurun"
+  status      TeamStatus   @default(active)
+  paidUntil   DateTime?    @map("paid_until") @db.Timestamptz // null – muddatsiz (bepul tarif yoki eski jamoa)
+  memberLimit Int?         @map("member_limit") // null – umumiy limit (settings)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  captain     User         @relation(fields: [captainId], references: [id], onDelete: Cascade)
+  members     TeamMember[]
+  homeGames   Match[]      @relation("home")
+  awayGames   Match[]      @relation("away")
+  chats       Chat[]
+  payments    Payment[]
 
+  @@index([captainId])
+  @@index([status])
   @@map("teams")
 }
 
@@ -494,6 +517,7 @@ model TeamMember {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([teamId, userId])
+  @@index([userId])
   @@map("team_members")
 }
 
@@ -522,6 +546,8 @@ model Match {
   chats       Chat[]
   invites     MatchInvite[]
 
+  @@index([status])
+  @@index([organizerId])
   @@map("matches")
 }
 
@@ -536,6 +562,7 @@ model MatchPlayer {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([matchId, userId])
+  @@index([userId])
   @@map("match_players")
 }
 
@@ -580,6 +607,7 @@ model ChatMember {
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([chatId, userId])
+  @@index([userId])
   @@map("chat_members")
 }
 
@@ -605,7 +633,7 @@ model Achievement {
   title       String
   description String
   icon        String
-  rarity      String            // Oddiy | Kam uchraydi | Epik
+  rarity      String // Oddiy | Kam uchraydi | Epik
   goal        Int               @default(1)
   users       UserAchievement[]
 
@@ -639,7 +667,7 @@ model OwnerProfile {
 // ERD+: Landing → "Erta kirish" va "Stadioningizni qo‘shing"
 model EarlyAccess {
   id          String   @id @default(uuid()) @db.Uuid
-  role        String   // player | owner
+  role        String // player | owner
   name        String?
   phone       String
   district    String?
@@ -680,4 +708,115 @@ model Dispute {
   openedBy   User          @relation(fields: [openedById], references: [id], onDelete: Cascade)
 
   @@map("disputes")
+}
+
+// ---------- Jamoa tarifi va to‘lovlar ----------
+enum TeamStatus {
+  active
+  frozen // oylik to‘lov muddati o‘tgan: tarkib saqlanadi, yangi a’zo, chat va o‘yinga yozilish yopiq
+}
+
+enum PaymentPurpose {
+  team_create
+  team_monthly
+}
+
+enum PaymentStatus {
+  awaiting // foydalanuvchi to‘lov oynasini ochdi, chek hali yo‘q
+  review // chek yuborildi, admin tekshiradi
+  approved // «To‘g‘ri»
+  fraud // «Aldov»
+  cancelled
+}
+
+enum MethodStatus {
+  on // ishlaydi
+  msg // tugma ko‘rinadi, bosilganda «Server vaqtincha ishlamayapti…»
+  off // ko‘rinmaydi
+}
+
+/// Kalit–qiymat sozlamalar: tarif narxlari, a’zolar limiti, to‘lov yo‘riqnomasi
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("settings")
+}
+
+/// To‘lov usuli. provider – koddagi modul (src/payments/providers), yangi usul qo‘shish uchun kodni qayta yozish shart emas
+model PaymentMethod {
+  id          String       @id @default(uuid()) @db.Uuid
+  code        String       @unique
+  provider    String
+  name        String
+  description String?
+  badge       String?
+  color       String?
+  status      MethodStatus @default(off)
+  sort        Int          @default(0)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  payments    Payment[]
+
+  @@map("payment_methods")
+}
+
+/// Pul qabul qilinadigan karta (admin bot yoki sayt orqali boshqaradi)
+model PaymentCard {
+  id        String    @id @default(uuid()) @db.Uuid
+  number    String
+  holder    String
+  bank      String
+  active    Boolean   @default(true)
+  primary   Boolean   @default(false) // foydalanuvchiga ko‘rsatiladigan karta
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  payments  Payment[]
+
+  @@map("payment_cards")
+}
+
+model Payment {
+  id          String         @id @default(uuid()) @db.Uuid
+  code        String         @unique // PAY-20431
+  userId      String         @map("user_id") @db.Uuid
+  teamId      String?        @map("team_id") @db.Uuid
+  purpose     PaymentPurpose
+  amount      Int
+  methodId    String?        @map("method_id") @db.Uuid
+  cardId      String?        @map("card_id") @db.Uuid
+  status      PaymentStatus  @default(awaiting)
+  teamDraft   Json?          @map("team_draft") // jamoa yaratish: nom va boshqa ma’lumotlar (tasdiqdan keyin jamoa ochiladi)
+  receiptPath String?        @map("receipt_path") // ochiq papkada emas
+  submittedAt DateTime?      @map("submitted_at") @db.Timestamptz
+  decidedById String?        @map("decided_by_id") @db.Uuid
+  decidedVia  String?        @map("decided_via") // web | bot
+  decidedAt   DateTime?      @map("decided_at") @db.Timestamptz
+  botMessages Json?          @map("bot_messages") // [{ chatId, messageId }] – boshqa adminlardagi tugmalarni yopish uchun
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  user        User           @relation("payer", fields: [userId], references: [id], onDelete: Cascade)
+  team        Team?          @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  method      PaymentMethod? @relation(fields: [methodId], references: [id], onDelete: SetNull)
+  card        PaymentCard?   @relation(fields: [cardId], references: [id], onDelete: SetNull)
+  decidedBy   User?          @relation("paymentDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+
+  @@index([status, submittedAt])
+  @@index([userId, createdAt])
+  @@index([teamId])
+  @@map("payments")
+}
+
+/// To‘lov bloki: ketma-ket 5 ta «Aldov» → 24 soat
+model PaymentBlock {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  reason     String
+  startedAt  DateTime  @default(now()) @map("started_at") @db.Timestamptz
+  endsAt     DateTime  @map("ends_at") @db.Timestamptz
+  liftedAt   DateTime? @map("lifted_at") @db.Timestamptz
+  liftedById String?   @map("lifted_by_id") @db.Uuid
+  user       User      @relation("blocked", fields: [userId], references: [id], onDelete: Cascade)
+  liftedBy   User?     @relation("blockLifter", fields: [liftedById], references: [id], onDelete: SetNull)
+
+  @@index([userId, endsAt])
+  @@map("payment_blocks")
 }

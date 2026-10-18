@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../db';
 import { acquireLocks, releaseLocks } from '../redis';
-import { ah, bad, conflict, forbidden, notFound, parse, qstr } from '../http';
+import { HttpError, ah, bad, conflict, forbidden, notFound, parse, qstr } from '../http';
 import { requireAuth } from '../auth';
 import { dateStr, dateVal, tashkentParts, timeStr } from '../time';
 import { miniSelect, sizeOut } from '../serialize';
@@ -12,6 +12,8 @@ import { notify } from '../notify';
 import { publish } from '../events';
 import { postSystemMessage, ensureMember, sendMessage } from './chat';
 import { awardAfterMatch } from '../services/achievements';
+import { getTariff, limitOf, PERIOD_DAYS } from '../payments/settings';
+import { assertCanPay, assertTeamOpen, captainTeam, createTeamRecord } from '../payments/service';
 
 export const matchesRouter = Router();
 
@@ -80,21 +82,31 @@ matchesRouter.get('/players', ah(async (req, res) => {
 // ---------- Jamoalar ----------
 matchesRouter.get('/teams', ah(async (req, res) => {
   const q = qstr(req.query.q);
-  const where: Prisma.TeamWhereInput = q ? { OR: [{ name: { contains: q, mode: 'insensitive' } }, { district: { contains: q, mode: 'insensitive' } }] } : {};
+  const where: Prisma.TeamWhereInput = {
+    ...(q ? { OR: [{ name: { contains: q, mode: 'insensitive' } }, { district: { contains: q, mode: 'insensitive' } }] } : {}),
+    // Muzlatilgan jamoa faqat a’zolariga ko‘rinadi
+    AND: [{ OR: [{ status: 'active' }, ...(req.user ? [{ members: { some: { userId: req.user.id } } }] : [])] }],
+  };
+  const tariff = await getTariff();
   const rows = await prisma.team.findMany({ where, include: { _count: { select: { members: true } }, members: req.user ? { where: { userId: req.user.id } } : false, chats: { select: { id: true } }, homeGames: { where: { status: 'done' }, include: { booking: true } }, awayGames: { where: { status: 'done' }, include: { booking: true } } } });
   res.json({
     items: rows.map((t) => {
       const games = [...t.homeGames.map((g) => ({ d: g.booking.date, f: g.homeScore ?? 0, a: g.awayScore ?? 0 })), ...t.awayGames.map((g) => ({ d: g.booking.date, f: g.awayScore ?? 0, a: g.homeScore ?? 0 }))].sort((a, b) => b.d.getTime() - a.d.getTime());
       const res1 = games.map((g) => (g.f > g.a ? 'W' : g.f === g.a ? 'D' : 'L'));
-      return { id: t.id, name: t.name, short: t.short, captainId: t.captainId, district: t.district, level: t.level, lookingFor: t.lookingFor, plays: t.plays, members: t._count.members, isMember: Array.isArray(t.members) && t.members.length > 0, chatId: t.chats[0]?.id ?? null, wins: res1.filter((x) => x === 'W').length, draws: res1.filter((x) => x === 'D').length, losses: res1.filter((x) => x === 'L').length, form: res1.slice(0, 5) };
+      return { id: t.id, name: t.name, short: t.short, captainId: t.captainId, district: t.district, level: t.level, lookingFor: t.lookingFor, plays: t.plays, members: t._count.members, status: t.status, limit: limitOf(t, tariff), isMember: Array.isArray(t.members) && t.members.length > 0, chatId: t.chats[0]?.id ?? null, wins: res1.filter((x) => x === 'W').length, draws: res1.filter((x) => x === 'D').length, losses: res1.filter((x) => x === 'L').length, form: res1.slice(0, 5) };
     }).sort((a, b) => b.members - a.members),
   });
 }));
 
 matchesRouter.post('/teams', requireAuth, ah(async (req, res) => {
   playerOnly(req);
-  const body = parse(z.object({ name: z.string().trim().min(2).max(40), short: z.string().trim().min(2).max(4), district: z.string().max(40).optional(), level: z.enum(['beginner', 'intermediate', 'advanced']).default('intermediate'), lookingFor: z.array(z.string()).max(6).default([]), plays: z.string().max(60).optional() }), req.body);
-  const t = await prisma.team.create({ data: { ...body, short: body.short.toUpperCase(), captainId: req.user!.id, members: { create: { userId: req.user!.id } }, chats: { create: { type: 'team', name: body.name, members: { create: { userId: req.user!.id } } } } }, include: { chats: true } });
+  const body = parse(z.object({ name: z.string().trim().min(2).max(40), short: z.string().trim().min(2).max(4).optional(), district: z.string().max(40).optional(), level: z.enum(['beginner', 'intermediate', 'advanced']).default('intermediate'), lookingFor: z.array(z.string()).max(6).default([]), plays: z.string().max(60).optional() }), req.body);
+  await assertCanPay(req.user!.id);
+  if (await captainTeam(req.user!.id)) throw conflict('Sizda allaqachon jamoa bor – bitta kapitan bitta jamoani boshqaradi');
+  const t0 = await getTariff();
+  // Pullik tarif: jamoa admin tasdiqlagan to‘lovdan keyin ochiladi (POST /payments)
+  if (t0.createPrice > 0) throw new HttpError(402, `Jamoa yaratish pullik: ${t0.createPrice} so‘m. «Jamoam» sahifasida to‘lov qiling.`, 'payment_required');
+  const t = await createTeamRecord(req.user!.id, body, t0.monthlyPrice > 0 ? new Date(Date.now() + PERIOD_DAYS * 864e5) : null);
   res.status(201).json({ id: t.id, chatId: t.chats[0].id });
 }));
 
@@ -102,6 +114,8 @@ matchesRouter.post('/teams/:id/join', requireAuth, ah(async (req, res) => {
   playerOnly(req);
   const t = await prisma.team.findUnique({ where: { id: req.params.id }, include: { chats: true } });
   if (!t) throw notFound('Jamoa topilmadi');
+  const already = await prisma.teamMember.findUnique({ where: { teamId_userId: { teamId: t.id, userId: req.user!.id } } });
+  if (!already) await assertTeamOpen(t);
   await prisma.teamMember.upsert({ where: { teamId_userId: { teamId: t.id, userId: req.user!.id } }, update: {}, create: { teamId: t.id, userId: req.user!.id } });
   let chatId = t.chats[0]?.id;
   if (!chatId) chatId = (await prisma.chat.create({ data: { type: 'team', teamId: t.id, name: t.name } })).id;
@@ -142,6 +156,7 @@ matchesRouter.get('/teams/:id', ah(async (req, res) => {
   const isMember = !!me && t.members.some((m) => m.userId === me);
   res.json({
     id: t.id, name: t.name, short: t.short, captainId: t.captainId, district: t.district, level: t.level, lookingFor: t.lookingFor, plays: t.plays, createdAt: t.createdAt,
+    status: t.status, paidUntil: t.paidUntil, limit: limitOf(t, await getTariff()),
     isMember, isCaptain: me === t.captainId, chatId: isMember ? t.chats[0]?.id ?? null : null,
     members: t.members.map((m) => ({ ...m.user, joinedAt: m.joinedAt, captain: m.userId === t.captainId })),
   });
@@ -178,6 +193,18 @@ matchesRouter.delete('/teams/:id/members/:userId', requireAuth, ah(async (req, r
   if (!m) throw notFound('Bu o‘yinchi jamoada emas');
   await dropFromTeam(t, m.userId, req.user!.id, `${m.user.name} jamoadan chiqarildi`);
   await notify(m.userId, { type: 'social', kind: 'team_removed', title: `Siz «${t.name}» jamoasidan chiqarildingiz`, actorId: req.user!.id, refType: 'team', refId: t.id });
+  res.json({ ok: true });
+}));
+
+matchesRouter.post('/teams/:id/invite', requireAuth, ah(async (req, res) => {
+  const { userId } = parse(z.object({ userId: z.string().uuid() }), req.body);
+  const t = await teamOr404(req.params.id);
+  captainOnly(t, req.user!.id);
+  await assertTeamOpen(t);
+  const u = await prisma.user.findUnique({ where: { id: userId } });
+  if (!u || u.role !== 'player') throw notFound('O‘yinchi topilmadi');
+  if (await prisma.teamMember.findUnique({ where: { teamId_userId: { teamId: t.id, userId } } })) throw bad('Bu o‘yinchi allaqachon jamoada');
+  await notify(userId, { type: 'invite', kind: 'team_invite', title: `${req.user!.name} sizni «${t.name}» jamoasiga taklif qildi`, body: 'Qabul qilish uchun jamoa sahifasida «Jamoaga qo‘shilish» ni bosing', actorId: req.user!.id, refType: 'team', refId: t.id, telegram: `⚽️ ${req.user!.name} sizni «${t.name}» jamoasiga taklif qildi: https://foog.uz/discover?tab=teams&q=${encodeURIComponent(t.name)}` });
   res.json({ ok: true });
 }));
 
@@ -231,6 +258,11 @@ matchesRouter.post('/matches', requireAuth, ah(async (req, res) => {
   if (!b || b.userId !== req.user!.id) throw notFound('Bron topilmadi');
   if (!['pending', 'confirmed'].includes(b.status)) throw bad('O‘yin faqat faol bron asosida ochiladi');
   if (b.match) throw bad('Bu bron uchun o‘yin allaqachon ochilgan');
+  if (body.homeTeamId) {
+    const team = await prisma.team.findUnique({ where: { id: body.homeTeamId } });
+    if (!team || !(await prisma.teamMember.findUnique({ where: { teamId_userId: { teamId: team.id, userId: req.user!.id } } }))) throw forbidden('Faqat o‘z jamoangiz bilan yozila olasiz');
+    if (team.status === 'frozen') throw forbidden('Jamoa muzlatilgan: oylik obuna to‘langach, o‘yinga jamoa bo‘lib yozilish ochiladi');
+  }
   const priceEach = Math.ceil(b.price / body.capacity / 1000) * 1000;
   const m = await prisma.match.create({
     data: { ...body, organizerId: req.user!.id, priceEach, players: { create: { userId: req.user!.id, side: 'home' } }, chats: { create: { type: 'match', name: body.title, members: { create: { userId: req.user!.id } } } } },

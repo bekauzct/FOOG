@@ -4,7 +4,7 @@ import { jwtVerify } from 'jose';
 // Rol bo‘yicha bo‘limlar: /home… – futbolchi, /owner – stadion egasi (va xodimi), /admin – admin.
 // Asosiy tekshiruv API da ham bor; bu yerda – noto‘g‘ri bo‘limga kirishda yo‘naltirish.
 const secret = new TextEncoder().encode(process.env.JWT_SECRET ?? '');
-const PLAYER = ['/home', '/bookings', '/discover', '/matches', '/reels', '/messages', '/profile', '/u'];
+const PLAYER = ['/home', '/bookings', '/discover', '/matches', '/reels', '/messages', '/profile', '/u', '/team'];
 // /notifications – barcha rollar uchun (rolga mos topbar bilan)
 
 async function claims(req: NextRequest) {

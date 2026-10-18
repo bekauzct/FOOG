@@ -617,3 +617,31 @@ h1, h2, h3, h4, p { margin: 0; }
 .ad-side { grid-template-columns: 340px minmax(0, 1fr) !important; }
 @media (max-width: 900px) { .ad-side { grid-template-columns: minmax(0, 1fr) !important; } }
 .ad-content { grid-template-columns: repeat(auto-fill, minmax(min(380px, 100%), 1fr)) !important; }
+
+/* ---------- Jamoa tarifi va to‘lovlar ---------- */
+.pay-method { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; padding: 12px 14px; border-radius: var(--r-md); border: none; background: transparent; color: var(--text-1); box-shadow: inset 0 0 0 1px var(--border-strong); cursor: pointer; }
+.pay-method:hover:not(:disabled) { background: var(--hover); }
+.pay-method:disabled { opacity: .7; cursor: progress; }
+.pay-tile { width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 15px; }
+.pay-alert { gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-md); font-size: 14px; line-height: 1.45; background: color-mix(in oklch, var(--warning) 14%, transparent); color: var(--text-1); }
+.pay-alert .ms { color: var(--warning); margin-top: 1px; }
+.pay-card { display: flex; flex-direction: column; gap: 14px; padding: 18px; border-radius: var(--r-lg); background: #F3F5F9; color: #091025; }
+.pay-drop { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 22px 16px; border-radius: var(--r-md); border: 1.5px dashed var(--border-strong); background: transparent; color: var(--text-1); cursor: pointer; }
+.pay-drop:hover { background: var(--hover); }
+.pay-drop .ms { color: var(--text-2); }
+.tm-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 20px; align-items: start; }
+.tm-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.tm-fact { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: var(--r-md); background: var(--bg); min-width: 0; }
+.tm-bar { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.tm-bar > span { display: block; height: 100%; border-radius: inherit; }
+.tm-banner { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--r-lg); font-size: 14px; line-height: 1.5; }
+.ap-grid { display: grid; grid-template-columns: 340px minmax(0, 1fr) 330px; gap: 16px; align-items: start; }
+.ap-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.ap-req { display: flex; flex-direction: column; gap: 4px; width: 100%; padding: 14px; border-radius: var(--r-lg); border: none; background: var(--surface); color: var(--text-1); text-align: left; cursor: pointer; }
+.ap-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.ap-tg { border-radius: var(--r-lg); background: #17212B; color: #F3F5F9; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.ap-tg-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.ap-tg-btns span { text-align: center; padding: 8px 4px; border-radius: 8px; background: rgba(255,255,255,.08); font-size: 13px; }
+@media (max-width: 1200px) { .ap-grid { grid-template-columns: 300px minmax(0, 1fr); } .ap-grid > :last-child { grid-column: 1 / -1; } }
+@media (max-width: 980px) { .tm-grid, .ap-two { grid-template-columns: 1fr; } .ap-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .tm-facts { grid-template-columns: 1fr 1fr; } .tm-facts > :last-child { grid-column: 1 / -1; } }

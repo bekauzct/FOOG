@@ -36,7 +36,7 @@ export function ThemeButton() {
 }
 
 function useBadges(mode: Mode) {
-  const q = useApi<{ pending?: number; mod?: number; reports?: number }>(mode === 'player' ? null : `/${mode}/badges`);
+  const q = useApi<{ pending?: number; mod?: number; reports?: number; payments?: number }>(mode === 'player' ? null : `/${mode}/badges`);
   const { on } = useSession();
   useEffect(() => (mode === 'owner' ? on('booking', () => q.reload()) : undefined), [mode]);
   return q.data ?? {};
@@ -72,6 +72,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
       { id: '/admin/stadiums', href: '/admin/stadiums', icon: 'stadium', label: 'Stadionlar', badge: b.mod },
       { id: '/admin/users', href: '/admin/users', icon: 'group', label: 'Foydalanuvchilar' },
       { id: '/admin/content', href: '/admin/content', icon: 'flag', label: 'Kontent', badge: b.reports },
+      { id: '/admin/payments', href: '/admin/payments', icon: 'payments', label: 'To‘lovlar', badge: b.payments },
       { id: '/admin/bookings', href: '/admin/bookings', icon: 'event_note', label: 'Bronlar' },
       { id: '/admin/audit', href: '/admin/audit', icon: 'history', label: 'Jurnal' },
     ]
@@ -156,6 +157,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
                   </div>
                   {mode !== 'admin' && <Link href={profHref}><Icon n="person" />{t('Profil')}</Link>}
                   {mode === 'player' && <Link href="/bookings"><Icon n="event_available" />{t('Bronlarim')}</Link>}
+                  {mode === 'player' && <Link href="/team"><Icon n="shield" />{t('Jamoam')}</Link>}
                   {mode === 'player' && <Link href="/profile/edit"><Icon n="edit" />{t('Profilni tahrirlash')}</Link>}
                   {mode === 'owner' && <Link href="/owner/reviews"><Icon n="reviews" />{t('Sharhlar')}</Link>}
                   {mode === 'owner' && <Link href="/owner/profile#staff"><Icon n="badge" />{t('Xodimlar')}</Link>}

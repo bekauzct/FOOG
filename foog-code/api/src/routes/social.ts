@@ -13,6 +13,7 @@ import { daySlots } from '../services/slots';
 import { matchCard } from './matches';
 import { env } from '../env';
 import { tg } from '../telegram';
+import { adminChatIds } from '../admins';
 
 export const socialRouter = Router();
 
@@ -247,12 +248,11 @@ socialRouter.post('/early-access', ah(async (req, res) => {
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const fmtPhone = (p: string) => (/^\+998\d{9}$/.test(p) ? `+998 ${p.slice(4, 6)} ${p.slice(6, 9)} ${p.slice(9, 11)} ${p.slice(11)}` : p);
 
-/** Arizani adminlarga Telegram orqali yuborish: .env dagi chatlar + Telegram ulangan adminlar */
+/** Arizani adminlarga Telegram orqali yuborish */
 async function alertAdmins(text: string) {
-  const admins = await prisma.user.findMany({ where: { role: 'admin', telegramId: { not: null } }, select: { telegramId: true } });
-  const ids = new Set([...env.adminChatIds, ...admins.map((a) => a.telegramId!.toString())]);
-  if (!ids.size) console.warn('[early-access] adminlar chati sozlanmagan: TELEGRAM_ADMIN_CHAT_IDS');
-  await Promise.all([...ids].map((id) => tg('sendMessage', { chat_id: id, text, parse_mode: 'HTML', disable_web_page_preview: true })));
+  const ids = await adminChatIds();
+  if (!ids.length) console.warn('[early-access] adminlar chati sozlanmagan: TELEGRAM_ADMIN_CHAT_IDS');
+  await Promise.all(ids.map((id) => tg('sendMessage', { chat_id: id, text, parse_mode: 'HTML', disable_web_page_preview: true })));
 }
 
 socialRouter.get('/early-access/stats', ah(async (_req, res) => {
