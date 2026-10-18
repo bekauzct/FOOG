@@ -20,6 +20,9 @@ async function claims(req: NextRequest) {
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
+  // www.foog.uz → foog.uz (qidiruv tizimlari uchun bitta manzil)
+  const host = req.headers.get('host') ?? '';
+  if (host.startsWith('www.')) return NextResponse.redirect(`https://${host.slice(4)}${pathname}${search}`, 301);
   const c = await claims(req);
   const home = c ? (c.role === 'admin' ? '/admin' : c.role === 'owner' || c.staff ? '/owner' : '/home') : '/';
   const toLogin = () => NextResponse.redirect(new URL(`/login?next=${encodeURIComponent(pathname + search)}`, req.url));
