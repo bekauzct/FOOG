@@ -86,6 +86,7 @@ Skript domen, email, bot tokeni va demo rejimini so‘raydi. Keyin Node.js 20, P
    UPLOAD_DIR=/var/lib/foog/uploads
    TELEGRAM_BOT_TOKEN=<BotFather tokeni>
    TELEGRAM_BOT_USERNAME=foog_uz_bot
+   TELEGRAM_ADMIN_CHAT_IDS=<sizning Telegram ID ingiz>   # erta kirish arizalari shu yerga keladi
    TELEGRAM_MODE=webhook
    TELEGRAM_WEBHOOK_URL=https://foog.uz/telegram/webhook
    TELEGRAM_WEBHOOK_SECRET=<openssl rand -hex 16>
