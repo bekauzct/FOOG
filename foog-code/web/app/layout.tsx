@@ -14,10 +14,19 @@ import { ToastProvider } from '@/lib/toast';
 import { cookies } from 'next/headers';
 import { LangProvider, type Lang } from '@/lib/i18n';
 
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://foog.uz';
+const DESC = 'Toshkentda stadion toping, bir necha soniyada bron qiling, o‘yinchilar va jamoalarni toping. To‘lov stadionda.';
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
   title: { default: 'FOOG – Hamma uchun futbol ekotizimi', template: '%s · FOOG' },
-  description: 'Toshkentda stadion toping, bir necha soniyada bron qiling, o‘yinchilar va jamoalarni toping. To‘lov stadionda.',
+  description: DESC,
+  keywords: ['FOOG', 'foog.uz', 'stadion bron', 'futbol maydoni Toshkent', 'mini futbol', 'futbol o‘yinchilari', 'бронирование футбольного поля Ташкент', 'футбольное поле аренда', 'мини-футбол Ташкент'],
+  applicationName: 'FOOG',
   icons: { icon: '/favicon.svg' },
+  openGraph: { type: 'website', url: SITE, siteName: 'FOOG', title: 'FOOG – Hamma uchun futbol ekotizimi', description: DESC, locale: 'uz_UZ', alternateLocale: ['ru_RU'] },
+  twitter: { card: 'summary', title: 'FOOG – Hamma uchun futbol ekotizimi', description: DESC },
+  robots: { index: true, follow: true },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION } } : {}),
 };
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#0d1226' };
 
