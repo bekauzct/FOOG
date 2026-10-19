@@ -645,3 +645,7 @@ h1, h2, h3, h4, p { margin: 0; }
 @media (max-width: 1200px) { .ap-grid { grid-template-columns: 300px minmax(0, 1fr); } .ap-grid > :last-child { grid-column: 1 / -1; } }
 @media (max-width: 980px) { .tm-grid, .ap-two { grid-template-columns: 1fr; } .ap-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .tm-facts { grid-template-columns: 1fr 1fr; } .tm-facts > :last-child { grid-column: 1 / -1; } }
+
+/* Xaritadagi stadion pini: kichik tomchi, ichida SVG ikonka (matn emas) */
+.stad-pin { display: flex; width: var(--pin, 34px); height: var(--pin, 34px); border-radius: 50% 50% 50% 0; transform: translate(-50%, -100%) rotate(-45deg); background: var(--primary); align-items: center; justify-content: center; box-shadow: 0 0 0 2px #0d1226, 0 6px 14px rgba(0, 0, 0, .35); }
+.stad-pin svg { transform: rotate(45deg); }

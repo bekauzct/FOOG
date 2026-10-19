@@ -136,7 +136,7 @@ export default function OwnerProfile() {
                   {owner && (
                     <div className="card col" style={{ padding: 20, gap: 4 }}>
                       <span className="t-card" style={{ fontSize: 18, paddingBottom: 8 }}>Biznes ma’lumotlari</span>
-                      {([['business', 'Kompaniya', p.profile.company], ['badge', 'STIR', p.profile.stir], ['send', 'Telegram', p.user.username ? `@${p.user.username}` : null], ['call', 'Telefon', phone(p.user.phone)], ['location_on', 'Yuridik manzil', p.profile.legalAddress], ['storefront', 'To‘lov usuli', p.profile.payMethods]] as const).map(([ic, l, v]) => (
+                      {([['domain', 'Kompaniya', p.profile.company], ['badge', 'STIR', p.profile.stir], ['send', 'Telegram', p.user.username ? `@${p.user.username}` : null], ['call', 'Telefon', phone(p.user.phone)], ['location_on', 'Yuridik manzil', p.profile.legalAddress], ['storefront', 'To‘lov usuli', p.profile.payMethods]] as const).map(([ic, l, v]) => (
                         <div key={l} className="row" style={{ gap: 14, padding: '10px 0', borderBottom: '1px solid var(--border)' }}><Icon n={ic} size={20} style={{ color: 'var(--text-2)' }} /><span className="col"><span className="c2" style={{ fontSize: 12 }}>{l}</span><b style={{ fontSize: 14, fontWeight: 600 }}>{v || '—'}</b></span></div>
                       ))}
                     </div>

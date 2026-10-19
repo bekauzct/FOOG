@@ -9,10 +9,16 @@ import { useT } from '@/lib/i18n';
 export const Icon = ({ n, fill, size, style, className = '' }: { n: string; fill?: boolean; size?: number; style?: CSSProperties; className?: string }) => {
   const p = ICONS[n];
   return (
-    <svg className={`ms ${className}`} style={{ fontSize: size, ...style }} viewBox="0 -960 960 960" aria-hidden="true" focusable="false">
+    <svg className={`ms ${className}`} style={{ fontSize: size, ...style }} viewBox="0 -960 960 960" aria-hidden="true" focusable="false" data-missing={p ? undefined : n}>
       {p && <path d={fill ? p[1] ?? p[0] : p[0]} />}
     </svg>
   );
+};
+
+/** HTML satr ko‘rinishidagi SVG ikonka – Leaflet divIcon kabi React’dan tashqari joylar uchun */
+export const iconHtml = (n: string, size: number, color = 'currentColor', fill = true) => {
+  const p = ICONS[n];
+  return `<svg viewBox="0 -960 960 960" width="${size}" height="${size}" fill="${color}" aria-hidden="true" style="display:block">${p ? `<path d="${fill ? p[1] ?? p[0] : p[0]}"/>` : ''}</svg>`;
 };
 
 export function Avatar({ name = '', url, size = 40, ring, square, style, online }: { name?: string; url?: string | null; size?: number; ring?: string; square?: boolean; style?: CSSProperties; online?: boolean }) {

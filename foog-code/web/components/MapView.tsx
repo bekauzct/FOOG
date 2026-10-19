@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from 'react';
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
+import { iconHtml } from './ui';
 
 export type Pin = { id: string; lat: number; lng: number; label: string; dot?: string; on?: boolean; icon?: 'stadium' };
 
@@ -26,7 +27,7 @@ export default function MapView({ pins, center, me, onPin, onMove, onHover, zoom
   const icons = useMemo(() => new Map(pins.map((p) => [p.id, L.divIcon({
     className: '',
     html: p.icon === 'stadium'
-      ? `<span style="display:flex;width:44px;height:44px;border-radius:50% 50% 50% 0;transform:translate(-50%,-100%) rotate(-45deg);background:var(--primary);align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(0,0,0,.35)"><span class="ms fill" style="transform:rotate(45deg);color:var(--on-primary);font-size:24px">stadium</span></span>`
+      ? `<span class="stad-pin" style="--pin:34px">${iconHtml('stadium', 18, 'var(--on-primary)')}</span>`
       : `<span class="map-pin ${p.on ? 'on' : ''}"><i style="background:${p.dot ?? 'var(--success)'}"></i>${p.label}</span>`,
   })])), [pins]);
   const meIcon = useMemo(() => L.divIcon({ className: '', html: '<span style="display:block;width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 6px color-mix(in oklch,var(--accent) 30%,transparent),inset 0 0 0 3px #fff;transform:translate(-50%,-50%)"></span>' }), []);
