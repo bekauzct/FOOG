@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import FoogMark from '@/components/FoogMark';
 import { ThemeButton } from '@/components/TopBar';
-import { Avatar, Btn, ErrorState, Icon, Modal, Skeleton } from '@/components/ui';
+import { Art, Avatar, Btn, ErrorState, Icon, Modal, Skeleton } from '@/components/ui';
 import { ShareSheet } from '@/components/social';
 import { useApi } from '@/lib/useApi';
 import { ApiError, post } from '@/lib/api';
@@ -327,7 +327,7 @@ function DetailInner() {
       <Modal open={sheet === 'success'} onClose={() => setSheet(null)}>
         {done && d && (
           <div className="col" style={{ alignItems: 'center', textAlign: 'center', gap: 16, padding: '8px 0' }}>
-            <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--primary)', color: 'var(--on-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'pop .5s var(--kick) both' }}><Icon n="check" size={44} /></div>
+            <div style={{ animation: 'pop .5s var(--kick) both' }}><Art pose="booking_confirmed" size={150} /></div>
             <div className="col" style={{ gap: 6 }}>
               <h2 style={{ fontSize: 24, fontWeight: 800 }}>Bron so‘rovi yuborildi</h2>
               <p className="c2" style={{ fontSize: 15 }}>Bron #{done.code} · stadion tasdiqlashini kutmoqda. Javob Telegram va bildirishnomalarga keladi (2 soatgacha).</p>

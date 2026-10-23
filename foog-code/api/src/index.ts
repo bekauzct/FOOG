@@ -6,12 +6,14 @@ import { startBot } from './bot';
 import { expirePending } from './routes/bookings';
 import { freezeExpired } from './payments/service';
 import { ensureAchievements } from './services/achievements';
+import { ensureFoogiDefaults } from './foogi/defaults';
 
 async function main() {
   const app = createApp();
   const server = http.createServer(app);
   await startWs(server);
   await ensureAchievements();
+  await ensureFoogiDefaults();
   server.listen(env.port, () => console.log(`FOOG API: http://localhost:${env.port} (ws: /ws)`));
   // 2 soatda javob bo‘lmagan bron so‘rovlarini avtomatik bekor qilish – har daqiqada
   const tick = () => {

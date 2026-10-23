@@ -105,7 +105,7 @@ export default function NotificationsPage() {
   ] : [];
   const c = d?.counts ?? {};
   return (
-    <div className="page-narrow col" style={{ gap: 20, maxWidth: 808 }}>
+    <div className="page-narrow col" data-tour="list" style={{ gap: 20, maxWidth: 808 }}>
       <div className="row between wrap" style={{ gap: 12, alignItems: 'flex-end' }}>
         <div className="col" style={{ gap: 4 }}>
           <h1 className="t-page" style={{ fontSize: 34, lineHeight: '40px' }}>Bildirishnomalar</h1>

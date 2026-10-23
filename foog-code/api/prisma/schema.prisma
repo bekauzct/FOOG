@@ -820,3 +820,97 @@ model PaymentBlock {
   @@index([userId, endsAt])
   @@map("payment_blocks")
 }
+
+// ================================================================ FOOGI – yordamchi (tashqi API’siz, admin o‘rgatadi)
+enum FoogiAudience {
+  all
+  guest
+  player
+  owner
+  admin
+}
+
+enum FoogiQStatus {
+  answered
+  unanswered
+  wrong
+  taught
+  dismissed
+}
+
+/// Bilim: namuna savollar + kalit so‘zlar → javob. Admin qo‘shadi va o‘rgatadi.
+model FoogiAnswer {
+  id        String          @id @default(uuid()) @db.Uuid
+  title     String
+  questions String[]
+  keywords  String[]
+  answer    String
+  pose      String          @default("thumbs_up")
+  linkHref  String?         @map("link_href")
+  linkLabel String?         @map("link_label")
+  audience  FoogiAudience   @default(all)
+  active    Boolean         @default(true)
+  hits      Int             @default(0)
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+  asked     FoogiQuestion[]
+
+  @@index([active, audience])
+  @@map("foogi_answers")
+}
+
+/// Foydalanuvchi savollari jurnali – javobsizlari admin uchun «o‘rgatish» navbati
+model FoogiQuestion {
+  id        String        @id @default(uuid()) @db.Uuid
+  text      String
+  page      String?
+  userId    String?       @map("user_id") @db.Uuid
+  audience  FoogiAudience @default(guest)
+  answerId  String?       @map("answer_id") @db.Uuid
+  score     Float         @default(0)
+  status    FoogiQStatus
+  helpful   Boolean?
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  answer    FoogiAnswer?  @relation(fields: [answerId], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([answerId])
+  @@map("foogi_questions")
+}
+
+/// Sayrdan keyin beriladigan takliflar / maslahatlar
+model FoogiTip {
+  id        String        @id @default(uuid()) @db.Uuid
+  title     String?
+  text      String
+  pose      String        @default("present")
+  ctaLabel  String?       @map("cta_label")
+  ctaHref   String?       @map("cta_href")
+  audience  FoogiAudience @default(all)
+  page      String?
+  sort      Int           @default(0)
+  active    Boolean       @default(true)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([active, audience])
+  @@map("foogi_tips")
+}
+
+/// Sahifa sayri qadamlari: target = elementdagi data-tour qiymati
+model FoogiTourStep {
+  id        String        @id @default(uuid()) @db.Uuid
+  page      String
+  sort      Int           @default(0)
+  target    String
+  title     String
+  text      String
+  pose      String        @default("present")
+  audience  FoogiAudience @default(all)
+  active    Boolean       @default(true)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([page, sort])
+  @@map("foogi_tour_steps")
+}

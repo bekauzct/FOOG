@@ -23,8 +23,8 @@ export const CHECKS = [
 export const REASONS = ['Rasmlar yetarli emas', 'Manzil noto‘g‘ri', 'Narx ko‘rsatilmagan', 'Takroriy ariza'];
 
 adminRouter.get('/badges', ah(async (_req, res) => {
-  const [mod, reports, payments] = await Promise.all([prisma.stadium.count({ where: { status: 'mod' } }), prisma.report.groupBy({ by: ['targetType', 'targetId'], where: { status: 'open' } }), prisma.payment.count({ where: { status: 'review' } })]);
-  res.json({ mod, reports: reports.length, payments });
+  const [mod, reports, payments, foogi] = await Promise.all([prisma.stadium.count({ where: { status: 'mod' } }), prisma.report.groupBy({ by: ['targetType', 'targetId'], where: { status: 'open' } }), prisma.payment.count({ where: { status: 'review' } }), prisma.foogiQuestion.count({ where: { status: { in: ['unanswered', 'wrong'] } } })]);
+  res.json({ mod, reports: reports.length, payments, foogi });
 }));
 
 adminRouter.get('/overview', ah(async (req, res) => {
@@ -233,7 +233,7 @@ adminRouter.patch('/disputes/:id', ah(async (req, res) => {
 adminRouter.get('/teams', ah(async (req, res) => {
   const q = qstr(req.query.q);
   const rows = await prisma.team.findMany({ where: q ? { OR: [{ name: { contains: q, mode: 'insensitive' } }, { captain: { name: { contains: q, mode: 'insensitive' } } }] } : {}, include: { captain: { select: { id: true, name: true, username: true } }, _count: { select: { members: true } } }, orderBy: { createdAt: 'desc' }, take: 200 });
-  res.json({ items: rows.map((t) => ({ id: t.id, name: t.name, short: t.short, district: t.district, level: t.level, members: t._count.members, captain: t.captain, createdAt: t.createdAt })) });
+  res.json({ items: rows.map((t) => ({ id: t.id, name: t.name, short: t.short, district: t.district, level: t.level, members: t._count.members, captain: t.captain, createdAt: t.createdAt, status: t.status, paidUntil: t.paidUntil })) });
 }));
 
 adminRouter.delete('/teams/:id', ah(async (req, res) => {

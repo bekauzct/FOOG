@@ -57,11 +57,23 @@ export function Loading({ rows = 3, card = true, label = 'Yuklanmoqda…' }: { r
   );
 }
 
-export function Empty({ icon = 'inbox', title, text, action }: { icon?: string; title: string; text?: string; action?: ReactNode }) {
+// Bo‘sh holat ikonkasi → FOOGI stikeri (public/foogi/*.webp)
+const ART: Record<string, string> = {
+  groups: 'team_trio', group: 'add_friend', person: 'add_friend', person_add: 'add_friend', sports_soccer: 'kick', stadium: 'find_stadium', event_note: 'calendar_schedule', event_available: 'calendar_schedule', event_busy: 'calendar_schedule',
+  chat_bubble: 'empty_chat_bubble', forum: 'empty_chat_bubble', notifications: 'notification_bell', search: 'search', search_off: 'search', receipt_long: 'receipt_check', dynamic_feed: 'reels_camera', smart_display: 'reels_camera',
+  video_library: 'reels_camera', credit_card: 'pay_stadium', payments: 'pay_stadium', block: 'profile_blocked', reviews: 'gold_star', star: 'gold_star', inbox: 'thinking', photo_library: 'share_photo', emoji_events: 'trophy', flag: 'whistle',
+};
+export const Art = ({ pose, size = 128 }: { pose: string; size?: number }) => (
+  // eslint-disable-next-line @next/next/no-img-element
+  <img className="foogi-art" src={`/foogi/${pose}.webp`} alt="" width={size} height={size} style={{ width: size, height: size }} loading="lazy" />
+);
+
+export function Empty({ icon = 'inbox', title, text, action, art }: { icon?: string; title: string; text?: string; action?: ReactNode; art?: string | false }) {
   const t = useT();
+  const pose = art === false ? null : art ?? ART[icon];
   return (
     <div className="state">
-      <Icon n={icon} />
+      {pose ? <Art pose={pose} /> : <Icon n={icon} />}
       <h3>{t(title)}</h3>
       {text && <p style={{ maxWidth: 420, fontSize: 14, lineHeight: 1.5 }}>{t(text)}</p>}
       {action}
@@ -71,10 +83,13 @@ export function Empty({ icon = 'inbox', title, text, action }: { icon?: string; 
 
 export function ErrorState({ error, onRetry }: { error?: { message: string; status?: number } | null; onRetry?: () => void }) {
   const t = useT();
+  const st = error?.status;
+  // internet o‘chgan / server / ruxsat / topilmadi – har biriga o‘z FOOGI stikeri
+  const pose = st === 0 ? 'no_connection' : st === 403 ? 'profile_blocked' : st === 404 ? 'not_found_goal' : 'server_connect';
   return (
     <div className="state" role="alert">
-      <Icon n={error?.status === 0 ? 'wifi_off' : 'error'} style={{ color: 'var(--error)' }} />
-      <h3>{t(error?.status === 403 ? 'Ruxsat yo‘q' : error?.status === 404 ? 'Topilmadi' : 'Yuklab bo‘lmadi')}</h3>
+      <Art pose={pose} />
+      <h3>{t(st === 0 ? 'Internet yo‘q' : st === 403 ? 'Ruxsat yo‘q' : st === 404 ? 'Topilmadi' : 'Yuklab bo‘lmadi')}</h3>
       <p style={{ fontSize: 14 }}>{t(error?.message ?? 'Xatolik yuz berdi')}</p>
       {onRetry && <button className="btn btn-outline btn-sm" onClick={onRetry}><Icon n="refresh" />{t('Qayta urinish')}</button>}
     </div>

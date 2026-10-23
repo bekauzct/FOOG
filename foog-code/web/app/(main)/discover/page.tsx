@@ -130,7 +130,7 @@ function DiscoverInner() {
         <div className="search" style={{ width: 'min(420px,100%)' }}><Icon n="search" size={22} /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder={tab === 'players' ? 'O‘yinchini ism yoki tuman bo‘yicha qidirish' : tab === 'teams' ? 'Jamoalarni qidirish' : 'O‘yin yoki stadionni qidirish'} aria-label="Qidirish" /></div>
       </div>
       {inviteMatch && tab === 'players' && <div className="row well" style={{ padding: '12px 14px', gap: 10, fontSize: 14 }}><Icon n="group_add" style={{ color: 'var(--accent)' }} />O‘yiningizga taklif qilish uchun o‘yinchilarni tanlang.<Link href={`/matches/${inviteMatch}`} style={{ marginLeft: 'auto', fontWeight: 600 }}>O‘yinni ko‘rish</Link></div>}
-      <div className="tabs scroll-x" role="tablist">
+      <div className="tabs scroll-x" role="tablist" data-tour="tabs">
         {([['players', 'O‘yinchilar'], ['teams', 'Jamoalar'], ['matches', 'O‘yinlar']] as const).map(([k, l]) => (
           <button key={k} role="tab" aria-selected={tab === k} className={`tab ${tab === k ? 'on' : ''}`} style={{ fontSize: 17, fontWeight: 700 }} onClick={() => setTab(k)}>{l}<span className="n">{counts[k]}</span></button>
         ))}

@@ -649,3 +649,66 @@ h1, h2, h3, h4, p { margin: 0; }
 /* Xaritadagi stadion pini: kichik tomchi, ichida SVG ikonka (matn emas) */
 .stad-pin { display: flex; width: var(--pin, 34px); height: var(--pin, 34px); border-radius: 50% 50% 50% 0; transform: translate(-50%, -100%) rotate(-45deg); background: var(--primary); align-items: center; justify-content: center; box-shadow: 0 0 0 2px #0d1226, 0 6px 14px rgba(0, 0, 0, .35); }
 .stad-pin svg { transform: rotate(45deg); }
+
+/* ---------------------------------------------------------------- FOOGI yordamchi */
+.foogi-root { position: fixed; inset: 0; pointer-events: none; z-index: 90; font-family: var(--font-ui); }
+.foogi { position: fixed; left: 0; top: 0; width: 124px; height: 124px; will-change: transform; transform: translate3d(calc(100vw - 150px), calc(100vh - 150px), 0); }
+.foogi-btn { pointer-events: auto; position: absolute; inset: 0; border: none; background: none; padding: 0; cursor: pointer; border-radius: 24px; }
+.foogi-btn:focus-visible { outline: 3px solid var(--volt); outline-offset: 2px; }
+.foogi-btn img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .35)); user-select: none; transform-origin: 50% 100%; }
+.foogi-dot { position: absolute; right: 10%; top: 8%; width: 14px; height: 14px; border-radius: 50%; background: var(--volt); box-shadow: 0 0 0 3px var(--bg); }
+.foogi-z { position: absolute; right: 4%; top: -6%; font: 800 22px var(--font-ui); color: var(--volt); text-shadow: 0 2px 8px rgba(0,0,0,.4); }
+.foogi-hl { display: none; position: fixed; left: 0; top: 0; border-radius: 20px; box-shadow: 0 0 0 3px var(--volt), 0 0 0 9999px rgba(3, 5, 13, .55); transition: transform .25s var(--ease), width .25s var(--ease), height .25s var(--ease); }
+.foogi-bubble { pointer-events: auto; position: fixed; left: 0; top: 0; width: min(310px, calc(100vw - 24px)); padding: 14px 16px; border-radius: 20px; background: var(--surface); color: var(--text-1); box-shadow: inset 0 0 0 1.5px var(--volt), 0 16px 32px rgba(0, 0, 0, .35); display: flex; flex-direction: column; gap: 8px; animation: pop var(--fast) var(--ease); }
+.foogi-tag { font: 500 10px var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--brand-ink); }
+.foogi-title { font-size: 17px; font-weight: 800; letter-spacing: -.01em; line-height: 1.2; }
+.foogi-text { margin: 0; font-size: 14px; line-height: 1.5; color: var(--text-2); text-wrap: pretty; }
+.foogi-panel { pointer-events: auto; position: fixed; right: 140px; bottom: 16px; width: 370px; height: min(560px, calc(100vh - 110px)); display: flex; flex-direction: column; border-radius: 24px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--border), 0 24px 48px rgba(0, 0, 0, .45); overflow: hidden; animation: pop var(--fast) var(--ease); }
+.foogi-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 14px; border-bottom: 1px solid var(--border); }
+.foogi-av { width: 40px; height: 40px; border-radius: 50%; background: var(--volt); overflow: hidden; flex-shrink: 0; }
+.foogi-av img { width: 100%; height: 150%; object-fit: cover; object-position: 50% 0; }
+.foogi-on { width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+.foogi-msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+.foogi-m { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.foogi-m.from-me { align-items: flex-end; }
+.foogi-mt { max-width: 86%; padding: 10px 14px; border-radius: 18px 18px 18px 6px; background: var(--surface-2); color: var(--text-1); font-size: 14px; line-height: 1.5; white-space: pre-line; }
+.foogi-m.from-me .foogi-mt { border-radius: 18px 18px 6px 18px; background: var(--inverse); color: var(--on-inverse); }
+.foogi-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 0 12px 10px; }
+.foogi-chips .chip { flex-shrink: 0; }
+.foogi-input { display: flex; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--border); }
+.foogi-input input { flex: 1; min-width: 0; height: 44px; padding: 0 16px; border-radius: 999px; border: none; background: var(--bg); box-shadow: inset 0 0 0 1px var(--border); color: var(--text-1); font: 400 15px var(--font-ui); outline: none; }
+.foogi-input input:focus { box-shadow: inset 0 0 0 1.5px var(--volt); }
+.foogi-input .icon-btn.primary { background: var(--primary); color: var(--on-primary); }
+@media (max-width: 640px) {
+  .foogi-panel { right: 8px; left: 8px; bottom: 8px; width: auto; height: min(70vh, calc(100vh - 100px)); }
+}
+/* FOOGI stikerlari holatlarda (bo‘sh, xato, 404) */
+.state .btn .ms { font-size: 20px; color: inherit; }
+.state .foogi-art { width: 150px; height: 150px; object-fit: contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,.25)); }
+/* admin: FOOGI’ni o‘rgatish */
+.c-ok { color: var(--success); }
+.fg-hero { display: flex; gap: 18px; align-items: center; padding: 18px 20px; flex-wrap: wrap; }
+.fg-stats { display: flex; gap: 10px; flex-wrap: wrap; }
+.fg-stats span { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: 14px; background: var(--surface-2); font-size: 12px; color: var(--text-2); min-width: 110px; }
+.fg-stats b { font-size: 22px; color: var(--text-1); }
+.fg-teach { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
+.fg-side { position: sticky; top: calc(var(--topbar-h) + 16px); padding: 18px; }
+.fg-q { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: var(--text-1); cursor: pointer; width: 100%; font: inherit; min-height: 64px; }
+.fg-q:hover { background: var(--surface-2); }
+.fg-q.on { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--volt); }
+.fg-opt { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--border); cursor: pointer; }
+.fg-opt.on { box-shadow: inset 0 0 0 1.5px var(--volt); background: var(--surface-2); }
+.fg-opt input { accent-color: var(--volt); }
+.fg-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+.fg-card { padding: 16px; }
+.fg-card.off { opacity: .55; }
+.fg-form { display: flex; flex-direction: column; gap: 14px; }
+.fg-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: end; }
+.fg-poses { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; max-height: 60vh; overflow-y: auto; }
+.fg-pose { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 4px; border: none; border-radius: 14px; background: var(--surface-2); color: var(--text-2); cursor: pointer; font-size: 10px; }
+.fg-pose span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fg-pose.on { box-shadow: inset 0 0 0 2px var(--volt); color: var(--text-1); }
+.fg-bar { height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.fg-bar span { display: block; height: 100%; border-radius: 99px; }
+@media (max-width: 1000px) { .fg-teach { grid-template-columns: 1fr; } .fg-side { position: static; } }
+@media (max-width: 560px) { .fg-2 { grid-template-columns: 1fr; } }

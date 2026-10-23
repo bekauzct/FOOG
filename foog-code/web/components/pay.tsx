@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Btn, Icon, Modal } from '@/components/ui';
+import { Art, Btn, Icon, Modal } from '@/components/ui';
 import { ApiError, post, upload } from '@/lib/api';
 import { sum } from '@/lib/format';
 
@@ -110,7 +110,7 @@ export function PayModal({ purpose, title, amount, methods, serviceDown, team, t
       )}
       {step === 'sent' && started && (
         <div className="col" style={{ gap: 14, alignItems: 'flex-start' }}>
-          <span style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--primary)', color: 'var(--on-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon n="check" size={30} /></span>
+          <Art pose="receipt_check" size={120} />
           <h3 style={{ fontSize: 22, fontWeight: 800 }}>Chek adminga yuborildi</h3>
           <p className="c2" style={{ fontSize: 15, lineHeight: 1.5 }}>Admin tekshirgach, {purpose === 'team_create' ? 'jamoangiz faollashadi.' : 'obuna 30 kunga uzayadi.'} Natija Telegram’ga keladi.</p>
           <span className="mono pill-tag accent">{started.payment.code}</span>

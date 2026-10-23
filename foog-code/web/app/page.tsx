@@ -101,11 +101,11 @@ export default function Landing() {
         <div className="row" style={{ gap: 8 }}>
           <LangSwitch />
           <ThemeButton />
-          {me ? <Link href={home} className="btn btn-primary btn-sm">{t('Kabinetga o‘tish')}</Link> : <><Link href="/login" className="btn btn-outline btn-sm hide-mobile">{t('Kirish')}</Link><button className="btn btn-primary btn-sm" onClick={() => go('access')}>{t('Erta kirish')}</button></>}
+          {me ? <Link href={home} className="btn btn-primary btn-sm">{t('Kabinetga o‘tish')}</Link> : <><Link href="/login" data-tour="login" className="btn btn-outline btn-sm hide-mobile">{t('Kirish')}</Link><button className="btn btn-primary btn-sm" onClick={() => go('access')}>{t('Erta kirish')}</button></>}
         </div>
       </header>
 
-      <section className="ld-hero">
+      <section className="ld-hero" data-tour="hero">
         <div className="ld-lines" aria-hidden="true"><span className="l1" /><span className="l2" /><span className="l3" /></div>
         <span className="pill-tag" style={{ boxShadow: 'inset 0 0 0 1px var(--border-strong)', color: 'var(--text-2)', height: 28 }}><span className="dot" style={{ color: 'var(--brand-ink)' }} />{t('Toshkentda ishga tushmoqda · 2026')}</span>
         <div className="ld-mark"><FoogMark ink="var(--text-1)" primary={light ? 'oklch(0.6 0.21 262)' : 'var(--volt)'} accent={light ? 'var(--midnight)' : 'var(--text-1)'} /></div>
@@ -118,7 +118,7 @@ export default function Landing() {
         <span className="c3 t-small">{stats ? t('{p} futbolchi va {s} stadion allaqachon ro‘yxatda', { p: num(stats.players), s: num(stats.stadiums) }) : ' '}</span>
       </section>
 
-      <section id="how" className="ld-sec">
+      <section id="how" className="ld-sec" data-tour="how">
         <span className="label ink">{t('FOOG qanday ishlaydi')}</span>
         <h2 className="t-h1" style={{ maxWidth: 640 }}>{t('«Kim o‘ynaydi?» dan birinchi zarbagacha.')}</h2>
         <div className="ld-steps">
@@ -149,7 +149,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="booking" className="ld-sec ld-split">
+      <section id="booking" className="ld-sec ld-split" data-tour="booking">
         <div className="card col" style={{ padding: 20, gap: 14, alignSelf: 'center' }}>
           <div className="row between"><b style={{ fontSize: 18 }}>Arena Yunusobod</b><span><span className="mono" style={{ fontSize: 20 }}>{sumL(sum(300000))}</span><span className="c2 t-small"> {t('/soat')}</span></span></div>
           <div className="sd-days">{days.map((d, i) => <span key={d} className={`sd-day ${i === 0 ? 'on' : ''}`}><span className="mono" style={{ fontSize: 10 }}>{t(DOW[weekday(d)]).toUpperCase()}</span><span className="mono" style={{ fontSize: 18 }}>{Number(d.slice(8))}</span></span>)}</div>
@@ -165,7 +165,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="players" className="ld-sec">
+      <section id="players" className="ld-sec" data-tour="players">
         <div className="row between wrap" style={{ gap: 20, alignItems: 'flex-end' }}>
           <div className="col" style={{ gap: 12 }}><span className="label ink">{t('O‘yinchilar va jamoalar')}</span><h2 className="t-h1" style={{ maxWidth: 560 }}>{t('Endi hech qachon bitta o‘yinchi yetishmaydi.')}</h2></div>
           <p className="c2" style={{ fontSize: 16, maxWidth: 400 }}>{t('Pozitsiya, daraja va bo‘sh vaqt bo‘yicha filtrlang. Bir bosishda taklif qiling yoki ochiq o‘yinlar o‘zi to‘lsin.')}</p>
@@ -203,7 +203,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <section id="owners" className="ld-owners">
+      <section id="owners" className="ld-owners" data-tour="owners">
         <div className="ld-sec" style={{ paddingTop: 80, paddingBottom: 80 }}>
           <div className="row between wrap" style={{ gap: 20, alignItems: 'flex-end' }}>
             <div className="col" style={{ gap: 12 }}><span className="label" style={{ color: 'inherit', opacity: 0.7 }}>{t('Stadion egalari uchun')}</span><h2 className="t-h1">{t('Har bir bo‘sh soatni to‘ldiring.')}</h2></div>

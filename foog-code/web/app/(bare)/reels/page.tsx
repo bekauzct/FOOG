@@ -107,7 +107,7 @@ function ReelsInner() {
           <ThemeButton />
         </div>
       </header>
-      <div className="reels-stage">
+      <div className="reels-stage" data-tour="reels">
         <div className="reel-card" onWheel={(e) => { if (Date.now() - wheelLock.current < 600 || Math.abs(e.deltaY) < 30) return; wheelLock.current = Date.now(); go(e.deltaY > 0 ? 1 : -1); }}
           onTouchStart={(e) => { touchY.current = e.touches[0].clientY; }} onTouchEnd={(e) => { if (touchY.current === null) return; const dy = touchY.current - e.changedTouches[0].clientY; touchY.current = null; if (Math.abs(dy) > 50) go(dy > 0 ? 1 : -1); }}>
           {err ? <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center' }}><ErrorState error={err} onRetry={load} /></div> : !items ? <Skeleton h="100%" r={0} style={{ position: 'absolute', inset: 0, background: '#0D1221' }} /> : !r ? (

@@ -15,6 +15,7 @@ import { adminRouter } from './routes/admin';
 import { socialRouter } from './routes/social';
 import { matchesRouter } from './routes/matches';
 import { adminPaymentsRouter, paymentsRouter } from './routes/payments';
+import { adminFoogiRouter, foogiRouter } from './routes/foogi';
 import { chatRouter } from './routes/chat';
 import { reelsRouter } from './routes/reels';
 import { usersRouter } from './routes/users';
@@ -53,6 +54,8 @@ export function createApp() {
   v1.use('/bookings', bookingsRouter);
   v1.use('/owner', ownerRouter);
   v1.use('/admin/payments', adminPaymentsRouter);
+  v1.use('/admin/foogi', adminFoogiRouter);
+  v1.use('/foogi', foogiRouter);
   v1.use('/admin', adminRouter);
   v1.use('/chats', chatRouter);
   v1.use('/reels', reelsRouter);

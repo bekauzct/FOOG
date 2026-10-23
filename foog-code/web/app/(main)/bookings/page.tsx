@@ -122,7 +122,7 @@ export default function BookingsPage() {
   const [tab, setTab] = useState<'up' | 'past'>('up');
   useEvent('booking', () => q.reload());
   return (
-    <div className="page-narrow col" style={{ gap: 20 }}>
+    <div className="page-narrow col" data-tour="list" style={{ gap: 20 }}>
       <div className="row between wrap" style={{ gap: 12 }}>
         <div className="col" style={{ gap: 4 }}><div className="label">Toshkent · to‘lov stadionda</div><h1 className="t-page">Bronlarim</h1></div>
         <Link href="/stadiums" className="btn btn-primary"><Icon n="add" />Yangi bron</Link>

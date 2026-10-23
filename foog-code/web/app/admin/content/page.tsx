@@ -52,7 +52,6 @@ function Reports() {
   );
 }
 
-type TeamRow = { id: string; name: string; short: string; district: string | null; level: string; members: number; captain: { id: string; name: string; username: string | null }; createdAt: string };
 type MatchRow = { id: string; title: string; status: string; capacity: number; filled: number; date: string; start: string; stadium: string; organizer: { id: string; name: string; username: string | null }; createdAt: string };
 const MST: Record<string, [string, string]> = { open: ['Ochiq', 'success'], full: ['To‘ldi', 'warning'], done: ['Yakunlangan', 'muted'], cancelled: ['Bekor qilingan', 'error'] };
 
@@ -67,43 +66,6 @@ function Confirm({ text, label, busy, onYes, onNo }: { text: string; label: stri
 
 function Search({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return <div className="search" style={{ width: 'min(360px,100%)' }}><Icon n="search" size={22} /><input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} aria-label="Qidirish" /></div>;
-}
-
-function Teams() {
-  const [q, setQ] = useState('');
-  const r = useApi<{ items: TeamRow[] }>(`/admin/teams${qs({ q: q.trim() || undefined })}`);
-  const [sel, setSel] = useState<TeamRow | null>(null);
-  const [busy, setBusy] = useState(false);
-  const toast = useToast();
-  const remove = async () => {
-    if (!sel) return;
-    setBusy(true);
-    try { await del(`/admin/teams/${sel.id}`); toast(`«${sel.name}» o‘chirildi · kapitan va a’zolarga xabar ketdi`, { kind: 'warn' }); setSel(null); r.reload(); }
-    catch (e) { toast((e as Error).message, { kind: 'err' }); } finally { setBusy(false); }
-  };
-  return (
-    <>
-      <div className="row between wrap" style={{ gap: 8 }}><Search value={q} onChange={setQ} placeholder="Jamoa yoki kapitan nomi" />{r.data && <span className="mono c2" style={{ fontSize: 13 }}>{r.data.items.length} ta jamoa</span>}</div>
-      <Async q={r} loading={<Loading rows={3} />} empty={(d) => !d.items.length && <div className="card"><Empty icon="groups" title="Jamoa topilmadi" /></div>}>
-        {(d) => (
-          <div className="card col" style={{ padding: 0 }}>
-            {d.items.map((t) => (
-              <div key={t.id} className="row" style={{ gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--border)', minHeight: 64 }}>
-                <span style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--inverse)', color: 'var(--on-inverse)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '800 14px var(--font-ui)', flexShrink: 0 }}>{t.short}</span>
-                <span className="col grow" style={{ minWidth: 0 }}>
-                  <b className="ellipsis" style={{ fontSize: 15 }}>{t.name}</b>
-                  <span className="c2 ellipsis" style={{ fontSize: 13 }}>Kapitan: {t.captain.username ? <Link href={`/u/${t.captain.username}`}>{t.captain.name}</Link> : t.captain.name} · {t.members} a’zo · {SKILL_LABEL[t.level]}{t.district ? ` · ${t.district}` : ''}</span>
-                  <span className="mono c3" style={{ fontSize: 11 }}>Tuzilgan: {ago(t.createdAt)}</span>
-                </span>
-                <button className="btn btn-danger-outline btn-sm" onClick={() => setSel(t)}>O‘chirish</button>
-              </div>
-            ))}
-          </div>
-        )}
-      </Async>
-      {sel && <Confirm text={`«${sel.name}» jamoasini o‘chirasizmi? Jamoa chati ham o‘chadi, kapitan va ${sel.members - 1} a’zoga xabar boradi. Amal audit jurnaliga yoziladi.`} label="O‘chirish" busy={busy} onYes={remove} onNo={() => setSel(null)} />}
-    </>
-  );
 }
 
 function Matches() {
@@ -147,12 +109,12 @@ function Matches() {
 }
 
 export default function AdminContent() {
-  const [tab, setTab] = useState<'reports' | 'teams' | 'matches'>('reports');
+  const [tab, setTab] = useState<'reports' | 'matches'>('reports');
   return (
     <>
       <AdminHeader title="Kontent moderatsiyasi" />
-      <Seg value={tab} onChange={setTab} items={[['reports', 'Shikoyatlar'], ['teams', 'Jamoalar'], ['matches', 'O‘yinlar']]} />
-      {tab === 'reports' ? <Reports /> : tab === 'teams' ? <Teams /> : <Matches />}
+      <Seg value={tab} onChange={setTab} items={[['reports', 'Shikoyatlar'], ['matches', 'O‘yinlar']]} />
+      {tab === 'reports' ? <Reports /> : <Matches />}
     </>
   );
 }

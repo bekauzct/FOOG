@@ -78,7 +78,7 @@ async function nextCode() {
 }
 
 export async function startPayment(user: { id: string; role: string }, input: { purpose: 'team_create' | 'team_monthly'; method: string; team?: TeamDraft; teamId?: string }): Promise<{ payment: Payment; checkout: Checkout }> {
-  if (user.role !== 'player') throw forbidden('Jamoa faqat futbolchilar uchun');
+  if (user.role !== 'player' && user.role !== 'owner') throw forbidden('Jamoa faqat futbolchilar va stadion egalari uchun');
   await assertCanPay(user.id);
   const method = await prisma.paymentMethod.findUnique({ where: { code: input.method } });
   if (!method || method.status === 'off') throw notFound('Bu to‘lov usuli mavjud emas');

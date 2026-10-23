@@ -40,7 +40,9 @@ export async function middleware(req: NextRequest) {
   if (PLAYER.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
     if (!c) return toLogin();
     // Har bir rol o‘z bo‘limini ko‘radi: egasi va admin futbolchi bo‘limiga yo‘naltirilmaydi
-    if (c.role !== 'player') return NextResponse.redirect(new URL(home, req.url));
+    // Jamoam – futbolchi va stadion egasi uchun (menyuda)
+    const ownerTeam = c.role === 'owner' && (pathname === '/team' || pathname.startsWith('/team/'));
+    if (c.role !== 'player' && !ownerTeam) return NextResponse.redirect(new URL(home, req.url));
   }
   return NextResponse.next();
 }

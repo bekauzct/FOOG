@@ -167,7 +167,7 @@ export default function HomePage() {
         </div>
       </aside>
 
-      <main className="col" style={{ gap: 20, padding: '28px 0 80px', maxWidth: 640, width: '100%', justifySelf: 'center' }}>
+      <main className="col" data-tour="feed" style={{ gap: 20, padding: '28px 0 80px', maxWidth: 640, width: '100%', justifySelf: 'center' }}>
         <div className="col" style={{ gap: 6 }}>
           <div className="label">{dayMonth(today)}, {DOW_FULL[weekday(today)]} · Toshkent</div>
           <h1 className="t-page" style={{ textWrap: 'pretty' } as React.CSSProperties}>

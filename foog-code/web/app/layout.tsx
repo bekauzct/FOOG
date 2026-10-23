@@ -11,6 +11,7 @@ import './globals.css';
 import { themeScript } from '@/lib/theme';
 import { SessionProvider } from '@/lib/session';
 import { ToastProvider } from '@/lib/toast';
+import Foogi from '@/components/Foogi';
 import { cookies } from 'next/headers';
 import { LangProvider, type Lang } from '@/lib/i18n';
 
@@ -50,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <LangProvider initial={lang}>
           <SessionProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>{children}<Foogi /></ToastProvider>
           </SessionProvider>
         </LangProvider>
       </body>

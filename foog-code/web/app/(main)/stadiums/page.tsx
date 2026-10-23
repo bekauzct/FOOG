@@ -51,7 +51,7 @@ function StadiumsInner() {
   return (
     <div>
       <div className="st-bar">
-        <form className="st-search" onSubmit={(e) => { e.preventDefault(); setQuery(q); }}>
+        <form className="st-search" data-tour="search" onSubmit={(e) => { e.preventDefault(); setQuery(q); }}>
           <label className="st-f st-q"><Icon n="search" size={22} style={{ color: 'var(--text-2)' }} /><input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Stadion nomi yoki tuman" aria-label="Stadion nomi yoki tuman" /></label>
           <label className="st-f"><Icon n="location_on" size={20} style={{ color: 'var(--text-2)' }} /><span className="col grow"><span className="st-k">Joy</span>
             <select value={district} onChange={(e) => { setDistrict(e.target.value); setArea(null); }} aria-label="Tuman"><option value="">Toshkent · hammasi</option>{DISTRICTS.map((d) => <option key={d} value={d}>{d}</option>)}</select></span></label>
@@ -61,7 +61,7 @@ function StadiumsInner() {
             <select value={time} onChange={(e) => setTime(e.target.value)} aria-label="Vaqt">{hours.map((h) => <option key={h} value={h}>{h} · 1 soat</option>)}</select></span></label>
           <button className="btn btn-primary" style={{ height: 48, padding: '0 22px' }}><Icon n="search" size={20} />Qidirish</button>
         </form>
-        <div className="row scroll-x" style={{ gap: 8 }}>
+        <div className="row scroll-x" data-tour="filters" style={{ gap: 8 }}>
           {CHIPS.map(([k, l]) => <button key={k} className={`chip ${chips[k] ? 'on' : ''}`} onClick={() => setChips((c) => ({ ...c, [k]: !c[k] }))} aria-pressed={!!chips[k]}>{l}</button>)}
           <div style={{ width: 1, height: 24, background: 'var(--border)', margin: '0 4px', flexShrink: 0 }} />
           <label className="row" style={{ gap: 8, height: 36, padding: '0 14px', borderRadius: 999, boxShadow: 'inset 0 0 0 1px var(--border-strong)', fontSize: 14, flexShrink: 0 }}>
@@ -73,7 +73,7 @@ function StadiumsInner() {
       </div>
 
       <div className={`st-grid ${map ? 'with-map' : ''}`}>
-        <main className="col" style={{ padding: '20px 24px 80px', gap: 16, minWidth: 0 }}>
+        <main className="col" data-tour="list" style={{ padding: '20px 24px 80px', gap: 16, minWidth: 0 }}>
           <div className="row between wrap" style={{ gap: 12 }}>
             <div className="col" style={{ gap: 2 }}>
               <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-.01em' }}>{r.data ? `Toshkentda ${items.length} ta stadion` : 'Stadionlar'}</h1>

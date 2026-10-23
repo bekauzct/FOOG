@@ -67,7 +67,7 @@ export default function TeamPage() {
   };
 
   return (
-    <div className="page col" style={{ gap: 20 }}>
+    <div className="page col" data-tour="team" style={{ gap: 20 }}>
       <Async q={q}>
         {(d) => {
           const T = d.tariff, t = d.team, blocked = !!d.block, pending = !!d.pending;

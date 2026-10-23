@@ -36,7 +36,7 @@ export function ThemeButton() {
 }
 
 function useBadges(mode: Mode) {
-  const q = useApi<{ pending?: number; mod?: number; reports?: number; payments?: number }>(mode === 'player' ? null : `/${mode}/badges`);
+  const q = useApi<{ pending?: number; mod?: number; reports?: number; payments?: number; foogi?: number }>(mode === 'player' ? null : `/${mode}/badges`);
   const { on } = useSession();
   useEffect(() => (mode === 'owner' ? on('booking', () => q.reload()) : undefined), [mode]);
   return q.data ?? {};
@@ -72,7 +72,8 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
       { id: '/admin/stadiums', href: '/admin/stadiums', icon: 'stadium', label: 'Stadionlar', badge: b.mod },
       { id: '/admin/users', href: '/admin/users', icon: 'group', label: 'Foydalanuvchilar' },
       { id: '/admin/content', href: '/admin/content', icon: 'flag', label: 'Kontent', badge: b.reports },
-      { id: '/admin/payments', href: '/admin/payments', icon: 'payments', label: 'To‘lovlar', badge: b.payments },
+      { id: '/admin/teams', href: '/admin/teams', icon: 'groups', label: 'Jamoalar', badge: b.payments },
+      { id: '/admin/foogi', href: '/admin/foogi', icon: 'smart_toy', label: 'FOOGI', badge: b.foogi },
       { id: '/admin/bookings', href: '/admin/bookings', icon: 'event_note', label: 'Bronlar' },
       { id: '/admin/audit', href: '/admin/audit', icon: 'history', label: 'Jurnal' },
     ]
@@ -84,12 +85,14 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
         { id: '/owner/stadiums', href: '/owner/stadiums', icon: 'stadium', label: 'Stadionlarim' },
         { id: '/owner/reels', href: '/owner/reels', icon: 'smart_display', label: 'Reels' },
         ...(me?.role === 'owner' || me?.role === 'admin' ? [{ id: '/owner/reports', href: '/owner/reports', icon: 'monitoring', label: 'Hisobot' }] : []),
+        ...(me?.role === 'owner' ? [{ id: '/team', href: '/team', icon: 'groups', label: 'Jamoam' }] : []),
       ]
       : [
         { id: '/home', href: '/home', icon: 'home', label: 'Asosiy' },
         { id: '/stadiums', href: '/stadiums', icon: 'stadium', label: 'Stadionlar' },
         { id: '/discover', href: '/discover', icon: 'explore', label: 'Izlash' },
         { id: '/reels', href: '/reels', icon: 'smart_display', label: 'Reels' },
+        { id: '/team', href: '/team', icon: 'groups', label: 'Jamoam' },
         { id: '/messages', href: '/messages', icon: 'chat_bubble', label: 'Xabarlar', badge: unreadChats },
       ];
   const isOn = (id: string) => (id === '/owner' || id === '/admin' ? path === id : path === id || path.startsWith(id + '/')) || (id === '/discover' && path.startsWith('/matches'));
@@ -120,7 +123,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
           <span className="mk"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></span>
           {biz && <span className="biz">{t(mode === 'admin' ? 'Admin' : 'Biznes')}</span>}
         </Link>
-        {me && <nav className={`topnav ${biz ? 'biz-nav' : ''}`} aria-label={t('Asosiy navigatsiya')}>{nav('nav-lb')}</nav>}
+        {me && <nav data-tour="nav" className={`topnav ${biz ? 'biz-nav' : ''}`} aria-label={t('Asosiy navigatsiya')}>{nav('nav-lb')}</nav>}
         <div className="tools" ref={menuRef}>
           {me && (
             <form className="tsearch" onSubmit={onSearch} role="search">
@@ -157,7 +160,6 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
                   </div>
                   {mode !== 'admin' && <Link href={profHref}><Icon n="person" />{t('Profil')}</Link>}
                   {mode === 'player' && <Link href="/bookings"><Icon n="event_available" />{t('Bronlarim')}</Link>}
-                  {mode === 'player' && <Link href="/team"><Icon n="shield" />{t('Jamoam')}</Link>}
                   {mode === 'player' && <Link href="/profile/edit"><Icon n="edit" />{t('Profilni tahrirlash')}</Link>}
                   {mode === 'owner' && <Link href="/owner/reviews"><Icon n="reviews" />{t('Sharhlar')}</Link>}
                   {mode === 'owner' && <Link href="/owner/profile#staff"><Icon n="badge" />{t('Xodimlar')}</Link>}
@@ -169,7 +171,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
               )}
             </>
           ) : (
-            <Link href={`/login?next=${encodeURIComponent(path)}`} className="btn btn-primary btn-sm">{t('Kirish')}</Link>
+            <Link data-tour="login" href={`/login?next=${encodeURIComponent(path)}`} className="btn btn-primary btn-sm">{t('Kirish')}</Link>
           )}
         </div>
       </div>

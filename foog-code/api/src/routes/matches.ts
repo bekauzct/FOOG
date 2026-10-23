@@ -18,8 +18,9 @@ import { assertCanPay, assertTeamOpen, captainTeam, createTeamRecord } from '../
 export const matchesRouter = Router();
 
 /** Jamoa tuzish va o‘yinlarga qo‘shilish – faqat futbolchilar uchun */
+// Jamoa va o‘yinlar: futbolchi va stadion egasi (egasi ham jamoa tuzib o‘ynaydi); admin emas
 function playerOnly(req: { user?: { role: string } }) {
-  if (req.user?.role !== 'player') throw forbidden('Bu amal faqat futbolchilar uchun');
+  if (req.user?.role !== 'player' && req.user?.role !== 'owner') throw forbidden('Bu amal faqat futbolchilar uchun');
 }
 
 export const POS_GROUP: Record<string, string[]> = { GK: ['GK'], DEF: ['CB', 'LB', 'RB', 'DEF'], MID: ['CM', 'CDM', 'CAM', 'LM', 'RM', 'MID'], FWD: ['ST', 'LW', 'RW', 'CF', 'FWD'] };

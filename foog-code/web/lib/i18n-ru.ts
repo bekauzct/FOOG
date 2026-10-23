@@ -134,6 +134,7 @@ export const RU: Record<string, string> = {
   'Profil': 'Профиль',
   'Bronlarim': 'Мои брони',
   'Jamoam': 'Моя команда',
+  'Jamoalar': 'Команды',
   'To‘lovlar': 'Платежи',
   'Profilni tahrirlash': 'Редактировать профиль',
   'Sharhlar': 'Отзывы',
@@ -173,6 +174,7 @@ export const RU: Record<string, string> = {
   'Ruxsat yo‘q': 'Нет доступа',
   'Topilmadi': 'Не найдено',
   'Yuklab bo‘lmadi': 'Не удалось загрузить',
+  'Internet yo‘q': 'Нет интернета',
   'Xatolik yuz berdi': 'Произошла ошибка',
   'Internetga ulanib bo‘lmadi': 'Нет подключения к интернету',
 
