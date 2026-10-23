@@ -1,0 +1,591 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>FOOG Kick-off</title>
+<style>
+  @font-face { font-family: A; src: url(fonts/a900.woff2) format('woff2'); font-weight: 900; }
+  @font-face { font-family: A; src: url(fonts/a700.woff2) format('woff2'); font-weight: 700; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #0D1226; }
+  #root, svg { display: block; width: 1920px; height: 1080px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// FOOG «Kick-off» – 15 s, 120 BPM. Har bir kadr faqat t dan hisoblanadi: window.seek(t).
+const W = 1920, H = 1080, CX = 960, CY = 540, DUR = 15, BEAT = 0.5;
+const COL = { m: '#0D1226', v: '#C8F53A', b: '#3D6BFF', w: '#FFFFFF', k: '#000000' };
+
+// ------------------------------------------------------------ yengil matematika
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, k) => a + (b - a) * k;
+const prog = (t, a, d) => clamp((t - a) / d);
+const eo = (x) => (x >= 1 ? 1 : 1 - Math.pow(2, -10 * x));            // eksponensial chiqish
+const ei = (x) => (x <= 0 ? 0 : Math.pow(2, 10 * (x - 1)) - 0.001 * (1 - x)); // eksponensial kirish
+const eio = (x) => (x <= 0 ? 0 : x >= 1 ? 1 : x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2);
+// kritik so‘nuvchi prujina – oshib ketmaydi (bouncy emas)
+const spr = (t, a, w = 16) => (t <= a ? 0 : 1 - (1 + w * (t - a)) * Math.exp(-w * (t - a)));
+const f2 = (n) => Math.round(n * 100) / 100;
+const deg = Math.PI / 180;
+
+// ------------------------------------------------------------ harakat xiraligi (tezlik va yo‘nalish bo‘yicha)
+let DEFS = [], FID = 0;
+const HSTEP = 1 / 120;
+/** fn(t) -> [x,y]; ekran px/kadr (60fps) tezlikka mos yo‘nalishli blur filtri */
+function mb(fn, t, gain = 0.45, max = 60) {
+  const a = fn(t - HSTEP), b = fn(t + HSTEP);
+  const vx = Math.abs(b[0] - a[0]), vy = Math.abs(b[1] - a[1]);
+  const sx = Math.min(max, vx * gain), sy = Math.min(max, vy * gain);
+  if (sx < 0.4 && sy < 0.4) return '';
+  const id = 'mb' + FID++;
+  DEFS.push(`<filter id="${id}" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="${f2(sx)} ${f2(sy)}"/></filter>`);
+  return ` filter="url(#${id})"`;
+}
+function clip(inner) { const id = 'c' + FID++; DEFS.push(`<clipPath id="${id}">${inner}</clipPath>`); return ` clip-path="url(#${id})"`; }
+
+// ------------------------------------------------------------ matn o‘lchash (bir marta, deterministik)
+const cvs = document.createElement('canvas').getContext('2d');
+const ADV = new Map();
+function adv(str, size, wt) {
+  const key = str + '|' + size + '|' + wt;
+  if (!ADV.has(key)) { cvs.font = `${wt} ${size}px A`; ADV.set(key, [...str].map((ch) => cvs.measureText(ch).width)); }
+  return ADV.get(key);
+}
+/** harflarni joylash: markaz bo‘yicha; har harf uchun {x, w, ch} */
+function layout(str, size, wt = 900, track = -0.035) {
+  const a = adv(str, size, wt), tr = track * size;
+  const total = a.reduce((s, x) => s + x, 0) + tr * (a.length - 1);
+  let x = -total / 2; const out = [];
+  [...str].forEach((ch, i) => { out.push({ ch, x, w: a[i], cx: x + a[i] / 2 }); x += a[i] + tr; });
+  return { letters: out, width: total };
+}
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const txt = (s, x, y, size, fill, wt = 900, anchor = 'start', extra = '') => `<text x="${f2(x)}" y="${f2(y)}" font-family="A" font-weight="${wt}" font-size="${size}" fill="${fill}" text-anchor="${anchor}"${extra}>${esc(s)}</text>`;
+
+// ------------------------------------------------------------ shakllar: SDF + nur bo‘yicha namunalash (morf uchun)
+const N = 180;
+function polar(sdf, cx = CX, cy = CY) {
+  const pts = [];
+  for (let i = 0; i < N; i++) {
+    const a = -Math.PI / 2 + (i / N) * Math.PI * 2, dx = Math.cos(a), dy = Math.sin(a);
+    let lo = 0, hi = 1500;
+    for (let k = 0; k < 24; k++) { const m = (lo + hi) / 2; if (sdf(cx + dx * m, cy + dy * m) < 0) lo = m; else hi = m; }
+    pts.push([cx + dx * lo, cy + dy * lo]);
+  }
+  return pts;
+}
+const sdCircle = (cx, cy, r) => (x, y) => Math.hypot(x - cx, y - cy) - r;
+const sdRBox = (cx, cy, hw, hh, r) => (x, y) => {
+  const qx = Math.abs(x - cx) - hw + r, qy = Math.abs(y - cy) - hh + r;
+  return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
+};
+function sdTri(p, a, b, c) { // iq sdTriangle
+  const e0 = [b[0] - a[0], b[1] - a[1]], e1 = [c[0] - b[0], c[1] - b[1]], e2 = [a[0] - c[0], a[1] - c[1]];
+  const v0 = [p[0] - a[0], p[1] - a[1]], v1 = [p[0] - b[0], p[1] - b[1]], v2 = [p[0] - c[0], p[1] - c[1]];
+  const pq = (v, e) => { const h = clamp((v[0] * e[0] + v[1] * e[1]) / (e[0] * e[0] + e[1] * e[1])); return [v[0] - e[0] * h, v[1] - e[1] * h]; };
+  const q0 = pq(v0, e0), q1 = pq(v1, e1), q2 = pq(v2, e2);
+  const s = Math.sign(e0[0] * e2[1] - e0[1] * e2[0]);
+  const d0 = [q0[0] * q0[0] + q0[1] * q0[1], s * (v0[0] * e0[1] - v0[1] * e0[0])];
+  const d1 = [q1[0] * q1[0] + q1[1] * q1[1], s * (v1[0] * e1[1] - v1[1] * e1[0])];
+  const d2 = [q2[0] * q2[0] + q2[1] * q2[1], s * (v2[0] * e2[1] - v2[1] * e2[0])];
+  const d = [Math.min(d0[0], d1[0], d2[0]), Math.min(d0[1], d1[1], d2[1])];
+  return -Math.sqrt(d[0]) * Math.sign(d[1]);
+}
+const sdPin = (x, y) => Math.min(sdCircle(CX, 450, 170)(x, y), sdTri([x, y], [CX - 150, 530], [CX + 150, 530], [CX, 800]));
+const lerpPts = (A, B, k) => A.map((p, i) => [lerp(p[0], B[i][0], k), lerp(p[1], B[i][1], k)]);
+const pathOf = (pts, close = true) => 'M' + pts.map((p) => f2(p[0]) + ' ' + f2(p[1])).join('L') + (close ? 'Z' : '');
+const SH = {}; // shakllar bir marta hisoblanadi (t ga bog‘liq emas)
+function shapes() {
+  if (SH.ready) return SH;
+  SH.c180 = polar(sdCircle(CX, CY, 180)); SH.c200 = polar(sdCircle(CX, CY, 200));
+  SH.pin = polar(sdPin); SH.pitch = polar(sdRBox(CX, CY, 500, 310, 26)); SH.ready = true;
+  return SH;
+}
+
+// ------------------------------------------------------------ logotip (FoogMark geometriyasi)
+const LS = 2.6;                       // logotip masshtabi
+const LU = (u, v) => [CX + (u - 241) * LS, CY + (v - 60) * LS];
+// O harfining o‘rta chizig‘i: tekis tomon + yoy; 4 bo‘lak: tepa 30, o‘ng 40, past 30, yoy 80 nuqta
+function dMid(mirror) {
+  const pts = [];
+  const seg = (a, b, n) => { for (let i = 0; i < n; i++) pts.push([lerp(a[0], b[0], i / n), lerp(a[1], b[1], i / n)]); };
+  seg([174, 11], [218, 11], 30); seg([218, 11], [218, 109], 40); seg([218, 109], [174, 109], 30);
+  for (let i = 0; i < 80; i++) { const a = Math.PI / 2 + (i / 80) * Math.PI; pts.push([174 + 49 * Math.cos(a), 60 + 49 * Math.sin(a)]); }
+  return pts.map(([u, v]) => LU(mirror ? 468 - u : u, v));
+}
+// jarima maydonchasi: tepa, ichki tomon, past, darvoza chizig‘i
+function boxPts(mirror) {
+  const pts = []; const x0 = 180, x1 = 440, y0 = CY - 230, y1 = CY + 230;
+  const seg = (a, b, n) => { for (let i = 0; i < n; i++) pts.push([lerp(a[0], b[0], i / n), lerp(a[1], b[1], i / n)]); };
+  seg([x0, y0], [x1, y0], 30); seg([x1, y0], [x1, y1], 40); seg([x1, y1], [x0, y1], 30); seg([x0, y1], [x0, y0], 80);
+  return pts.map(([x, y]) => [mirror ? 2 * CX - x : x, y]);
+}
+const DL = dMid(false), DR = dMid(true), BL = boxPts(false), BR = boxPts(true);
+
+function logo({ fx = 0, gx = 0, dk = 0, dlx = 0, drx = 0, gap = 1, url = 0, t }) {
+  let s = '';
+  const g = (dx, inner, fnPos) => `<g${mb(fnPos, t)} transform="translate(${f2(dx)} 0)"><g transform="translate(${f2(CX - 241 * LS)} ${f2(CY - 60 * LS)}) scale(${LS})">${inner}</g></g>`;
+  // F
+  s += g(fx, `<path d="M0 120 V60 A60 60 0 0 1 60 0 H100 V22 H60 A38 38 0 0 0 22 60 V120 Z" fill="${COL.w}"/><rect x="22" y="56" width="54" height="22" fill="${COL.w}"/>`, (tt) => [logoFX(tt), 0]);
+  // G
+  s += g(gx, `<rect x="360" y="0" width="122" height="120" fill="${COL.w}" mask="url(#gmask)"/>`, (tt) => [logoGX(tt), 0]);
+  // ikkita O: o‘rta chiziq ko‘rinishida (morf qilinadi)
+  const sw = lerp(22 * LS, 12, dk);
+  const A = lerpPts(DL, BL, dk).map((p) => [p[0] + dlx, p[1]]), B = lerpPts(DR, BR, dk).map((p) => [p[0] + drx, p[1]]);
+  s += `<path d="${pathOf(A)}" fill="none" stroke="${COL.v}" stroke-width="${f2(sw)}" stroke-linejoin="miter" stroke-miterlimit="8"${mb((tt) => [dPos(tt).l, 0], t)}/>`;
+  s += `<path d="${pathOf(B)}" fill="none" stroke="${COL.v}" stroke-width="${f2(sw)}" stroke-linejoin="miter" stroke-miterlimit="8"${mb((tt) => [dPos(tt).r, 0], t)}/>`;
+  if (gap > 0.001) s += `<circle cx="${CX}" cy="${CY}" r="${f2(20 * LS * gap)}" fill="${COL.m}"/>`;
+  // foog.uz
+  if (url < 1) {
+    const y = 812 + url * 90;
+    s += `<g${clip(`<rect x="0" y="752" width="${W}" height="80"/>`)}><g${mb((tt) => [0, urlY(tt)], t)}>${txt('foog.uz', CX, y, 54, COL.w, 700, 'middle', ' letter-spacing="1"')}</g></g>`;
+  }
+  return s;
+}
+// logotip qismlari vaqt funksiyalari (boshi va oxiri bir xil – aylanib takrorlanadi)
+function logoFX(t) { return t < 7 ? -1500 * ei(prog(t, 0, 0.44)) : -1500 * (1 - eo(prog(t, 14.25, 0.52))); }
+function logoGX(t) { return -logoFX(t); }
+function urlY(t) { return t < 7 ? ei(prog(t, 0, 0.36)) : 1 - eo(prog(t, 14.5, 0.38)); }
+function dPos(t) {
+  if (t < 7) return { l: 0, r: 0 };
+  const k = 1 - eo(prog(t, 14.0, 0.45));
+  return { l: -1300 * k, r: 1300 * k };
+}
+
+// ------------------------------------------------------------ 3D proyeksiya (bitta kamera)
+function proj(x, y, z, c) {
+  const cy_ = Math.cos(c.yaw), sy_ = Math.sin(c.yaw);
+  const x1 = x * cy_ - y * sy_, y1 = x * sy_ + y * cy_;
+  const cp = Math.cos(c.phi), sp = Math.sin(c.phi);
+  const y2 = y1 * cp - z * sp, z2 = y1 * sp + z * cp;
+  const d = c.D - z2;
+  return [c.ox + (c.f * x1 / d) * c.s, c.oy + (c.f * y2 / d) * c.s, d];
+}
+// maydon chiziqlari (dunyo koordinatalari, maydon 1000×620)
+const PHW = 500, PHH = 310;
+function pitchLines() {
+  const L = [];
+  const line = (pts) => L.push(pts);
+  const seg = (a, b, n = 12) => { const p = []; for (let i = 0; i <= n; i++) p.push([lerp(a[0], b[0], i / n), lerp(a[1], b[1], i / n)]); return p; };
+  line(seg([0, -PHH], [0, PHH], 16));
+  const circ = []; for (let i = 0; i <= 48; i++) { const a = -Math.PI / 2 + (i / 48) * Math.PI * 2; circ.push([90 * Math.cos(a), 90 * Math.sin(a)]); } line(circ);
+  for (const s of [-1, 1]) {
+    line([...seg([s * PHW, -160], [s * (PHW - 160), -160], 6), ...seg([s * (PHW - 160), -160], [s * (PHW - 160), 160], 10).slice(1), ...seg([s * (PHW - 160), 160], [s * PHW, 160], 6).slice(1)]);
+    line([...seg([s * PHW, -70], [s * (PHW - 60), -70], 3), ...seg([s * (PHW - 60), -70], [s * (PHW - 60), 70], 4).slice(1), ...seg([s * (PHW - 60), 70], [s * PHW, 70], 3).slice(1)]);
+  }
+  return L;
+}
+const PL = pitchLines();
+const polyLen = (p) => p.reduce((s, q, i) => (i ? s + Math.hypot(q[0] - p[i - 1][0], q[1] - p[i - 1][1]) : 0), 0);
+
+// ================================================================ SAHNALAR
+// 1 · HOOK (0–2): logotip maydonga aylanadi, kamera nuqtaga sho‘ng‘iydi
+function s1(t) {
+  const dk = eo(prog(t, 0.5, 0.45));
+  const draw = eo(prog(t, 1.0, 0.45));
+  const z = Math.exp(Math.log(80) * ei(prog(t, 1.5, 0.5))) * lerp(1, 1.05, prog(t, 1.0, 0.5));
+  let s = `<rect width="${W}" height="${H}" fill="${COL.m}"/>`;
+  s += `<g transform="translate(${CX} ${CY}) scale(${f2(z * 1000) / 1000}) translate(${-CX} ${-CY})">`;
+  // maydon chiziqlari: markazdan tashqariga chiziladi
+  if (draw > 0) {
+    const L = (pts) => { const len = polyLen(pts); return `<path d="${pathOf(pts, false)}" fill="none" stroke="${COL.w}" stroke-width="12" stroke-dasharray="${f2(len)}" stroke-dashoffset="${f2(len * (1 - draw))}" stroke-linecap="butt"/>`; };
+    const top = [[CX, 100], [180, 100], [180, CY]], bot = [[CX, 980], [180, 980], [180, CY]];
+    s += L(top) + L(bot) + L(top.map(([x, y]) => [2 * CX - x, y])) + L(bot.map(([x, y]) => [2 * CX - x, y]));
+    s += L([[CX, CY - 52], [CX, 100]]) + L([[CX, CY + 52], [CX, 980]]);
+    const r = 170, circ = 2 * Math.PI * r;
+    s += `<circle cx="${CX}" cy="${CY}" r="${r}" fill="none" stroke="${COL.w}" stroke-width="12" stroke-dasharray="${f2(circ)}" stroke-dashoffset="${f2(circ * (1 - draw))}" transform="rotate(-90 ${CX} ${CY})"/>`;
+  }
+  s += logo({ fx: logoFX(t), gx: logoGX(t), dk, gap: 1 - dk, url: urlY(t), t });
+  s += `<circle cx="${CX}" cy="${CY}" r="${f2(11 * LS)}" fill="${COL.b}"/>`;
+  s += `</g>`;
+  return s;
+}
+
+// 2 · KINETIK MATN (2–4)
+function s2(t) {
+  let s = `<rect width="${W}" height="${H}" fill="${COL.b}"/>`;
+  const SZ = 300, CAP = 0.72 * SZ;
+  const pan1 = -2300 * eio(prog(t, 3.0, 0.4));
+  const pan2 = -2300 * eio(prog(t, 3.5, 0.3));
+  const panAt = (tt) => -2300 * eio(prog(tt, 3.0, 0.4)) - 2300 * eio(prog(tt, 3.5, 0.3));
+  const X = pan1 + pan2;
+  // harflarni pastdan ko‘taruvchi qator
+  const rise = (str, baseFn, x0, at, fill, size = SZ) => {
+    const lay = layout(str, size);
+    let out = '';
+    lay.letters.forEach((L, i) => {
+      const a = at + i * 0.028;
+      const dy = (tt) => (1 - eo(prog(tt, a, 0.34))) * size * 1.05;
+      const y = baseFn(t) + dy(t);
+      const fx = (tt) => [x0 + panAt(tt) + L.x, baseFn(tt) + dy(tt)];
+      out += `<g${mb(fx, t)}>${txt(L.ch, x0 + X + L.x, y, size, fill)}</g>`;
+    });
+    const top = baseFn(t) - size * 0.78, h = size * 0.98;
+    return `<g${clip(`<rect x="0" y="${f2(top)}" width="${W}" height="${f2(h)}"/>`)}>${out}</g>`;
+  };
+  const b1 = (tt) => lerp(540 + CAP / 2, 400 + CAP / 2, eo(prog(tt, 2.5, 0.34)));
+  const b2 = () => 680 + CAP / 2;
+  s += rise('STADION', b1, CX, 2.0, COL.w);
+  if (t >= 2.5) s += rise('TOP.', b2, CX, 2.5, COL.v);
+  if (t >= 2.95) {
+    s += rise('JAMOA', () => 400 + CAP / 2, CX + 2300, 2.98, COL.w);
+    s += rise('YIG‘', () => 680 + CAP / 2, CX + 2300, 3.06, COL.v);
+  }
+  if (t >= 3.45) {
+    // O‘YNA: "O" – Volt doira, keyin markazga o‘tib shaklga aylanadi
+    const SZ2 = 380, CAP2 = 0.72 * SZ2, base = 540 + CAP2 / 2;
+    const lay = layout('O‘YNA', SZ2);
+    const x0 = CX + 4600;
+    const drop = (tt) => ei(prog(tt, 3.78, 0.22)) * 800;
+    lay.letters.forEach((L, i) => {
+      if (i === 0) return;
+      const a = 3.5 + i * 0.03;
+      const dy = (tt) => (1 - eo(prog(tt, a, 0.28))) * SZ2 * 1.05 + drop(tt);
+      const fx = (tt) => [x0 + panAt(tt) + L.x, base + dy(tt)];
+      s += `<g${mb(fx, t)}>${txt(L.ch, x0 + X + L.x, base + dy(t), SZ2, COL.w)}</g>`;
+    });
+    const o = lay.letters[0];
+    const oPos = (tt) => {
+      const k = eo(prog(tt, 3.78, 0.22));
+      const px = x0 + panAt(tt) + o.cx, py = base - CAP2 / 2;
+      return [lerp(px, CX, k), lerp(py, CY, k)];
+    };
+    const r = lerp(CAP2 / 2, 180, eo(prog(t, 3.78, 0.22))) * eo(prog(t, 3.5, 0.25));
+    const p = oPos(t);
+    s += `<circle cx="${f2(p[0])}" cy="${f2(p[1])}" r="${f2(r)}" fill="${COL.v}"${mb(oPos, t)}/>`;
+  }
+  return s;
+}
+
+// 3 · SHAKL MORFI (4–6): doira → koptok → pin → maydon
+function s3(t) {
+  const S = shapes();
+  let s = `<rect width="${W}" height="${H}" fill="${COL.b}"/>`;
+  const k1 = eo(prog(t, 4.0, 0.35)), k2 = eo(prog(t, 4.5, 0.4)), k3 = eo(prog(t, 5.0, 0.4)), k4 = eo(prog(t, 5.5, 0.4));
+  let pts = lerpPts(S.c180, S.c200, k1);
+  if (t >= 4.5) pts = lerpPts(S.c200, S.pin, k2);
+  if (t >= 5.0) pts = lerpPts(S.pin, S.pitch, k3);
+  const rot = t < 5.0 ? -24 * eo(prog(t, 4.0, 0.9)) : -24 * (1 - eo(prog(t, 5.0, 0.4)));
+  s += `<g transform="rotate(${f2(rot)} ${CX} ${CY})"><path d="${pathOf(pts)}" fill="${COL.v}"/>`;
+  // koptok naqshi: chiziladi, keyin yig‘iladi
+  const pat = k1 * (1 - eo(prog(t, 4.5, 0.16)));
+  if (pat > 0.002) {
+    const pent = []; for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + (i / 5) * Math.PI * 2; pent.push([CX + 62 * Math.cos(a), CY + 62 * Math.sin(a)]); }
+    s += `<path d="${pathOf(pent)}" fill="${COL.m}" transform="translate(${CX} ${CY}) scale(${f2(pat)}) translate(${-CX} ${-CY})"/>`;
+    pent.forEach(([x, y]) => {
+      const dx = x - CX, dy = y - CY, l = Math.hypot(dx, dy);
+      const ex = CX + (dx / l) * 200, ey = CY + (dy / l) * 200;
+      s += `<line x1="${f2(x)}" y1="${f2(y)}" x2="${f2(lerp(x, ex, pat))}" y2="${f2(lerp(y, ey, pat))}" stroke="${COL.m}" stroke-width="14" stroke-linecap="round"/>`;
+    });
+  }
+  s += `</g>`;
+  // pin teshigi
+  const hole = t < 5.0 ? k2 : 1 - k3;
+  if (hole > 0.002 && t >= 4.5) s += `<circle cx="${CX}" cy="450" r="${f2(72 * hole)}" fill="${COL.b}"/>`;
+  // maydon chiziqlari chiziladi
+  if (k4 > 0) {
+    const cam = { phi: 0, yaw: 0, D: 1400, f: 1400, s: 1, ox: CX, oy: CY };
+    PL.forEach((pl) => {
+      const P = pl.map(([x, y]) => proj(x, y, 0, cam)), len = polyLen(P);
+      s += `<path d="${pathOf(P, false)}" fill="none" stroke="${COL.m}" stroke-width="8" stroke-dasharray="${f2(len)}" stroke-dashoffset="${f2(len * (1 - k4))}"/>`;
+    });
+  }
+  return s;
+}
+
+// 4 · 2D → 3D (6–8)
+function cam4(t) {
+  const tilt = eo(prog(t, 6.0, 0.5)) * (1 - eio(prog(t, 7.5, 0.45)));
+  const yaw = -25 * eio(prog(t, 7.0, 0.5)) - 65 * eio(prog(t, 7.5, 0.45));
+  return { phi: 62 * deg * tilt, yaw: yaw * deg, D: 1400, f: 1400, s: lerp(1, 0.8, eio(prog(t, 7.5, 0.45))), ox: CX, oy: CY + 70 * tilt };
+}
+function pitch3D(t, cam, lineCol, lineW, fill, draw = 1) {
+  let s = '';
+  const C = [[-PHW, -PHH], [PHW, -PHH], [PHW, PHH], [-PHW, PHH]].map(([x, y]) => proj(x, y, 0, cam));
+  if (fill) s += `<path d="${pathOf(C)}" fill="${fill}"/>`;
+  PL.forEach((pl) => {
+    const P = pl.map(([x, y]) => proj(x, y, 0, cam)), len = polyLen(P);
+    s += `<path d="${pathOf(P, false)}" fill="none" stroke="${lineCol}" stroke-width="${f2(lineW)}" stroke-linejoin="round"${draw < 1 ? ` stroke-dasharray="${f2(len)}" stroke-dashoffset="${f2(len * (1 - draw))}"` : ''}/>`;
+  });
+  return s;
+}
+function s4(t) {
+  let s = `<rect width="${W}" height="${H}" fill="${COL.b}"/>`;
+  const cam = cam4(t);
+  s += pitch3D(t, cam, COL.m, 8 * cam.s, COL.v);
+  // darvozalar va bayroqchalar ko‘tariladi
+  const h = 120 * eo(prog(t, 6.5, 0.3)) * (1 - eo(prog(t, 7.5, 0.22)));
+  if (h > 0.5) {
+    for (const sx of [-1, 1]) {
+      const g = (x, y, z) => proj(sx * x, y, z, cam);
+      const posts = [[PHW, -60], [PHW, 60], [PHW + 50, 60], [PHW + 50, -60]];
+      const top = posts.map(([x, y]) => g(x, y, h)), base = posts.map(([x, y]) => g(x, y, 0));
+      s += `<path d="${pathOf([base[0], top[0], top[1], base[1]], false)}" fill="none" stroke="${COL.w}" stroke-width="7" stroke-linejoin="round"/>`;
+      s += `<path d="${pathOf([top[0], top[3], base[3]], false)}M${f2(top[1][0])} ${f2(top[1][1])}L${f2(top[2][0])} ${f2(top[2][1])}L${f2(base[2][0])} ${f2(base[2][1])}" fill="none" stroke="${COL.w}" stroke-width="4" opacity="0.9"/>`;
+      for (const y of [-PHH, PHH]) { const a = g(PHW, y, 0), b = g(PHW, y, h * 0.6); s += `<line x1="${f2(a[0])}" y1="${f2(a[1])}" x2="${f2(b[0])}" y2="${f2(b[1])}" stroke="${COL.w}" stroke-width="5"/>`; }
+    }
+  }
+  // koptok: tushadi va darvozaga dumalaydi
+  if (t >= 7.0 && t < 7.75) {
+    const ballP = (tt) => {
+      const z = 26 + 520 * (1 - ei(prog(tt, 7.0, 0.25)));
+      const x = 470 * eo(prog(tt, 7.25, 0.3));
+      return proj(x, 0, z, cam4(tt));
+    };
+    const p = ballP(t), sc = 1 - ei(prog(t, 7.5, 0.25));
+    const r = (cam.f * 26 / p[2]) * cam.s * sc;
+    if (r > 0.5) s += `<g${mb(ballP, t, 0.35)}><circle cx="${f2(p[0])}" cy="${f2(p[1])}" r="${f2(r)}" fill="${COL.w}"/><circle cx="${f2(p[0])}" cy="${f2(p[1])}" r="${f2(r * 0.38)}" fill="${COL.m}"/></g>`;
+  }
+  return s;
+}
+
+// 5 · UI / MA'LUMOT (8–10)
+function s5(t) {
+  let s = `<rect width="${W}" height="${H}" fill="${COL.b}"/>`;
+  const k = eo(prog(t, 8.0, 0.3));
+  const ex = eo(prog(t, 10.0, 0.34)); // ekran butun kadrga kengayadi
+  const hw = lerp(lerp(248, 250, k), 1100, ex), hh = lerp(lerp(400, 490, k), 640, ex), r = lerp(lerp(0, 58, k), 0, ex);
+  s += `<rect x="${f2(CX - hw)}" y="${f2(CY - hh)}" width="${f2(hw * 2)}" height="${f2(hh * 2)}" rx="${f2(r)}" fill="${COL.v}"/>`;
+  // portret maydon chiziqlari yig‘iladi
+  const back = 1 - eo(prog(t, 8.0, 0.22));
+  if (back > 0.002) s += pitch3D(t, { phi: 0, yaw: -90 * deg, D: 1400, f: 1400, s: 0.8, ox: CX, oy: CY }, COL.m, 6.4, null, back);
+  // ekran
+  const sk = eo(prog(t, 8.05, 0.3));
+  const shw = lerp(0, 232, sk) + ex * 1000, shh = lerp(0, 472, sk) + ex * 200, sr = lerp(40, 0, ex);
+  if (sk > 0.002) s += `<rect x="${f2(CX - shw)}" y="${f2(CY - shh)}" width="${f2(shw * 2)}" height="${f2(shh * 2)}" rx="${f2(sr)}" fill="${COL.m}"/>`;
+  // UI mazmuni – ekran ichida, kengayishda chapga suriladi
+  const slide = (tt) => -1400 * ei(prog(tt, 10.0, 0.3));
+  let ui = '';
+  const L = 760;
+  const up = (at, d = 0.3) => (1 - eo(prog(t, at, d))) * 60;
+  if (t >= 8.1) {
+    ui += txt('STADION', L, 170 + up(8.1), 22, COL.v, 700, 'start', ' letter-spacing="3"');
+    ui += `<g${clip(`<rect x="700" y="186" width="520" height="56"/>`)}>${txt('Arena Yunusobod', L, 230 + up(8.15) * 1.2, 42, COL.w, 900)}</g>`;
+    const st = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + (i / 10) * Math.PI * 2, rr = i % 2 ? 6 : 14; st.push([774 + rr * Math.cos(a), 262 + rr * Math.sin(a)]); }
+    const ss = eo(prog(t, 8.25, 0.25));
+    ui += `<path d="${pathOf(st)}" fill="${COL.v}" transform="translate(774 262) scale(${f2(ss)}) translate(-774 -262)"/>`;
+    ui += txt('4,6 · Yunusobod tumani', 798, 271 + up(8.25) * 0.5, 24, COL.w, 700);
+  }
+  if (t >= 8.45) {
+    ui += txt('BO‘SH SOATLAR', L, 318 + up(8.45, 0.25), 22, COL.v, 700, 'start', ' letter-spacing="3"');
+    ['08:00', '18:00', '19:00', '20:00'].forEach((lab, i) => {
+      const xo = (1 - eo(prog(t, 8.5 + i * 0.05, 0.32))) * 420;
+      const x = L + i * 108 + xo, y = 342;
+      const on = i === 2 ? eo(prog(t, 8.75, 0.2)) : 0;
+      ui += `<g${mb((tt) => [(1 - eo(prog(tt, 8.5 + i * 0.05, 0.32))) * 420, 0], t)}><rect x="${f2(x)}" y="${y}" width="96" height="56" rx="28" fill="none" stroke="${COL.w}" stroke-width="2.5"/>`;
+      if (on > 0) ui += `<rect x="${f2(x + 48 - 48 * on)}" y="${y}" width="${f2(96 * on)}" height="56" rx="28" fill="${COL.v}"/>`;
+      ui += txt(lab, x + 48, y + 37, 24, on > 0.5 ? COL.m : COL.w, 700, 'middle') + `</g>`;
+    });
+  }
+  if (t >= 8.95) {
+    ui += txt('BRONLAR · HAFTA', L, 488, 22, COL.v, 700, 'start', ' letter-spacing="3"');
+    const D = [0.36, 0.52, 0.44, 0.7, 0.6, 0.88, 1];
+    ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'].forEach((d, i) => {
+      const gk = eo(prog(t, 9.0 + i * 0.04, 0.36));
+      const hgt = 240 * D[i] * gk, x = L + i * 62;
+      ui += `<rect x="${x}" y="${f2(780 - hgt)}" width="42" height="${f2(hgt)}" rx="6" fill="${i === 6 ? COL.v : COL.w}"/>`;
+      ui += txt(d, x + 21, 820, 20, COL.w, 700, 'middle');
+    });
+  }
+  if (t >= 9.45) {
+    const n = Math.round(1248 * eo(prog(t, 9.5, 0.42)));
+    const str = n >= 1000 ? `${Math.floor(n / 1000)} ${String(n % 1000).padStart(3, '0')}` : String(n);
+    ui += `<g${clip(`<rect x="700" y="868" width="520" height="104"/>`)}>${txt(str, L, 952 + up(9.45) * 1.6, 92, COL.w, 900)}</g>`;
+    ui += txt('bron', L + 2, 870 - 0 + up(9.55) * 0.6, 26, COL.v, 700);
+    const ck = eo(prog(t, 9.6, 0.3));
+    ui += `<circle cx="1140" cy="922" r="${f2(34 * ck)}" fill="${COL.v}"/>`;
+    const cl = 52; ui += `<path d="M1124 922 L1136 934 L1158 910" fill="none" stroke="${COL.m}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="${cl}" stroke-dashoffset="${f2(cl * (1 - eo(prog(t, 9.75, 0.22))))}"/>`;
+  }
+  if (ui) s += `<g${clip(`<rect x="${f2(CX - shw)}" y="${f2(CY - shh)}" width="${f2(shw * 2)}" height="${f2(shh * 2)}" rx="${f2(sr)}"/>`)}><g transform="translate(${f2(slide(t))} 0)"${mb((tt) => [slide(tt), 0], t)}>${ui}</g></g>`;
+  // telefon burchaklari kamera burchaklariga aylanadi
+  if (t >= 10.0 && t < 10.34) s += brackets(t);
+  return s;
+}
+function brackets(t) {
+  const ex = eo(prog(t, 10.0, 0.34));
+  const x0 = lerp(CX - 232, 90, ex), x1 = lerp(CX + 232, W - 90, ex), y0 = lerp(CY - 472, 90, ex), y1 = lerp(CY + 472, H - 90, ex);
+  const l = lerp(60, 120, ex);
+  const c = (x, y, dx, dy) => `<path d="M${f2(x)} ${f2(y + dy * l)} L${f2(x)} ${f2(y)} L${f2(x + dx * l)} ${f2(y)}" fill="none" stroke="${COL.w}" stroke-width="8"/>`;
+  return c(x0, y0, 1, 1) + c(x1, y0, -1, 1) + c(x0, y1, 1, -1) + c(x1, y1, -1, -1);
+}
+
+// 6 · FOOGII KAMERASI (10–12)
+function s6(t) {
+  const early = t < 10.34;
+  let s = early ? s5(t) : `<rect width="${W}" height="${H}" fill="${COL.m}"/>`;
+  const push = 1 + 0.38 * ei(prog(t, 11.5, 0.5));
+  let inner = '';
+  const disc = 300 * eo(prog(t, 10.05, 0.32));
+  inner += `<circle cx="${CX}" cy="560" r="${f2(disc)}" fill="${COL.v}"/>`;
+  const rev = 760 * eo(prog(t, 10.15, 0.34));
+  const wipe = (tt) => 1920 - 2350 * eio(prog(tt, 11.0, 0.45));
+  const xe = wipe(t);
+  if (rev > 1) {
+    const img = (href, cl) => `<g${cl}><image href="${href}" x="${CX - 300}" y="${560 - 345}" width="600" height="680" preserveAspectRatio="xMidYMid meet"/></g>`;
+    const circ = `<circle cx="${CX}" cy="560" r="${f2(rev)}"/>`;
+    inner += `<g${clip(circ)}>`;
+    inner += img('st/02_12_camera_filming.png', clip(`<rect x="-400" y="0" width="${f2(Math.max(0, xe + 400))}" height="${H}"/>`));
+    if (xe < 1920) inner += img('st/02_11_selfie.png', clip(`<rect x="${f2(xe + 170)}" y="0" width="${W + 600}" height="${H}"/>`));
+    inner += `</g>`;
+  }
+  if (xe < 1920) inner += `<rect x="${f2(xe)}" y="0" width="170" height="${H}" fill="${COL.v}"${mb((tt) => [wipe(tt), 0], t, 0.3)}/>`;
+  // pichirlash – harfma-harf yoziladi, keyin chapga suriladi
+  if (t >= 10.45) {
+    const full = 'psst… hammasini yozib olaman';
+    const n = clamp(Math.floor((t - 10.5) * 64), 0, full.length);
+    const tx = (tt) => -1400 * eio(prog(tt, 11.0, 0.45));
+    inner += `<g transform="translate(${f2(tx(t))} 0)"${mb((tt) => [tx(tt), 0], t)}>`;
+    inner += txt('PICHIRLAB', 170, 430, 24, COL.v, 700, 'start', ' letter-spacing="5"');
+    const shown = full.slice(0, n), lines = ['psst…', 'hammasini', 'yozib olaman'];
+    let used = 0;
+    lines.forEach((ln, i) => { const part = shown.slice(used, used + ln.length); used += ln.length + 1; if (part) inner += txt(part + (part.length < ln.length || (i === 2 && n < full.length) ? '▍' : ''), 170, 500 + i * 66, 56, COL.w, 900); });
+    inner += `</g>`;
+  }
+  s += `<g transform="translate(${CX} 560) scale(${f2(push * 1000) / 1000}) translate(${-CX} -560)">${inner}</g>`;
+  // kamera ekrani (doimiy, kameraga bog‘liq emas)
+  if (!early) s += brackets(11.34);
+  const ph = ((t - 10) % BEAT) / BEAT, pulse = 1 + 0.35 * Math.exp(-9 * ph);
+  s += `<circle cx="160" cy="150" r="${f2(13 * pulse)}" fill="${COL.v}"/>` + txt('REC', 186, 161, 30, COL.w, 700);
+  const fr = Math.floor((t - 10) * 30), sec = Math.floor(t - 10);
+  s += txt(`00:00:${String(sec).padStart(2, '0')}:${String(fr % 30).padStart(2, '0')}`, CX, 161, 30, COL.w, 700, 'middle', ' letter-spacing="2"');
+  s += txt('FOOGII CAM', 160, 952, 28, COL.v, 700, 'start', ' letter-spacing="3"');
+  const zoom = 1 + ei(prog(t, 11.5, 0.5));
+  s += txt(xe < CX ? 'OLD KAMERA' : `${zoom.toFixed(1)}×`, CX, 952, 28, COL.w, 700, 'middle', ' letter-spacing="3"');
+  s += txt('4K · 60', W - 160, 952, 28, COL.w, 700, 'end', ' letter-spacing="3"');
+  // Volt qoplama – keyingi taktga o‘tish
+  const cover = (tt) => 1920 * (1 - ei(prog(tt, 11.75, 0.25)));
+  if (t >= 11.75) s += `<rect x="${f2(cover(t))}" y="0" width="${W + 200}" height="${H}" fill="${COL.v}"${mb((tt) => [cover(tt), 0], t, 0.3)}/>`;
+  return s;
+}
+
+// 7 · ENG KUCHLI TAKT (12–14)
+function s7(t) {
+  const conv = (i, n) => ei(prog(t, 13.5 + (i / n) * 0.08, 0.38));
+  const inv = (tt) => 1920 - 1920 * eio(prog(tt, 13.0, 0.4));
+  const xw = inv(t);
+  const layer = (bg, c1, c2, pitchCol) => {
+    let s = `<rect width="${W}" height="${H}" fill="${bg}"/>`;
+    // ostida oqib turuvchi 3D maydon
+    if (t >= 12.45) {
+      const flow = -900 + 1000 * (t - 12.45);
+      const cv = ei(prog(t, 13.5, 0.4));
+      const cam = { phi: 74 * deg, yaw: 0, D: 1400, f: 1400, s: 2.3 * (1 - cv), ox: CX, oy: lerp(700, CY, cv) };
+      PL.forEach((pl) => {
+        const P = pl.map(([x, y]) => proj(x * 1.3, y * 1.3 + flow, 0, cam)).filter((p) => p[2] > 260);
+        if (P.length > 1) s += `<path d="${pathOf(P, false)}" fill="none" stroke="${pitchCol}" stroke-width="${f2(10 * (1 - cv))}" stroke-linejoin="round"/>`;
+      });
+    }
+    const word = (str, base, size, fill, entry) => {
+      const lay = layout(str, size);
+      lay.letters.forEach((L, i) => {
+        const pos = (tt) => {
+          const e = entry(tt, i);
+          const c = ei(prog(tt, 13.5 + (i / lay.letters.length) * 0.08, 0.38));
+          const x = CX + L.cx + e.dx, y = base - size * 0.36;
+          return [lerp(x, CX, c), lerp(y, CY, c), e.s * (1 - c)];
+        };
+        const p = pos(t);
+        if (p[2] < 0.01) return;
+        s += `<g${mb(pos, t)} transform="translate(${f2(p[0])} ${f2(p[1])}) scale(${f2(p[2] * 1000) / 1000})">${txt(L.ch, -L.w / 2, size * 0.36, size, fill)}</g>`;
+      });
+    };
+    word('BIRGA', 520, 330, c1, (tt, i) => ({ dx: 0, s: lerp(2.6, 1, eo(prog(tt, 12.0 + i * 0.035, 0.3))) * (tt >= 12.0 + i * 0.035 ? 1 : 0) }));
+    word('QURAMIZ', 840, 290, c2, (tt) => ({ dx: 2300 * (1 - eio(prog(tt, 12.5, 0.4))), s: tt >= 12.5 ? 1 : 0 }));
+    return s;
+  };
+  let s = layer(COL.v, COL.m, COL.b, 'rgba(13,18,38,.22)');
+  if (xw < W) s += `<g${clip(`<rect x="${f2(xw)}" y="0" width="${W}" height="${H}"/>`)}>${layer(COL.m, COL.v, COL.w, 'rgba(200,245,58,.22)')}</g>`;
+  // markaz nuqtasi – yakun uchun
+  const dot = eo(prog(t, 13.8, 0.2));
+  if (dot > 0) s += `<circle cx="${CX}" cy="${CY}" r="${f2(11 * LS * dot)}" fill="${COL.b}"/>`;
+  return s;
+}
+
+// 8 · YAKUN (14–15): logotip nuqta atrofida qayta yig‘iladi
+function s8(t) {
+  let s = `<rect width="${W}" height="${H}" fill="${COL.m}"/>`;
+  const d = dPos(t);
+  s += logo({ fx: logoFX(t), gx: logoGX(t), dk: 0, dlx: d.l, drx: d.r, gap: eo(prog(t, 14.0, 0.45)), url: urlY(t), t });
+  s += `<circle cx="${CX}" cy="${CY}" r="${f2(11 * LS)}" fill="${COL.b}"/>`;
+  return s;
+}
+
+// ================================================================ KADR
+// DEFS sahna chizilayotganda to‘ladi – shuning uchun avval body, keyin svg
+function render(t) {
+  t = ((t % DUR) + DUR) % DUR;
+  DEFS = []; FID = 0;
+  let body;
+  if (t < 2) body = s1(t);
+  else if (t < 4) body = s2(t);
+  else if (t < 6) body = s3(t);
+  else if (t < 8) body = s4(t);
+  else if (t < 10) body = s5(t);
+  else if (t < 12) body = s6(t);
+  else if (t < 14) body = s7(t);
+  else body = s8(t);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}"><defs><mask id="gmask"><path d="M428 0 H480 V120 H428 A60 60 0 0 1 428 0 Z" fill="white"/><path d="M428 22 H458 V98 H428 A38 38 0 0 1 428 22 Z" fill="black"/><rect x="450" y="22" width="40" height="34" fill="black"/><rect x="440" y="56" width="40" height="22" fill="white"/></mask>${DEFS.join('')}</defs>${body}</svg>`;
+}
+const root = document.getElementById('root');
+window.seek = (t) => { root.innerHTML = render(t); };
+
+// ================================================================ OVOZ (OfflineAudioContext → WAV)
+window.renderAudio = async () => {
+  const SR = 48000, ctx = new OfflineAudioContext(2, SR * DUR, SR);
+  let seed = 7; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) * 2 - 1;
+  const noise = ctx.createBuffer(1, SR * 2, SR); const nd = noise.getChannelData(0); for (let i = 0; i < nd.length; i++) nd[i] = rnd();
+  const master = ctx.createDynamicsCompressor(); master.threshold.value = -10; master.ratio.value = 4; master.attack.value = 0.003; master.release.value = 0.12;
+  const out = ctx.createGain(); out.gain.value = 0.9; master.connect(out); out.connect(ctx.destination);
+  const env = (g, t, a, peak, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
+  const nz = (t, dur, type, freq, q, peak, dec) => { const s = ctx.createBufferSource(); s.buffer = noise; const f = ctx.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q; const g = ctx.createGain(); env(g, t, 0.002, peak, dec); s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + dur); };
+  const kick = (t, peak = 1) => { const o = ctx.createOscillator(); o.frequency.setValueAtTime(155, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.13); const g = ctx.createGain(); env(g, t, 0.003, peak, 0.34); o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.4); nz(t, 0.02, 'highpass', 3000, 0.7, 0.25 * peak, 0.012); };
+  const hat = (t, p = 0.12) => nz(t, 0.06, 'highpass', 8500, 0.8, p, 0.04);
+  const clap = (t) => { for (const dt of [0, 0.012, 0.024]) nz(t + dt, 0.2, 'bandpass', 1700, 1.4, 0.32, 0.13); };
+  const hit = (t, big = false) => {
+    const o = ctx.createOscillator(); o.frequency.setValueAtTime(big ? 90 : 70, t); o.frequency.exponentialRampToValueAtTime(30, t + 0.9); const g = ctx.createGain(); env(g, t, 0.004, big ? 0.9 : 0.6, big ? 1.2 : 0.7); o.connect(g); g.connect(master); o.start(t); o.stop(t + 1.4);
+    nz(t, 0.5, 'lowpass', big ? 5000 : 3000, 0.6, big ? 0.55 : 0.35, big ? 0.45 : 0.22);
+    const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = big ? 880 : 660; const g2 = ctx.createGain(); env(g2, t, 0.002, 0.12, 0.25); o2.connect(g2); g2.connect(master); o2.start(t); o2.stop(t + 0.3);
+  };
+  // bass: har takt yangi nota, sakkizliklar
+  const roots = [55, 43.65, 65.41, 49, 55, 43.65, 65.41, 49];
+  for (let i = 0; i < 60; i++) {
+    const t = i * 0.25, bar = Math.floor(t / 2); if (t >= 14) break;
+    const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = roots[bar % 8] * (i % 4 === 3 ? 2 : 1);
+    const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = bar >= 6 ? 900 : 520; f.Q.value = 3;
+    const g = ctx.createGain(); env(g, t + 0.02, 0.01, 0.16, 0.18); o.connect(f); f.connect(g); g.connect(master); o.start(t); o.stop(t + 0.25);
+  }
+  for (let b = 0; b < 30; b++) {
+    const t = b * BEAT;
+    kick(t, b === 24 ? 1.1 : 1);
+    if (b % 2 === 1) clap(t);
+    hat(t + 0.25); if (t >= 12 && t < 14) { hat(t + 0.125, 0.08); hat(t + 0.375, 0.08); }
+  }
+  for (const t of [2, 4, 6, 8, 10, 14]) hit(t);
+  hit(12, true);
+  // riser 10 → 12
+  { const s = ctx.createBufferSource(); s.buffer = noise; s.loop = true; const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 2; f.frequency.setValueAtTime(300, 10); f.frequency.exponentialRampToValueAtTime(7000, 11.98); const g = ctx.createGain(); g.gain.setValueAtTime(0.0001, 10); g.gain.exponentialRampToValueAtTime(0.5, 11.98); g.gain.setValueAtTime(0.0001, 12.0); s.connect(f); f.connect(g); g.connect(master); s.start(10); s.stop(12.01);
+    const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(110, 10); o.frequency.exponentialRampToValueAtTime(880, 11.98); const of = ctx.createBiquadFilter(); of.type = 'lowpass'; of.frequency.setValueAtTime(400, 10); of.frequency.exponentialRampToValueAtTime(5000, 11.98); const og = ctx.createGain(); og.gain.setValueAtTime(0.0001, 10); og.gain.exponentialRampToValueAtTime(0.14, 11.98); og.gain.setValueAtTime(0.0001, 12.0); o.connect(of); of.connect(og); og.connect(master); o.start(10); o.stop(12.01); }
+  // yakuniy akkord (logotip)
+  for (const fq of [220, 277.18, 329.63, 440]) { const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = fq; const g = ctx.createGain(); env(g, 14.0, 0.01, 0.07, 0.95); o.connect(g); g.connect(master); o.start(14); o.stop(15); }
+  const buf = await ctx.startRendering();
+  // 16-bit PCM WAV
+  const n = buf.length, ch = 2, data = new DataView(new ArrayBuffer(44 + n * ch * 2));
+  const ws = (o, s) => [...s].forEach((c, i) => data.setUint8(o + i, c.charCodeAt(0)));
+  ws(0, 'RIFF'); data.setUint32(4, 36 + n * ch * 2, true); ws(8, 'WAVE'); ws(12, 'fmt '); data.setUint32(16, 16, true); data.setUint16(20, 1, true); data.setUint16(22, ch, true);
+  data.setUint32(24, SR, true); data.setUint32(28, SR * ch * 2, true); data.setUint16(32, ch * 2, true); data.setUint16(34, 16, true); ws(36, 'data'); data.setUint32(40, n * ch * 2, true);
+  const L = buf.getChannelData(0), R = buf.getChannelData(1);
+  for (let i = 0; i < n; i++) { data.setInt16(44 + i * 4, clamp(L[i], -1, 1) * 32767, true); data.setInt16(46 + i * 4, clamp(R[i], -1, 1) * 32767, true); }
+  const bytes = new Uint8Array(data.buffer); let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+};
+
+window.ready = (async () => {
+  await document.fonts.load('900 100px A'); await document.fonts.load('700 100px A');
+  await Promise.all(['st/02_12_camera_filming.png', 'st/02_11_selfie.png'].map((src) => new Promise((r) => { const i = new Image(); i.onload = r; i.onerror = r; i.src = src; })));
+  window.seek(0);
+  return true;
+})();
+</script>
+</body>
+</html>
