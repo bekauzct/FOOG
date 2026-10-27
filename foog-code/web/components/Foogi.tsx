@@ -16,6 +16,7 @@ type Msg = { from: 'me' | 'foogi'; text: string; href?: string | null; label?: s
 type Btn = { t: string; fn: () => void; main?: boolean; href?: string };
 type Bubble = { tag: string; title?: string | null; text: string; btns?: Btn[]; tour?: boolean };
 
+const HIDDEN_ON = ['/sardorshtein'];
 export const poseSrc = (p: string) => `/foogi/${p}.webp`;
 const PRELOAD = ['wave_hello', 'run', 'scooter', 'sleep', 'surprised', 'typing', 'thinking', 'thumbs_up', 'present', 'goal_celebration', 'ketdik', 'telegram_time', 'facepalm'];
 const lerp = (a: number, b: number, k: number) => a + (b - a) * k;
@@ -340,6 +341,8 @@ export default function Foogi() {
     ...(boot?.chips ?? []).map((c) => ({ t: c.title, fn: () => ask(c.title, c.answerId) })),
   ];
 
+  // hamkorlarga ko‘rsatiladigan alohida sahifalarda FOOGI chiqmaydi
+  if (HIDDEN_ON.includes(path)) return null;
   return (
     <div className="foogi-root" aria-live="polite">
       <div ref={hlRef} className="foogi-hl" />
