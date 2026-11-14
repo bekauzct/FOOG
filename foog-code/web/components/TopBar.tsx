@@ -75,6 +75,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
       { id: '/admin/content', href: '/admin/content', icon: 'flag', label: 'Kontent', badge: b.reports },
       { id: '/admin/teams', href: '/admin/teams', icon: 'groups', label: 'Jamoalar', badge: b.payments },
       { id: '/admin/foogi', href: '/admin/foogi', icon: 'smart_toy', label: 'FOOGI', badge: b.foogi },
+      { id: '/admin/broadcast', href: '/admin/broadcast', icon: 'notifications_active', label: 'E’lon' },
       { id: '/admin/bookings', href: '/admin/bookings', icon: 'event_note', label: 'Bronlar' },
       { id: '/admin/audit', href: '/admin/audit', icon: 'history', label: 'Jurnal' },
     ]
@@ -126,7 +127,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
           <span className="mk"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></span>
           {biz && <span className="biz">{t(mode === 'admin' ? 'Admin' : 'Biznes')}</span>}
         </Link>
-        {me && <nav data-tour="nav" className={`topnav ${biz ? 'biz-nav' : ''}`} aria-label={t('Asosiy navigatsiya')}>{nav('nav-lb')}</nav>}
+        {me && <nav data-tour="nav" className={`topnav ${biz ? 'biz-nav' : ''} ${mode === 'admin' ? 'admin-nav' : ''}`} aria-label={t('Asosiy navigatsiya')}>{nav('nav-lb')}</nav>}
         <div className="tools" ref={menuRef}>
           {me && (
             <form className="tsearch" onSubmit={onSearch} role="search">

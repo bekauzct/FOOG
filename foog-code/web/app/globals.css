@@ -721,3 +721,6 @@ h1, h2, h3, h4, p { margin: 0; }
 .topnav a.nav-obv:hover, .subnav a.nav-obv:hover { background: #E61E1E; color: #fff; }
 /* Menyu siqilmasin: keng bo‘lmagan ekranda faqat qizil ikonka (to‘liq nomi – title’da) */
 @media (max-width: 1599px) and (min-width: 761px) { .topnav a.nav-obv .obv-lb { display: none; } .topnav a.nav-obv { padding: 0 11px; } }
+/* Admin menyusida bo‘limlar ko‘p – o‘rtacha ekranda faqat ikonkalar (nomi – title’da) */
+@media (max-width: 1919px) and (min-width: 761px) { .topnav.admin-nav .nav-lb { display: none; } }
+@media (min-width: 761px) { .topnav.admin-nav a.nav-obv .obv-lb { display: none; } .topnav.admin-nav a.nav-obv { padding: 0 11px; } }

@@ -930,3 +930,22 @@ model ObyektivkaProfile {
   @@index([updatedAt])
   @@map("obyektivka_profiles")
 }
+
+/// Admin hamma foydalanuvchilarga yuborgan e’lon (sayt bildirishnomasi + Telegram)
+model Broadcast {
+  id         String    @id @default(uuid()) @db.Uuid
+  actorId    String?   @map("actor_id") @db.Uuid
+  title      String
+  body       String
+  target     String // all | player | owner
+  recipients Int       @default(0) // saytda bildirishnoma olganlar
+  tgTotal    Int       @default(0) @map("tg_total") // Telegram’ga bog‘langanlar
+  tgSent     Int       @default(0) @map("tg_sent")
+  tgFailed   Int       @default(0) @map("tg_failed") // botni bloklagan yoki hali ishga tushirmagan
+  status     String    @default("sending") // sending | done | interrupted
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  finishedAt DateTime? @map("finished_at") @db.Timestamptz
+
+  @@index([createdAt])
+  @@map("broadcasts")
+}

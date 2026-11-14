@@ -15,6 +15,23 @@ export async function tg(method: string, body: Record<string, unknown>) {
   }
 }
 
+/** Ommaviy yuborish uchun: natijani aniq qaytaradi. 429 (tezlik chegarasi) bo‘lsa Telegram aytgan vaqtcha kutib, qayta urinadi */
+export async function tgSend(chatId: bigint, text: string): Promise<'sent' | 'failed' | 'off'> {
+  if (!env.botToken) return 'off';
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const r = await fetch(api('sendMessage'), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ chat_id: chatId.toString(), text, parse_mode: 'HTML', disable_web_page_preview: true }) });
+      const j = (await r.json()) as { ok: boolean; parameters?: { retry_after?: number } };
+      if (j.ok) return 'sent';
+      if (r.status !== 429) return 'failed'; // 403 – botni bloklagan, 400 – chat topilmadi
+      await new Promise((res) => setTimeout(res, ((j.parameters?.retry_after ?? 1) + 1) * 1000));
+    } catch {
+      await new Promise((res) => setTimeout(res, 1000));
+    }
+  }
+  return 'failed';
+}
+
 /** Foydalanuvchiga Telegram orqali xabar (bot tokeni bo‘lmasa jim o‘tadi) */
 export async function sendTelegram(chatId: bigint | null | undefined, text: string) {
   if (!chatId) return;

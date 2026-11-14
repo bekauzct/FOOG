@@ -49,7 +49,9 @@ function Item({ n, onRead }: { n: N; onRead: (id: string) => void }) {
     try { const r = await post<{ following: boolean }>(`/users/${n.actor.username}/follow`); setFol(r.following); onRead(n.id); } catch (e) { toast((e as Error).message, { kind: 'err' }); } finally { setBusy(null); }
   };
   const [ic, bg, fg] = BADGE[n.kind] ?? ['notifications', 'var(--surface-2)', 'var(--text-1)'];
-  const meta = [agoShort(n.createdAt), n.body].filter(Boolean).join(' · ');
+  // E’lon (admin xabari) matni uzun bo‘lishi mumkin – to‘liq, qatorlari bilan ko‘rsatiladi
+  const ann = n.kind === 'announcement';
+  const meta = [agoShort(n.createdAt), ann ? 'FOOG e’loni' : n.body].filter(Boolean).join(' · ');
   return (
     <div className="nt-item" style={{ background: n.read ? 'transparent' : 'var(--surface)' }} onClick={open} role={href ? 'link' : undefined} tabIndex={href ? 0 : undefined} onKeyDown={(e) => e.key === 'Enter' && open()}>
       <div style={{ position: 'relative', flexShrink: 0 }}>
@@ -58,6 +60,7 @@ function Item({ n, onRead }: { n: N; onRead: (id: string) => void }) {
       </div>
       <div className="col grow" style={{ gap: 4, minWidth: 0 }}>
         <div style={{ fontSize: 15, lineHeight: 1.4, fontWeight: 600 }}>{n.title}</div>
+        {ann && n.body && <div className="c2" style={{ fontSize: 14, lineHeight: 1.5, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{n.body}</div>}
         <div className="mono c2" style={{ fontSize: 12, lineHeight: 1.5 }}>{meta}</div>
         <div className="row wrap" style={{ gap: 8, marginTop: 4 }} onClick={(e) => e.stopPropagation()}>
           {n.kind === 'match_invite' && n.refType === 'invite' && (state === 'pending' || !state ? (
