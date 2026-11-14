@@ -50,7 +50,7 @@ if [ ! -f "$APP/.env" ]; then
   say ".env yaratilmoqda…"
   cat > "$APP/.env" <<ENV
 DJANGO_SECRET_KEY=$(openssl rand -hex 32)
-DJANGO_ALLOWED_HOSTS=$DOMAIN,www.$DOMAIN
+DJANGO_ALLOWED_HOSTS=$DOMAIN,www.$DOMAIN,127.0.0.1,localhost
 DJANGO_CSRF_TRUSTED_ORIGINS=https://$DOMAIN,https://www.$DOMAIN
 DJANGO_SECURE_COOKIES=1
 DJANGO_SSL_REDIRECT=0
@@ -64,6 +64,10 @@ WEB_CONCURRENCY=2
 WEB_PORT=127.0.0.1:$PORT
 ENV
   chmod 600 "$APP/.env"
+fi
+# Ichki tekshiruvlar (skript va Docker healthcheck) 127.0.0.1 orqali keladi – ruxsat berilgan bo‘lsin
+if ! grep -q '^DJANGO_ALLOWED_HOSTS=.*127\.0\.0\.1' "$APP/.env"; then
+  sed -i 's/^DJANGO_ALLOWED_HOSTS=\(.*\)$/DJANGO_ALLOWED_HOSTS=\1,127.0.0.1,localhost/' "$APP/.env"
 fi
 
 # ---------------------------------------------------------------- qurish va ishga tushirish
