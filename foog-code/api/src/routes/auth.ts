@@ -11,9 +11,12 @@ import { publicUser } from '../serialize';
 export const authRouter = Router();
 const LOGIN_TTL = 180; // 3 daqiqa
 
+// next – kirgandan keyin qaytiladigan sahifa (telefonda sahifa yopilsa ham bot havolasi orqali tiklanadi).
+// done – kirish yakunlangan: token muddati tugaguncha yana boshqa brauzer (masalan Telegram ichidagi) ham kirishni yakunlay oladi.
 type LoginState =
-  | { status: 'pending' }
-  | { status: 'shared'; phone: string; telegramId: string; firstName?: string; username?: string };
+  | { status: 'pending'; next?: string }
+  | { status: 'shared'; phone: string; telegramId: string; firstName?: string; username?: string; next?: string }
+  | { status: 'done'; userId: string; next?: string };
 
 const key = (t: string) => `login:${t}`;
 export async function getLogin(token: string): Promise<LoginState | null> {
@@ -24,6 +27,9 @@ export async function setLogin(token: string, s: LoginState) {
   const ttl = await redis.ttl(key(token));
   await redis.set(key(token), JSON.stringify(s), 'EX', ttl > 0 ? ttl : LOGIN_TTL);
 }
+
+/** Faqat sayt ichidagi yo‘l (tashqi saytga yo‘naltirib bo‘lmaydi) */
+const safeNext = (v: unknown) => (typeof v === 'string' && v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') && !v.startsWith('/login') && v.length <= 200 ? v : undefined);
 
 export const normalizePhone = (p: string) => {
   const d = p.replace(/\D/g, '');
@@ -54,9 +60,9 @@ async function uniqueUsername(base: string) {
 }
 
 /** 1-qadam: bir martalik kirish havolasi (3 daqiqa) */
-authRouter.post('/telegram', ah(async (_req, res) => {
+authRouter.post('/telegram', ah(async (req, res) => {
   const token = crypto.randomBytes(12).toString('base64url');
-  await redis.set(key(token), JSON.stringify({ status: 'pending' } satisfies LoginState), 'EX', LOGIN_TTL);
+  await redis.set(key(token), JSON.stringify({ status: 'pending', next: safeNext(req.body?.next) } satisfies LoginState), 'EX', LOGIN_TTL);
   res.json({ token, url: `https://t.me/${env.botUsername}?start=${token}`, expiresIn: LOGIN_TTL, devShare: env.devLogin });
 }));
 
@@ -65,13 +71,15 @@ authRouter.get('/telegram/:token', ah(async (req, res) => {
   const s = await getLogin(req.params.token);
   if (!s) throw new HttpError(410, 'Havola muddati tugadi. Qaytadan urinib ko‘ring.', 'expired');
   if (s.status === 'pending') return res.json({ status: 'pending' });
+  if (s.status === 'done') return res.json({ ...(await finish(res, s.userId)), next: s.next });
   const user = await prisma.user.findFirst({ where: { OR: [{ telegramId: BigInt(s.telegramId) }, { phone: s.phone }] } });
   if (user) {
     if (!user.telegramId) await prisma.user.update({ where: { id: user.id }, data: { telegramId: BigInt(s.telegramId) } });
-    await redis.del(key(req.params.token));
-    return res.json(await finish(res, user.id));
+    const out = await finish(res, user.id);
+    await setLogin(req.params.token, { status: 'done', userId: user.id, next: s.next });
+    return res.json({ ...out, next: s.next });
   }
-  res.json({ status: 'need_role', name: s.firstName ?? '' });
+  res.json({ status: 'need_role', name: s.firstName ?? '', next: s.next });
 }));
 
 /** 3-qadam (yangi foydalanuvchi): rol tanlash */
@@ -79,6 +87,7 @@ authRouter.post('/telegram/:token/complete', ah(async (req, res) => {
   const body = parse(z.object({ role: z.enum(['player', 'owner']), name: z.string().trim().min(2).max(60) }), req.body);
   const s = await getLogin(req.params.token);
   if (!s) throw new HttpError(410, 'Havola muddati tugadi. Qaytadan urinib ko‘ring.', 'expired');
+  if (s.status === 'done') return res.json({ ...(await finish(res, s.userId)), next: s.next });
   if (s.status !== 'shared') throw bad('Avval Telegram botda raqamingizni ulashing');
   const exists = await prisma.user.findFirst({ where: { OR: [{ telegramId: BigInt(s.telegramId) }, { phone: s.phone }] } });
   const user = exists ?? await prisma.user.create({
@@ -88,8 +97,9 @@ authRouter.post('/telegram/:token/complete', ah(async (req, res) => {
       ...(body.role === 'owner' ? { ownerProfile: { create: {} } } : {}),
     },
   });
-  await redis.del(key(req.params.token));
-  res.json(await finish(res, user.id));
+  const out = await finish(res, user.id);
+  await setLogin(req.params.token, { status: 'done', userId: user.id, next: s.next });
+  res.json({ ...out, next: s.next });
 }));
 
 /** Faqat lokal sinov: botdagi "Raqamni ulashish" tugmasini taqlid qiladi */
@@ -101,7 +111,7 @@ authRouter.post('/telegram/:token/dev-share', ah(async (req, res) => {
   const phone = normalizePhone(body.phone);
   const existing = await prisma.user.findUnique({ where: { phone } });
   const telegramId = existing?.telegramId?.toString() ?? String(BigInt('0x' + crypto.createHash('sha1').update(phone).digest('hex').slice(0, 10)));
-  await setLogin(req.params.token, { status: 'shared', phone, telegramId, firstName: body.name });
+  await setLogin(req.params.token, { status: 'shared', phone, telegramId, firstName: body.name, next: s.next });
   res.json({ ok: true });
 }));
 

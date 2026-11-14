@@ -50,11 +50,15 @@ export async function handleUpdate(u: TgUpdate) {
       return;
     }
     const phone = normalizePhone(m.contact.phone_number);
-    await setLogin(token, { status: 'shared', phone, telegramId: String(m.from.id), firstName: [m.from.first_name, m.from.last_name].filter(Boolean).join(' '), username: m.from.username });
+    await setLogin(token, { status: 'shared', phone, telegramId: String(m.from.id), firstName: [m.from.first_name, m.from.last_name].filter(Boolean).join(' '), username: m.from.username, next: s.next });
     await redis.del(`tgchat:${m.from.id}`);
     // Mavjud foydalanuvchida telegram_id bo‘lmasa – bog‘laymiz
     await prisma.user.updateMany({ where: { phone, telegramId: null }, data: { telegramId: BigInt(m.from.id) } });
     await tg('sendMessage', { chat_id: chatId, text: '✅ Raqam tasdiqlandi. Saytga qayting – kirish avtomatik davom etadi.', reply_markup: { remove_keyboard: true } });
+    // Telefonda sayt sahifasi yopilgan bo‘lishi mumkin – qaytish havolasi kirishni shu tokendan davom ettiradi
+    if (env.webOrigin.startsWith('https://')) {
+      await tg('sendMessage', { chat_id: chatId, text: 'Sahifa yopilgan bo‘lsa, shu tugma orqali qayting:', reply_markup: { inline_keyboard: [[{ text: '↩️ Saytga qaytish', url: `${env.webOrigin}/login?t=${encodeURIComponent(token)}` }]] } });
+    }
   }
 }
 

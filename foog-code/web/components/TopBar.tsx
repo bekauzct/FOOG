@@ -9,7 +9,7 @@ import { getTheme, setTheme, type Theme } from '@/lib/theme';
 import { get } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
 import { LangSwitch, useT } from '@/lib/i18n';
-import ObyektivkaLink from './ObyektivkaLink';
+import ObyektivkaLink, { OBV_URL } from './ObyektivkaLink';
 
 type Mode = 'player' | 'owner' | 'admin';
 type Item = { id: string; href: string; icon: string; label: string; badge?: number };
@@ -96,6 +96,8 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
         { id: '/team', href: '/team', icon: 'groups', label: 'Jamoam' },
         { id: '/messages', href: '/messages', icon: 'chat_bubble', label: 'Xabarlar', badge: unreadChats },
       ];
+  // online.obyektivka – alohida ilova (nginx), shuning uchun oddiy <a>; har bir rol menyusida 2-o‘rinda (ko‘rinib tursin), qizil
+  const obv = <a key="obv" href={OBV_URL} className="nav-obv" title="online.obyektivka"><Icon n="description" className="nav-ic" /><span className="nav-lb obv-lb">online.obyektivka</span></a>;
   const isOn = (id: string) => (id === '/owner' || id === '/admin' ? path === id : path === id || path.startsWith(id + '/')) || (id === '/discover' && path.startsWith('/matches'));
   const biz = mode !== 'player';
   const homeHref = mode === 'admin' ? '/admin' : mode === 'owner' ? '/owner' : '/home';
@@ -115,7 +117,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
       <span className={cls}>{t(n.label)}</span>
       {!!n.badge && !isOn(n.id) && <span className="badge-n">{n.badge}</span>}
     </Link>
-  ));
+  )).flatMap((el, i) => (i === 0 ? [el, obv] : [el]));
 
   return (
     <header className={`topbar ${biz ? 'biz' : ''}`}>
@@ -140,7 +142,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
             </div>
           )}
           {mode === 'player' && me && <Link href="/discover" className="icon-btn only-mobile" aria-label={t('Qidirish')}><Icon n="search" size={22} /></Link>}
-          <ObyektivkaLink signedIn={!!me} bar />
+          {!me && <ObyektivkaLink signedIn={false} bar />}
           <LangSwitch />
           <ThemeButton />
           {me ? (
@@ -179,7 +181,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
       </div>
       {me && <nav className="subnav" aria-label={t('Asosiy navigatsiya (mobil)')}>{items.map((n) => (
         <Link key={n.id} href={n.href} className={isOn(n.id) ? 'on' : ''}><Icon n={n.icon} fill={isOn(n.id)} />{t(n.label)}{!!n.badge && !isOn(n.id) && <span className="badge-n">{n.badge}</span>}</Link>
-      ))}</nav>}
+      )).flatMap((el, i) => (i === 0 ? [el, <a key="obv" href={OBV_URL} className="nav-obv"><Icon n="description" />online.obyektivka</a>] : [el]))}</nav>}
     </header>
   );
 }
