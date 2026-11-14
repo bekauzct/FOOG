@@ -148,33 +148,39 @@ adminRouter.patch('/users/:id', ah(async (req, res) => {
   res.json({ ok: true });
 }));
 
-/** O‘chirishdan oldin: foydalanuvchi bilan birga nimalar o‘chishini ko‘rsatadi */
-const deleteImpact = async (id: string) => {
+/** O‘chirishdan oldin: foydalanuvchi(lar) bilan birga nimalar o‘chishini ko‘rsatadi */
+const deleteImpact = async (ids: string[]) => {
+  const inIds = { in: ids };
   const [stadiums, teams, matches, bookings, posts, reels] = await Promise.all([
-    prisma.stadium.count({ where: { ownerId: id } }), prisma.team.count({ where: { captainId: id } }), prisma.match.count({ where: { organizerId: id } }),
-    prisma.booking.count({ where: { userId: id } }), prisma.post.count({ where: { authorId: id } }), prisma.reel.count({ where: { authorId: id } }),
+    prisma.stadium.count({ where: { ownerId: inIds } }), prisma.team.count({ where: { captainId: inIds } }), prisma.match.count({ where: { organizerId: inIds } }),
+    prisma.booking.count({ where: { userId: inIds } }), prisma.post.count({ where: { authorId: inIds } }), prisma.reel.count({ where: { authorId: inIds } }),
   ]);
   // Stadionlari bilan birga boshqa futbolchilarning o‘sha stadionlardagi bronlari ham o‘chadi
-  const stadiumBookings = stadiums ? await prisma.booking.count({ where: { pitch: { stadium: { ownerId: id } }, userId: { not: id } } }) : 0;
+  const stadiumBookings = stadiums ? await prisma.booking.count({ where: { pitch: { stadium: { ownerId: inIds } }, userId: { notIn: ids } } }) : 0;
   return { stadiums, stadiumBookings, teams, matches, bookings, posts, reels };
 };
-adminRouter.get('/users/:id/delete-impact', ah(async (req, res) => {
-  res.json(await deleteImpact(req.params.id));
+const idsSchema = z.object({ ids: z.array(z.string().uuid()).min(1).max(200) });
+adminRouter.post('/users/delete-impact', ah(async (req, res) => {
+  res.json(await deleteImpact(parse(idsSchema, req.body).ids));
 }));
 
-/** Foydalanuvchini bazadan butunlay o‘chirish: unga tegishli hamma narsa (bronlar, postlar, jamoalari, stadionlari, xabarlari, obyektivkasi) ham o‘chadi. Qaytarib bo‘lmaydi. */
-adminRouter.delete('/users/:id', ah(async (req, res) => {
-  const u = await prisma.user.findUnique({ where: { id: req.params.id } });
-  if (!u) throw notFound('Foydalanuvchi topilmadi');
-  if (u.id === req.user!.id) throw bad('O‘zingizni o‘chira olmaysiz');
-  if (u.role === 'admin') throw bad('Administratorni o‘chirib bo‘lmaydi');
+/**
+ * Foydalanuvchi(lar)ni bazadan butunlay o‘chirish: ularga tegishli hamma narsa (bronlar, postlar, jamoalari, stadionlari, xabarlari, obyektivkasi) ham o‘chadi.
+ * Qaytarib bo‘lmaydi. Hammasi bitta tranzaksiyada: yo hammasi o‘chadi, yo hech biri.
+ */
+adminRouter.post('/users/delete', ah(async (req, res) => {
+  const ids = [...new Set(parse(idsSchema, req.body).ids)];
+  const users = await prisma.user.findMany({ where: { id: { in: ids } }, select: { id: true, role: true } });
+  if (users.length !== ids.length) throw notFound('Ba’zi foydalanuvchilar topilmadi – ro‘yxatni yangilang');
+  if (ids.includes(req.user!.id)) throw bad('O‘zingizni o‘chira olmaysiz');
+  if (users.some((u) => u.role === 'admin')) throw bad('Administratorni o‘chirib bo‘lmaydi');
   await prisma.$transaction([
-    // Jurnalda shu foydalanuvchi haqidagi eski yozuvlar ham qolmaydi (faqat quyidagi o‘chirish yozuvi qoladi – kim o‘chirgani ma’lum bo‘lishi uchun)
-    prisma.auditLog.deleteMany({ where: { OR: [{ targetType: 'user', targetId: u.id }, { actorId: u.id }] } }),
-    prisma.user.delete({ where: { id: u.id } }),
+    // Jurnalda shu foydalanuvchilar haqidagi eski yozuvlar ham qolmaydi (faqat quyidagi o‘chirish yozuvi qoladi – kim o‘chirgani ma’lum bo‘lishi uchun)
+    prisma.auditLog.deleteMany({ where: { OR: [{ targetType: 'user', targetId: { in: ids } }, { actorId: { in: ids } }] } }),
+    prisma.user.deleteMany({ where: { id: { in: ids } } }),
   ]);
-  await audit(req.user!.id, 'user.delete', 'Foydalanuvchini butunlay o‘chirdi', 'user_deleted');
-  res.json({ ok: true });
+  await audit(req.user!.id, 'user.delete', ids.length === 1 ? 'Foydalanuvchini butunlay o‘chirdi' : `${ids.length} ta foydalanuvchini butunlay o‘chirdi`, 'user_deleted');
+  res.json({ ok: true, deleted: ids.length });
 }));
 
 async function reportTarget(type: string, id: string) {
