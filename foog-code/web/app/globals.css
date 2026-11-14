@@ -712,3 +712,7 @@ h1, h2, h3, h4, p { margin: 0; }
 .fg-bar span { display: block; height: 100%; border-radius: 99px; }
 @media (max-width: 1000px) { .fg-teach { grid-template-columns: 1fr; } .fg-side { position: static; } }
 @media (max-width: 560px) { .fg-2 { grid-template-columns: 1fr; } }
+
+/* online.obyektivka – ichki menyuda: keng ekranda yozuv, torroqda ikonka */
+.obv-icon { display: none; }
+@media (max-width: 1599px) { .obv-full { display: none !important; } .obv-icon { display: inline-flex; } }

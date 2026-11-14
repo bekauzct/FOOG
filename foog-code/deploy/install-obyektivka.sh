@@ -101,7 +101,8 @@ location = /_foog_auth {
   proxy_set_header Host \$host;
   proxy_set_header Cookie \$http_cookie;
 }
-location @obyektivka_login { return 302 /login?next=\$request_uri; }
+# reauth=1: sayt bu holatda kirish sahifasini ochadi (hisob bloklangan bo‘lsa ham aylanib qolmaydi)
+location @obyektivka_login { return 302 /login?reauth=1&next=\$uri; }
 location = $PREFIX { return 301 $PREFIX/; }
 location ^~ $PREFIX/ {
   auth_request /_foog_auth;

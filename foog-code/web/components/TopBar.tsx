@@ -9,6 +9,7 @@ import { getTheme, setTheme, type Theme } from '@/lib/theme';
 import { get } from '@/lib/api';
 import { useApi } from '@/lib/useApi';
 import { LangSwitch, useT } from '@/lib/i18n';
+import ObyektivkaLink from './ObyektivkaLink';
 
 type Mode = 'player' | 'owner' | 'admin';
 type Item = { id: string; href: string; icon: string; label: string; badge?: number };
@@ -139,6 +140,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
             </div>
           )}
           {mode === 'player' && me && <Link href="/discover" className="icon-btn only-mobile" aria-label={t('Qidirish')}><Icon n="search" size={22} /></Link>}
+          <ObyektivkaLink signedIn={!!me} bar />
           <LangSwitch />
           <ThemeButton />
           {me ? (

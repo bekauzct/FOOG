@@ -7,6 +7,15 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET ?? '');
 const PLAYER = ['/home', '/bookings', '/discover', '/matches', '/reels', '/messages', '/profile', '/u', '/team'];
 // /notifications – barcha rollar uchun (rolga mos topbar bilan)
 
+/** Kirgandan keyin qaytish manzili: faqat sayt ichidagi va shu rolga ochiq yo‘l */
+function nextAllowed(next: string, c: { role: string; staff?: boolean }, home: string) {
+  if (!next.startsWith('/') || next.startsWith('//') || next.startsWith('/\\') || next.startsWith('/login')) return false;
+  if (next.startsWith('/obyektivka/') || next === '/notifications') return true;
+  if (home === '/home') return !next.startsWith('/owner') && !next.startsWith('/admin');
+  if (home === '/owner') return next.startsWith('/owner') || next === '/team' || next.startsWith('/team/');
+  return next.startsWith(home);
+}
+
 async function claims(req: NextRequest) {
   const t = req.cookies.get('foog_token')?.value;
   if (!t) return null;
@@ -27,7 +36,12 @@ export async function middleware(req: NextRequest) {
   const home = c ? (c.role === 'admin' ? '/admin' : c.role === 'owner' || c.staff ? '/owner' : '/home') : '/';
   const toLogin = () => NextResponse.redirect(new URL(`/login?next=${encodeURIComponent(pathname + search)}`, req.url));
 
-  if (pathname === '/login' && c) return NextResponse.redirect(new URL(home, req.url));
+  if (pathname === '/login' && c) {
+    // reauth=1 – nginx obyektivkadan qaytardi (sessiya API’da yaroqsiz, masalan hisob bloklangan): sahifani ochamiz, aylanib qolmaydi
+    if (req.nextUrl.searchParams.get('reauth')) return NextResponse.next();
+    const next = req.nextUrl.searchParams.get('next');
+    return NextResponse.redirect(new URL(next && nextAllowed(next, c, home) ? next : home, req.url));
+  }
   if (pathname === '/notifications' && !c) return toLogin();
   if (pathname.startsWith('/admin')) {
     if (!c) return toLogin();
