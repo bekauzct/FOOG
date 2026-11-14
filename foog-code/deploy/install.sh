@@ -124,6 +124,7 @@ sudo -H -u "$APP_USER" bash -c "cd '$CODE/web' && npm ci --no-audit --no-fund --
 # ---------------------------------------------------------------- nginx + SSL
 say "nginx sozlanmoqda…"
 CONF=/etc/nginx/sites-available/foog
+mkdir -p /etc/nginx/foog.d
 if [ ! -f "$CONF" ]; then
   # HTTP konfiguratsiya; certbot keyin SSL va 80→443 yo‘naltirishni o‘zi qo‘shadi
   cat > "$CONF" <<NGINX
@@ -145,6 +146,8 @@ server {
     proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto \$scheme;
   }
+  # qo‘shimcha ilovalar (masalan foog.uz/obyektivka – install-obyektivka.sh)
+  include /etc/nginx/foog.d/*.conf;
   location / {
     proxy_pass http://127.0.0.1:3000;
     proxy_set_header Host \$host;
