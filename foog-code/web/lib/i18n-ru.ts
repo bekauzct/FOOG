@@ -135,6 +135,7 @@ export const RU: Record<string, string> = {
   'Bronlarim': 'Мои брони',
   'Jamoam': 'Моя команда',
   'Jamoalar': 'Команды',
+  'Obyektivkadan foydalanish uchun Telegram orqali kiring – tasdiqlash xabari botga keladi.': 'Чтобы пользоваться объективкой, войдите через Telegram – подтверждение придёт в бот.',
   'To‘lovlar': 'Платежи',
   'Profilni tahrirlash': 'Редактировать профиль',
   'Sharhlar': 'Отзывы',

@@ -105,6 +105,11 @@ authRouter.post('/telegram/:token/dev-share', ah(async (req, res) => {
   res.json({ ok: true });
 }));
 
+/** nginx auth_request uchun: FOOG’ga kirganmi (masalan foog.uz/obyektivka). 204 – ha, 401 – yo‘q */
+authRouter.get('/check', (req, res) => {
+  res.status(req.user && req.user.status !== 'blocked' ? 204 : 401).end();
+});
+
 authRouter.get('/me', ah(async (req, res) => {
   if (!req.user) return res.status(401).json({ error: 'Kirilmagan', code: 'unauthorized' });
   const staff = await staffOf(req.user.id);

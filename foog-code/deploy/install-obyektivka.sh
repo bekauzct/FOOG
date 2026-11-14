@@ -23,6 +23,10 @@ die() { printf '\n\033[1;31m✖ %s\033[0m\n' "$*"; exit 1; }
 [ "$(id -u)" = 0 ] || die "sudo bilan ishga tushiring: sudo bash $0"
 [ -f "$NGX_CONF" ] || die "$NGX_CONF topilmadi – avval FOOG install.sh ni ishga tushiring"
 
+# Kirish tekshiruvi FOOG API’ning /auth/check yo‘liga tayanadi (FOOG install.sh bilan yangilangan bo‘lishi kerak)
+CHK=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4000/api/v1/auth/check || true)
+[ "$CHK" = "401" ] || [ "$CHK" = "204" ] || die "FOOG API eski (auth/check javobi: $CHK). Avval FOOG install.sh ni ishga tushiring."
+
 # ---------------------------------------------------------------- Docker
 say "Docker tekshirilmoqda…"
 if ! command -v docker >/dev/null 2>&1 || ! docker compose version >/dev/null 2>&1 || ! docker buildx version >/dev/null 2>&1; then
@@ -87,9 +91,21 @@ say "nginx sozlanmoqda…"
 mkdir -p "$NGX_DIR"
 cat > "$NGX_DIR/obyektivka.conf" <<NGINX
 # foog.uz$PREFIX -> Obyektivka (Docker, 127.0.0.1:$PORT).
-# Prefiks olib tashlanib yuboriladi; ilova URL_PREFIX bilan havolalarni o‘zi tuzadi.
+# Faqat FOOG’ga Telegram orqali kirganlar uchun: nginx har so‘rovda FOOG API’dan so‘raydi,
+# kirmagan bo‘lsa /login?next=... ga yuboradi. Prefiks olib tashlanib, ilova havolalarni o‘zi tuzadi.
+location = /_foog_auth {
+  internal;
+  proxy_pass http://127.0.0.1:4000/api/v1/auth/check;
+  proxy_pass_request_body off;
+  proxy_set_header Content-Length "";
+  proxy_set_header Host \$host;
+  proxy_set_header Cookie \$http_cookie;
+}
+location @obyektivka_login { return 302 /login?next=\$request_uri; }
 location = $PREFIX { return 301 $PREFIX/; }
 location ^~ $PREFIX/ {
+  auth_request /_foog_auth;
+  error_page 401 = @obyektivka_login;
   proxy_pass http://127.0.0.1:$PORT/;
   proxy_set_header Host \$host;
   proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -113,9 +129,10 @@ nginx -t -q && systemctl reload nginx
 
 # ---------------------------------------------------------------- tekshiruv
 sleep 1
-CODE=$(curl -s -o /dev/null -w '%{http_code}' -L "https://$DOMAIN$PREFIX/" || true)
-if [ "$CODE" = "200" ]; then
-  say "Tayyor: https://$DOMAIN$PREFIX/"
+# Kirmagan foydalanuvchi /login ga yo‘naltirilishi kerak (302)
+CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://$DOMAIN$PREFIX/uzb/obyektivka/" || true)
+if [ "$CODE" = "302" ]; then
+  say "Tayyor: https://$DOMAIN$PREFIX/ (Telegram orqali kirgandan keyin ochiladi)"
 else
   say "Ilova ishlayapti, lekin https://$DOMAIN$PREFIX/ javobi: $CODE. Tekshiring: sudo nginx -T | grep -n obyektivka"
 fi

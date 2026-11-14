@@ -28,7 +28,9 @@ function LoginInner() {
 
   const go = (r: string) => {
     setState('done');
-    location.href = next && !next.startsWith('/login') && (r === '/home' ? !next.startsWith('/owner') && !next.startsWith('/admin') : next.startsWith(r)) ? next : r;
+    // /obyektivka – alohida ilova, har qanday rol kira oladi
+    const shared = !!next && next.startsWith('/obyektivka/');
+    location.href = next && !next.startsWith('/login') && (shared || (r === '/home' ? !next.startsWith('/owner') && !next.startsWith('/admin') : next.startsWith(r))) ? next : r;
   };
 
   const begin = async () => {
@@ -99,6 +101,7 @@ function LoginInner() {
             <>
               <div className="col" style={{ gap: 8 }}>
                 <h1 style={{ fontSize: 28, lineHeight: '34px', fontWeight: 800, letterSpacing: '-.02em' }}>{t('FOOG ga kirish')}</h1>
+                {next?.startsWith('/obyektivka/') && <p className="c2" style={{ fontSize: 15, lineHeight: 1.5 }}>{t('Obyektivkadan foydalanish uchun Telegram orqali kiring – tasdiqlash xabari botga keladi.')}</p>}
                 <p className="c2" style={{ fontSize: 15, lineHeight: 1.5 }}>{t('Parol kerak emas. Telegram botda raqamingizni ulashing – sayt sizni avtomatik tanib oladi.')}</p>
               </div>
               {state === 'waiting' ? (
