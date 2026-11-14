@@ -63,6 +63,8 @@ DJANGO_HSTS_SECONDS=0
 SITE_URL=https://$DOMAIN
 URL_PREFIX=$PREFIX
 TRUST_PROXY_HEADERS=1
+# To‘ldirilgan ma’lumot FOOG hisobiga saqlanadi (admin panel: Obyektivka ma’lumotlari)
+PROFILE_SYNC_URL=/api/v1/obyektivka/me
 WEB_CONCURRENCY=2
 # Faqat ichkariga: tashqaridan kirish nginx (foog.uz/obyektivka) orqali
 WEB_PORT=127.0.0.1:$PORT
@@ -72,6 +74,15 @@ fi
 # Ichki tekshiruvlar (skript va Docker healthcheck) 127.0.0.1 orqali keladi – ruxsat berilgan bo‘lsin
 if ! grep -q '^DJANGO_ALLOWED_HOSTS=.*127\.0\.0\.1' "$APP/.env"; then
   sed -i 's/^DJANGO_ALLOWED_HOSTS=\(.*\)$/DJANGO_ALLOWED_HOSTS=\1,127.0.0.1,localhost/' "$APP/.env"
+fi
+
+# Ma’lumotni FOOG hisobiga saqlash – FOOG API’da shu yo‘l bo‘lsagina yoqiladi (eski .env ga ham qo‘shiladi)
+SYNC=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4000/api/v1/obyektivka/me || true)
+if [ "$SYNC" = "401" ]; then
+  grep -q '^PROFILE_SYNC_URL=' "$APP/.env" || echo 'PROFILE_SYNC_URL=/api/v1/obyektivka/me' >> "$APP/.env"
+else
+  sed -i '/^PROFILE_SYNC_URL=/d' "$APP/.env"
+  echo "⚠ FOOG API eski (obyektivka/me javobi: $SYNC) – ma’lumotni hisobga saqlash o‘chiq. Avval FOOG install.sh ni yangilang."
 fi
 
 # ---------------------------------------------------------------- qurish va ishga tushirish

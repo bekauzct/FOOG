@@ -124,9 +124,9 @@ adminRouter.get('/users', ah(async (req, res) => {
   if (filter === 'blocked') where.status = 'blocked';
   if (filter === 'noshow') where.noShows = { gte: 3 };
   if (q) where.OR = [{ name: { contains: q, mode: 'insensitive' } }, { username: { contains: q.replace(/^@/, ''), mode: 'insensitive' } }, { phone: { contains: q.replace(/\s/g, '') } }];
-  const rows = await prisma.user.findMany({ where, orderBy: { createdAt: 'desc' }, take: 200, include: { _count: { select: { bookings: true } }, staffOf: true } });
+  const rows = await prisma.user.findMany({ where, orderBy: { createdAt: 'desc' }, take: 200, include: { _count: { select: { bookings: true } }, staffOf: true, obyektivka: { select: { id: true } } } });
   res.json({
-    items: rows.map((u) => ({ id: u.id, name: u.name, username: u.username, phone: u.phone, role: u.role, staff: u.staffOf.length > 0, district: u.district, createdAt: u.createdAt, bookings: u._count.bookings, noShows: u.noShows, status: u.status, blockedUntil: u.blockedUntil, blockReason: u.blockReason, avatarUrl: u.avatarUrl })),
+    items: rows.map((u) => ({ id: u.id, name: u.name, username: u.username, phone: u.phone, role: u.role, staff: u.staffOf.length > 0, district: u.district, createdAt: u.createdAt, bookings: u._count.bookings, noShows: u.noShows, status: u.status, blockedUntil: u.blockedUntil, blockReason: u.blockReason, avatarUrl: u.avatarUrl, obyektivka: !!u.obyektivka })),
   });
 }));
 
@@ -145,6 +145,35 @@ adminRouter.patch('/users/:id', ah(async (req, res) => {
     await prisma.user.update({ where: { id: u.id }, data: { status: 'active', blockedUntil: null, blockReason: null } });
     await audit(req.user!.id, 'user.unblock', `@${u.username} ni blokdan chiqardi`, 'user', u.id);
   }
+  res.json({ ok: true });
+}));
+
+/** O‘chirishdan oldin: foydalanuvchi bilan birga nimalar o‘chishini ko‘rsatadi */
+const deleteImpact = async (id: string) => {
+  const [stadiums, teams, matches, bookings, posts, reels] = await Promise.all([
+    prisma.stadium.count({ where: { ownerId: id } }), prisma.team.count({ where: { captainId: id } }), prisma.match.count({ where: { organizerId: id } }),
+    prisma.booking.count({ where: { userId: id } }), prisma.post.count({ where: { authorId: id } }), prisma.reel.count({ where: { authorId: id } }),
+  ]);
+  // Stadionlari bilan birga boshqa futbolchilarning o‘sha stadionlardagi bronlari ham o‘chadi
+  const stadiumBookings = stadiums ? await prisma.booking.count({ where: { pitch: { stadium: { ownerId: id } }, userId: { not: id } } }) : 0;
+  return { stadiums, stadiumBookings, teams, matches, bookings, posts, reels };
+};
+adminRouter.get('/users/:id/delete-impact', ah(async (req, res) => {
+  res.json(await deleteImpact(req.params.id));
+}));
+
+/** Foydalanuvchini bazadan butunlay o‘chirish: unga tegishli hamma narsa (bronlar, postlar, jamoalari, stadionlari, xabarlari, obyektivkasi) ham o‘chadi. Qaytarib bo‘lmaydi. */
+adminRouter.delete('/users/:id', ah(async (req, res) => {
+  const u = await prisma.user.findUnique({ where: { id: req.params.id } });
+  if (!u) throw notFound('Foydalanuvchi topilmadi');
+  if (u.id === req.user!.id) throw bad('O‘zingizni o‘chira olmaysiz');
+  if (u.role === 'admin') throw bad('Administratorni o‘chirib bo‘lmaydi');
+  await prisma.$transaction([
+    // Jurnalda shu foydalanuvchi haqidagi eski yozuvlar ham qolmaydi (faqat quyidagi o‘chirish yozuvi qoladi – kim o‘chirgani ma’lum bo‘lishi uchun)
+    prisma.auditLog.deleteMany({ where: { OR: [{ targetType: 'user', targetId: u.id }, { actorId: u.id }] } }),
+    prisma.user.delete({ where: { id: u.id } }),
+  ]);
+  await audit(req.user!.id, 'user.delete', 'Foydalanuvchini butunlay o‘chirdi', 'user_deleted');
   res.json({ ok: true });
 }));
 

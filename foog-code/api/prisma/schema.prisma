@@ -168,6 +168,7 @@ model User {
   organized       Match[]           @relation("organizer")
   mvpOf           Match[]           @relation("mvp")
   matchPlayers    MatchPlayer[]
+  obyektivka      ObyektivkaProfile?
   chatMembers     ChatMember[]
   messages        Message[]
   achievements    UserAchievement[]
@@ -913,4 +914,19 @@ model FoogiTourStep {
 
   @@index([page, sort])
   @@map("foogi_tour_steps")
+}
+
+/// Foydalanuvchi online.obyektivka’da to‘ldirgan ma’lumotlar (keyinchalik rezyume va boshqa hujjatlarni bir bosishda to‘ldirish uchun)
+model ObyektivkaProfile {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  fish      String   @default("") // data.fish nusxasi – qidiruv uchun
+  data      Json // obyektivka sxemasi (rasmsiz): fish, lavozim, ..., mehnat[], qarindosh[]
+  photo     String? // data:image/jpeg;base64,... (ro‘yxatlarda yuklanmaydi)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([updatedAt])
+  @@map("obyektivka_profiles")
 }

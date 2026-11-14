@@ -8,6 +8,7 @@ import { loadUser } from './auth';
 import { errorHandler, HttpError } from './http';
 import { UPLOAD_ROOT } from './uploads';
 import { authRouter } from './routes/auth';
+import { adminObyektivkaRouter, obyektivkaRouter } from './routes/obyektivka';
 import { stadiumsRouter } from './routes/stadiums';
 import { bookingsRouter } from './routes/bookings';
 import { ownerRouter } from './routes/owner';
@@ -29,6 +30,8 @@ export function createApp() {
   app.set('trust proxy', 1);
   app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
   app.use(cors({ origin: env.webOrigin, credentials: true }));
+  // Obyektivka rasm (data URL) bilan keladi – faqat shu yo‘llarga kattaroq chegara
+  app.use(['/api/v1/obyektivka', '/api/v1/admin/obyektivka'], express.json({ limit: '4mb' }));
   app.use(express.json({ limit: '1mb' }));
   app.use(cookieParser());
   if (env.nodeEnv !== 'test') app.use(morgan(env.nodeEnv === 'production' ? 'combined' : 'dev'));
@@ -56,6 +59,8 @@ export function createApp() {
   v1.use('/admin/payments', adminPaymentsRouter);
   v1.use('/admin/foogi', adminFoogiRouter);
   v1.use('/foogi', foogiRouter);
+  v1.use('/obyektivka', obyektivkaRouter);
+  v1.use('/admin/obyektivka', adminObyektivkaRouter);
   v1.use('/admin', adminRouter);
   v1.use('/chats', chatRouter);
   v1.use('/reels', reelsRouter);
