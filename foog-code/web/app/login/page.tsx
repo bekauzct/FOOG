@@ -24,6 +24,10 @@ function LoginInner() {
   const [state, setState] = useState<'idle' | 'starting' | 'waiting' | 'role' | 'done' | 'expired'>('idle');
   const [err, setErr] = useState<string | null>(null);
   const [left, setLeft] = useState(0);
+  // Muddat mutlaq vaqt bilan hisoblanadi: telefon fonda sahifani to‘xtatib qo‘ysa ham sanoq adashmaydi
+  const expAt = useRef(0);
+  const arm = (sec: number) => { expAt.current = Date.now() + sec * 1000; setLeft(sec); };
+  const tick = () => setLeft(Math.max(0, Math.round((expAt.current - Date.now()) / 1000)));
   const [role, setRole] = useState<'player' | 'owner'>(sp.get('role') === 'owner' ? 'owner' : 'player');
   const [name, setName] = useState('');
   const [devPhone, setDevPhone] = useState('');
@@ -48,7 +52,7 @@ function LoginInner() {
     try {
       const s = await post<Start>('/auth/telegram', { next });
       setStart(s);
-      setLeft(s.expiresIn);
+      arm(s.expiresIn);
       setState('idle');
     } catch (e) {
       setErr((e as Error).message);
@@ -57,7 +61,7 @@ function LoginInner() {
   };
   const begin = () => {
     if (!start) return;
-    save({ token: start.token, url: start.url, exp: Date.now() + left * 1000, next });
+    save({ token: start.token, url: start.url, exp: expAt.current, next });
     setState('waiting');
   };
 
@@ -65,20 +69,25 @@ function LoginInner() {
   useEffect(() => {
     const t = sp.get('t');
     const saved = loadSaved();
-    if (t) { setStart({ token: t, url: saved?.token === t ? saved.url : '', expiresIn: 180, devShare: false }); setLeft(180); setState('waiting'); return; }
-    if (saved) { setStart({ token: saved.token, url: saved.url, expiresIn: Math.round((saved.exp - Date.now()) / 1000), devShare: false }); setLeft(Math.round((saved.exp - Date.now()) / 1000)); if (!next && saved.next) setNext(saved.next); setState('waiting'); return; }
+    if (t) { setStart({ token: t, url: saved?.token === t ? saved.url : '', expiresIn: 600, devShare: false }); arm(600); setState('waiting'); return; }
+    if (saved) { setStart({ token: saved.token, url: saved.url, expiresIn: Math.round((saved.exp - Date.now()) / 1000), devShare: false }); arm(Math.round((saved.exp - Date.now()) / 1000)); if (!next && saved.next) setNext(saved.next); setState('waiting'); return; }
     void prepare();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Kutilmagan holat: havola muddati tugasa (bosilmagan bo‘lsa) – jimgina yangilaymiz
   useEffect(() => {
-    if (state === 'idle' && start && left <= 5) void prepare();
+    // Muddatning yarmida yangilanadi – bosilgan paytda havolada doim kamida bir necha daqiqa qoladi
+    if (state === 'idle' && start && left <= start.expiresIn / 2) void prepare();
   }, [left, state]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (state !== 'idle' || !start) return;
-    const id = setInterval(() => setLeft((l) => Math.max(0, l - 1)), 1000);
-    return () => clearInterval(id);
-  }, [state, start?.token]);
+    const id = setInterval(tick, 1000);
+    // Fondan qaytganda (taymerlar to‘xtab turgan bo‘ladi) darhol qayta hisoblaymiz
+    const onVisible = () => { if (document.visibilityState === 'visible') tick(); };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('pageshow', onVisible);
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pageshow', onVisible); };
+  }, [state, start?.token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Bot javobini kutish: har 2 soniyada holatni so‘raymiz
   useEffect(() => {
@@ -94,17 +103,17 @@ function LoginInner() {
         if (e instanceof ApiError && e.status === 410) {
           stop = true; save(null);
           // Boshqa oynada (masalan bot havolasi orqali) kirib bo‘lingan bo‘lishi mumkin
-          try { const me = await api<{ home: string }>('/auth/me'); go(me.home); } catch { setState('expired'); void prepare(); }
+          try { const me = await api<{ home: string }>('/auth/me'); go(me.home); } catch { setState('expired'); void prepare().then(() => setErr(t('Havola muddati tugadi. Qaytadan «Telegram orqali kirish» ni bosing.'))); }
         }
-        if (e instanceof ApiError && e.code === 'blocked') { stop = true; save(null); setErr(e.message); setState('idle'); void prepare(); }
+        if (e instanceof ApiError && e.code === 'blocked') { stop = true; save(null); const msg = e.message; setState('idle'); void prepare().then(() => setErr(msg)); }
       }
     };
     void check();
     const poll = setInterval(check, 2000);
     // Telegram’dan qaytganda kutmasdan darhol tekshiramiz
-    const onVisible = () => { if (document.visibilityState === 'visible') void check(); };
+    const onVisible = () => { if (document.visibilityState === 'visible') { tick(); void check(); } };
     document.addEventListener('visibilitychange', onVisible);
-    timer.current = setInterval(() => setLeft((l) => Math.max(0, l - 1)), 1000);
+    timer.current = setInterval(tick, 1000);
     return () => { stop = true; clearInterval(poll); clearInterval(timer.current); document.removeEventListener('visibilitychange', onVisible); };
   }, [state, start?.token]);
 
@@ -158,7 +167,7 @@ function LoginInner() {
                   <div className="row between t-small">{start?.url ? <a href={start.url} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600 }}>{t('Botni qayta ochish')}</a> : <span />}<span className="mono c3">{mm}</span></div>
                 </div>
               ) : state === 'expired' ? (
-                <div className="well row" style={{ padding: 14, gap: 10, color: 'var(--warning)' }}><Icon n="timer_off" /><span style={{ fontSize: 14 }}>{t('Havola muddati tugadi (3 daqiqa). Qaytadan urinib ko‘ring.')}</span></div>
+                <div className="well row" style={{ padding: 14, gap: 10, color: 'var(--warning)' }}><Icon n="timer_off" /><span style={{ fontSize: 14 }}>{t('Havola muddati tugadi. Qaytadan urinib ko‘ring.')}</span></div>
               ) : null}
               {state !== 'waiting' && (start && state !== 'starting' ? (
                 // Haqiqiy havola: bosish = foydalanuvchi harakati, telefonda Telegram ilovasi darhol ochiladi

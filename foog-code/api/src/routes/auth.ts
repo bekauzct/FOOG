@@ -9,7 +9,9 @@ import { COOKIE, requireAuth, setAuthCookie, signToken, signWsToken } from '../a
 import { publicUser } from '../serialize';
 
 export const authRouter = Router();
-const LOGIN_TTL = 180; // 3 daqiqa
+// Havola sahifa ochilishida oldindan yaratiladi, shuning uchun yetarlicha uzoq yashashi kerak:
+// sahifada turish + Telegramga o‘tish + raqam ulashish + qaytish. Har qadamda muddat yangilanadi.
+export const LOGIN_TTL = 600; // 10 daqiqa
 
 // next – kirgandan keyin qaytiladigan sahifa (telefonda sahifa yopilsa ham bot havolasi orqali tiklanadi).
 // done – kirish yakunlangan: token muddati tugaguncha yana boshqa brauzer (masalan Telegram ichidagi) ham kirishni yakunlay oladi.
@@ -24,9 +26,10 @@ export async function getLogin(token: string): Promise<LoginState | null> {
   return v ? (JSON.parse(v) as LoginState) : null;
 }
 export async function setLogin(token: string, s: LoginState) {
-  const ttl = await redis.ttl(key(token));
-  await redis.set(key(token), JSON.stringify(s), 'EX', ttl > 0 ? ttl : LOGIN_TTL);
+  await redis.set(key(token), JSON.stringify(s), 'EX', LOGIN_TTL);
 }
+/** Foydalanuvchi botga yetib keldi – muddatni yangilaymiz */
+export const touchLogin = (token: string) => redis.expire(key(token), LOGIN_TTL);
 
 /** Faqat sayt ichidagi yo‘l (tashqi saytga yo‘naltirib bo‘lmaydi) */
 const safeNext = (v: unknown) => (typeof v === 'string' && v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') && !v.startsWith('/login') && v.length <= 200 ? v : undefined);

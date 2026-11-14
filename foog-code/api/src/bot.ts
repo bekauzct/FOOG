@@ -2,7 +2,7 @@ import { prisma } from './db';
 import { redis } from './redis';
 import { env } from './env';
 import { tg } from './telegram';
-import { getLogin, normalizePhone, setLogin } from './routes/auth';
+import { getLogin, LOGIN_TTL, normalizePhone, setLogin, touchLogin } from './routes/auth';
 import { handleAdminMessage, handleCallback } from './payments/adminBot';
 
 type TgUpdate = {
@@ -30,7 +30,8 @@ export async function handleUpdate(u: TgUpdate) {
       await tg('sendMessage', { chat_id: chatId, text: 'Salom! FOOG saytiga kirish uchun saytdagi «Telegram orqali kirish» tugmasini bosing.' });
       return;
     }
-    await redis.set(`tgchat:${m.from.id}`, token, 'EX', 300);
+    await touchLogin(token);
+    await redis.set(`tgchat:${m.from.id}`, token, 'EX', LOGIN_TTL);
     await tg('sendMessage', {
       chat_id: chatId,
       text: 'FOOG ga xush kelibsiz! Kirish uchun raqamingizni ulashing.',
