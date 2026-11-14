@@ -46,8 +46,15 @@ async function staffOf(userId: string) {
 }
 
 async function finish(res: import('express').Response, userId: string) {
-  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
-  if (user.status === 'blocked') throw new HttpError(403, 'Hisobingiz bloklangan', 'blocked');
+  let user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+  // Vaqtinchalik blok muddati o‘tgan bo‘lsa – kirishda ham yechiladi (ilgari faqat ochiq sessiyada yechilardi)
+  if (user.status === 'blocked' && user.blockedUntil && user.blockedUntil < new Date()) {
+    user = await prisma.user.update({ where: { id: user.id }, data: { status: 'active', blockedUntil: null, blockReason: null } });
+  }
+  if (user.status === 'blocked') {
+    const until = user.blockedUntil ? ` ${user.blockedUntil.toLocaleDateString('ru-RU', { timeZone: 'Asia/Tashkent' })} gacha` : '';
+    throw new HttpError(403, `Hisobingiz${until} bloklangan${user.blockReason ? `: ${user.blockReason}` : ''}`, 'blocked');
+  }
   const staff = await staffOf(user.id);
   setAuthCookie(res, signToken(user, staff));
   return { status: 'done', user: publicUser(user), redirect: homeFor(user.role, staff) };
