@@ -73,6 +73,8 @@ function JoinForm({ role, setRole }: { role: 'player' | 'owner'; setRole: (r: 'p
 }
 
 const OBV = '/obyektivka/uzb/obyektivka/';
+// Yorqin qizil – boshqa tugmalardan ajralib turadi
+const OBV_STYLE = { background: '#FF2D2D', color: '#FFFFFF', fontWeight: 700, boxShadow: 'none' } as const;
 
 export default function Landing() {
   const { me, home } = useSession();
@@ -102,8 +104,8 @@ export default function Landing() {
         </nav>
         <div className="row" style={{ gap: 8 }}>
           {/* Alohida ilova (nginx: /obyektivka/); kirmagan bo‘lsa – avval Telegram orqali kirish */}
-          <a href={me ? OBV : `/login?next=${encodeURIComponent(OBV)}`} className="btn btn-outline btn-sm hide-mobile">online.obyektivka</a>
-          <span className="only-mobile"><a href={me ? OBV : `/login?next=${encodeURIComponent(OBV)}`} className="icon-btn" aria-label="online.obyektivka" title="online.obyektivka"><Icon n="description" size={22} /></a></span>
+          <a href={me ? OBV : `/login?next=${encodeURIComponent(OBV)}`} className="btn btn-sm hide-mobile" style={OBV_STYLE}>online.obyektivka</a>
+          <span className="only-mobile"><a href={me ? OBV : `/login?next=${encodeURIComponent(OBV)}`} className="icon-btn" style={OBV_STYLE} aria-label="online.obyektivka" title="online.obyektivka"><Icon n="description" size={22} /></a></span>
           <LangSwitch />
           <ThemeButton />
           {me ? <Link href={home} className="btn btn-primary btn-sm">{t('Kabinetga o‘tish')}</Link> : <><Link href="/login" data-tour="login" className="btn btn-outline btn-sm hide-mobile">{t('Kirish')}</Link><button className="btn btn-primary btn-sm" onClick={() => go('access')}>{t('Erta kirish')}</button></>}
