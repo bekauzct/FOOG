@@ -5,7 +5,7 @@ import { prisma } from '../db';
 import { redis } from '../redis';
 import { env } from '../env';
 import { ah, bad, HttpError, parse } from '../http';
-import { COOKIE, requireAuth, setAuthCookie, signToken, signWsToken } from '../auth';
+import { COOKIE, requireAuth, setAuthCookie, signToken, signWsToken, verify } from '../auth';
 import { publicUser } from '../serialize';
 
 export const authRouter = Router();
@@ -133,6 +133,9 @@ authRouter.get('/check', (req, res) => {
 authRouter.get('/me', ah(async (req, res) => {
   if (!req.user) return res.status(401).json({ error: 'Kirilmagan', code: 'unauthorized' });
   const staff = await staffOf(req.user.id);
+  // Rol o‘zgargan bo‘lsa (masalan admin huquqi berildi yoki olindi) – cookie yangilanadi, qayta kirish shart emas
+  const c = typeof req.cookies?.[COOKIE] === 'string' ? verify(req.cookies[COOKIE]) : null;
+  if (c && (c.role !== req.user.role || !!c.staff !== staff)) setAuthCookie(res, signToken(req.user, staff));
   const [unread, unreadChats] = await Promise.all([
     prisma.notification.count({ where: { userId: req.user.id, readAt: null } }),
     unreadChatCount(req.user.id),

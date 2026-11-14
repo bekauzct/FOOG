@@ -130,6 +130,27 @@ adminRouter.get('/users', ah(async (req, res) => {
   });
 }));
 
+/** Admin huquqini berish / olib qo‘yish. Olinganda: stadion egasi bo‘lgan bo‘lsa – yana ega, aks holda futbolchi */
+adminRouter.patch('/users/:id/role', ah(async (req, res) => {
+  const body = parse(z.object({ admin: z.boolean() }), req.body);
+  const u = await prisma.user.findUnique({ where: { id: req.params.id }, include: { ownerProfile: true, _count: { select: { stadiums: true } } } });
+  if (!u) throw notFound('Foydalanuvchi topilmadi');
+  if (u.id === req.user!.id) throw bad('O‘z huquqingizni o‘zgartira olmaysiz');
+  if (body.admin) {
+    if (u.role === 'admin') throw bad('Bu foydalanuvchi allaqachon administrator');
+    if (u.status === 'blocked') throw bad('Bloklangan foydalanuvchiga admin huquqi berib bo‘lmaydi');
+    await prisma.user.update({ where: { id: u.id }, data: { role: 'admin' } });
+    await audit(req.user!.id, 'user.grant_admin', `@${u.username} ga admin huquqini berdi`, 'user', u.id);
+    await notify(u.id, { type: 'system', kind: 'announcement', title: 'Sizga administrator huquqi berildi', body: 'Admin panel endi siz uchun ochiq. Sahifani yangilang.' });
+  } else {
+    if (u.role !== 'admin') throw bad('Bu foydalanuvchi administrator emas');
+    const role = u.ownerProfile || u._count.stadiums > 0 ? 'owner' : 'player';
+    await prisma.user.update({ where: { id: u.id }, data: { role } });
+    await audit(req.user!.id, 'user.revoke_admin', `@${u.username} dan admin huquqini oldi`, 'user', u.id);
+  }
+  res.json({ ok: true });
+}));
+
 adminRouter.patch('/users/:id', ah(async (req, res) => {
   const body = parse(z.object({ action: z.enum(['block', 'unblock']), days: z.number().int().min(1).max(3650).optional(), reason: z.string().max(200).optional() }), req.body);
   const u = await prisma.user.findUnique({ where: { id: req.params.id } });
