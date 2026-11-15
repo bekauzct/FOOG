@@ -82,12 +82,14 @@ export default function Landing() {
   const [stats, setStats] = useState<{ players: number; stadiums: number } | null>(null);
   const [players, setPlayers] = useState<P[]>([]);
   const [reels, setReels] = useState<R[]>([]);
+  const [jg, setJg] = useState<{ rank: number; best: number; user: { id: string; name: string; username: string | null; avatarUrl: string | null; district: string | null } }[]>([]);
   const [role, setRole] = useState<'player' | 'owner'>('player');
   const [demoT, setDemoT] = useState(3);
   useEffect(() => {
     get<{ players: number; stadiums: number }>('/early-access/stats').then(setStats).catch(() => undefined);
     get<{ items: P[] }>('/players').then((r) => setPlayers(r.items.filter((p) => p.matches).slice(0, 3))).catch(() => undefined);
     get<{ items: R[] }>('/reels').then((r) => setReels(r.items.slice(0, 3))).catch(() => undefined);
+    get<{ items: typeof jg }>('/juggle/leaderboard?limit=5').then((r) => setJg(r.items)).catch(() => undefined);
   }, []);
   const go = (id: string, r?: 'player' | 'owner') => { if (r) setRole(r); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }); };
   const T = ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00'], off = [1, 2, 6];
@@ -98,7 +100,7 @@ export default function Landing() {
       <header className="ld-nav">
         <Link href="/" style={{ width: 104, display: 'block' }} aria-label="FOOG"><FoogMark ink="var(--mark-ink)" primary="var(--mark-o)" accent="var(--mark-ink)" /></Link>
         <nav className="row hide-mobile" style={{ gap: 4 }}>
-          {([['how', 'Qanday ishlaydi'], ['booking', 'Stadionlar'], ['players', 'O‘yinchilar'], ['owners', 'Egalar uchun']] as const).map(([id, l]) => <button key={id} className="btn btn-ghost btn-sm" style={{ color: 'var(--text-2)' }} onClick={() => go(id)}>{t(l)}</button>)}
+          {([['how', 'Qanday ishlaydi'], ['booking', 'Stadionlar'], ['battle', 'Battle'], ['players', 'O‘yinchilar'], ['owners', 'Egalar uchun']] as const).map(([id, l]) => <button key={id} className="btn btn-ghost btn-sm" style={{ color: 'var(--text-2)' }} onClick={() => go(id)}>{t(l)}</button>)}
         </nav>
         <div className="row" style={{ gap: 8 }}>
           {/* Alohida ilova (nginx: /obyektivka/); kirmagan bo‘lsa – avval Telegram orqali kirish */}
@@ -186,6 +188,32 @@ export default function Landing() {
             <span style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--inverse)', color: 'var(--on-inverse)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>YL</span>
             <b>Yunusobod Lions</b><span className="tag">{t('GK kerak · Payshanba')}</span><span className="c2 t-small">{t('Jamoalarni ko‘rish')} →</span>
           </Link>
+        </div>
+      </section>
+
+      <section id="battle" className="ld-sec ld-split" data-tour="battle">
+        <div className="col" style={{ gap: 16, justifyContent: 'center' }}>
+          <span className="label ink row" style={{ gap: 6 }}><Icon n="swords" size={16} />{t('Jonglyor Battle')}</span>
+          <h2 className="t-h1">{t('To‘pni yerga tushirmang. Har bir zarba – 1 ball.')}</h2>
+          <p className="c2" style={{ fontSize: 17, lineHeight: 1.55 }}>{t('Jamoa ham, stadion ham kerak emas – faqat to‘p va telefon. Video sayt ichida yoziladi, moderator tasdiqlaydi, natija FOOG ID’ingizga yoziladi. Tuman va butun shahar reytingida o‘z o‘rningizni egallang.')}</p>
+          {['Video faqat sayt ichida, kamerada yoziladi', 'Reyting shaxsiy rekord bo‘yicha', 'Haftalik reyting – «Jonglyor qiroli»'].map((x) => <span key={x} className="row" style={{ gap: 10, fontSize: 15 }}><Icon n="check_circle" size={20} style={{ color: 'var(--success)' }} />{t(x)}</span>)}
+          <div className="row wrap" style={{ gap: 10 }}><Link href="/battle" className="btn btn-primary"><Icon n="videocam" size={20} />{t('Battle’ga qo‘shilish')}</Link></div>
+        </div>
+        <div className="card col" style={{ padding: 20, gap: 10, alignSelf: 'center' }}>
+          <div className="row between"><b style={{ fontSize: 18 }} className="row"><Icon n="leaderboard" size={20} style={{ color: 'var(--brand-ink)', marginRight: 8 }} />{t('Reyting')}</b><Link href="/battle" className="c2 t-small">{t('Hammasi')} →</Link></div>
+          {jg.length ? jg.map((r) => (
+            <Link key={r.user.id} href={r.user.username ? `/u/${r.user.username}` : '/battle'} className="row" style={{ gap: 12, padding: '8px 0', color: 'var(--text-1)' }}>
+              <span className={`jg-rank r${r.rank}`}>{r.rank <= 3 ? <Icon n="trophy" size={18} fill /> : r.rank}</span>
+              <Avatar name={r.user.name} url={r.user.avatarUrl} size={36} />
+              <span className="col grow" style={{ minWidth: 0 }}><b className="ellipsis">{r.user.name}</b><span className="c3 t-cap ellipsis">{r.user.district ?? ''}</span></span>
+              <span className="mono" style={{ fontSize: 22, fontWeight: 600 }}>{num(r.best)}</span>
+            </Link>
+          )) : (
+            <div className="col" style={{ gap: 10, alignItems: 'center', textAlign: 'center', padding: '18px 0' }}>
+              <span className="mono" style={{ fontSize: 44, fontWeight: 700, color: 'var(--brand-ink)' }}>0</span>
+              <span className="c2 t-small">{t('Reyting hali bo‘sh. Birinchi rekordni siz qo‘ying!')}</span>
+            </div>
+          )}
         </div>
       </section>
 

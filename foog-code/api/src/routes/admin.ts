@@ -23,8 +23,8 @@ export const CHECKS = [
 export const REASONS = ['Rasmlar yetarli emas', 'Manzil noto‘g‘ri', 'Narx ko‘rsatilmagan', 'Takroriy ariza'];
 
 adminRouter.get('/badges', ah(async (_req, res) => {
-  const [mod, reports, payments, foogi] = await Promise.all([prisma.stadium.count({ where: { status: 'mod' } }), prisma.report.groupBy({ by: ['targetType', 'targetId'], where: { status: 'open' } }), prisma.payment.count({ where: { status: 'review' } }), prisma.foogiQuestion.count({ where: { status: { in: ['unanswered', 'wrong'] } } })]);
-  res.json({ mod, reports: reports.length, payments, foogi });
+  const [mod, reports, payments, foogi, juggle] = await Promise.all([prisma.stadium.count({ where: { status: 'mod' } }), prisma.report.groupBy({ by: ['targetType', 'targetId'], where: { status: 'open' } }), prisma.payment.count({ where: { status: 'review' } }), prisma.foogiQuestion.count({ where: { status: { in: ['unanswered', 'wrong'] } } }), prisma.juggleAttempt.count({ where: { status: 'pending' } })]);
+  res.json({ mod, reports: reports.length, payments, foogi, juggle });
 }));
 
 adminRouter.get('/overview', ah(async (req, res) => {

@@ -169,6 +169,8 @@ model User {
   mvpOf           Match[]           @relation("mvp")
   matchPlayers    MatchPlayer[]
   obyektivka      ObyektivkaProfile?
+  juggles         JuggleAttempt[]   @relation("juggler")
+  juggleReviews   JuggleAttempt[]   @relation("juggleReviewer")
   chatMembers     ChatMember[]
   messages        Message[]
   achievements    UserAchievement[]
@@ -948,4 +950,36 @@ model Broadcast {
 
   @@index([createdAt])
   @@map("broadcasts")
+}
+
+enum JuggleStatus {
+  processing // video qayta ishlanmoqda
+  pending // moderatsiyada
+  approved
+  rejected
+  failed // video o‘qilmadi yoki vaqt mos kelmadi
+}
+
+/// Jonglyor Battle urinishi: video sayt ichida yoziladi, sonni foydalanuvchi kiritadi, moderator tasdiqlaydi
+model JuggleAttempt {
+  id           String       @id @default(uuid()) @db.Uuid
+  userId       String       @map("user_id") @db.Uuid
+  claimed      Int // foydalanuvchi kiritgan son
+  count        Int? // tasdiqlangan son (moderator tuzatishi mumkin)
+  status       JuggleStatus @default(processing)
+  code         String // videoga yozilgan bir martalik kod
+  videoUrl     String?      @map("video_url")
+  posterUrl    String?      @map("poster_url")
+  durationSec  Float?       @map("duration_sec")
+  elapsedSec   Float        @map("elapsed_sec") // server o‘lchagan yozish vaqti
+  rejectReason String?      @map("reject_reason")
+  reviewedById String?      @map("reviewed_by_id") @db.Uuid
+  reviewedAt   DateTime?    @map("reviewed_at") @db.Timestamptz
+  createdAt    DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  user         User         @relation("juggler", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy   User?        @relation("juggleReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([userId, createdAt])
+  @@map("juggle_attempts")
 }

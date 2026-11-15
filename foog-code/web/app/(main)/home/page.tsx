@@ -10,6 +10,7 @@ import { get, post } from '@/lib/api';
 import { useSession } from '@/lib/session';
 import { DOW_FULL, dayMonth, dec, greeting, num, sum, weekday, todayStr, SIZE_LABEL, BOOKING_STATUS, relDay } from '@/lib/format';
 import { useToast } from '@/lib/toast';
+import { JuggleHomeCard } from '@/components/juggle';
 
 type HomeT = {
   greetingHour: number; date: string; matchesTonight: number;
@@ -207,7 +208,7 @@ export default function HomePage() {
         </div>
 
         {/* Tor ekranlarda o‘ng panel bloklari lenta ustida */}
-        {h && <div className="home-inline col" style={{ gap: 16 }}><Upcoming d={h} /><OpenMatches d={h} /></div>}
+        {h && <div className="home-inline col" style={{ gap: 16 }}><JuggleHomeCard /><Upcoming d={h} /><OpenMatches d={h} /></div>}
 
         <div className="tabs scroll-x" role="tablist">
           {([['foryou', 'Siz uchun'], ['following', 'Kuzatilayotganlar'], ['nearby', 'Yaqin atrofda']] as const).map(([k, l]) => (
@@ -224,7 +225,7 @@ export default function HomePage() {
 
       <aside className="home-right col" style={{ gap: 20, padding: '28px 0 80px' }}>
         <Async q={home} loading={<Loading rows={4} />}>
-          {(d) => (<><Upcoming d={d} /><OpenMatches d={d} /><Stadiums d={d} /><Suggested d={d} /></>)}
+          {(d) => (<><JuggleHomeCard /><Upcoming d={d} /><OpenMatches d={d} /><Stadiums d={d} /><Suggested d={d} /></>)}
         </Async>
       </aside>
 

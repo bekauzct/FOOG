@@ -8,6 +8,7 @@ import { freezeExpired } from './payments/service';
 import { ensureAchievements } from './services/achievements';
 import { ensureFoogiDefaults } from './foogi/defaults';
 import { markInterruptedBroadcasts } from './routes/broadcast';
+import { failStuckJuggles } from './routes/juggle';
 
 async function main() {
   const app = createApp();
@@ -16,6 +17,7 @@ async function main() {
   await ensureAchievements();
   await ensureFoogiDefaults();
   await markInterruptedBroadcasts();
+  await failStuckJuggles();
   server.listen(env.port, () => console.log(`FOOG API: http://localhost:${env.port} (ws: /ws)`));
   // 2 soatda javob bo‘lmagan bron so‘rovlarini avtomatik bekor qilish – har daqiqada
   const tick = () => {

@@ -37,7 +37,7 @@ export function ThemeButton() {
 }
 
 function useBadges(mode: Mode) {
-  const q = useApi<{ pending?: number; mod?: number; reports?: number; payments?: number; foogi?: number }>(mode === 'player' ? null : `/${mode}/badges`);
+  const q = useApi<{ pending?: number; mod?: number; reports?: number; payments?: number; foogi?: number; juggle?: number }>(mode === 'player' ? null : `/${mode}/badges`);
   const { on } = useSession();
   useEffect(() => (mode === 'owner' ? on('booking', () => q.reload()) : undefined), [mode]);
   return q.data ?? {};
@@ -75,6 +75,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
       { id: '/admin/content', href: '/admin/content', icon: 'flag', label: 'Kontent', badge: b.reports },
       { id: '/admin/teams', href: '/admin/teams', icon: 'groups', label: 'Jamoalar', badge: b.payments },
       { id: '/admin/foogi', href: '/admin/foogi', icon: 'smart_toy', label: 'FOOGI', badge: b.foogi },
+      { id: '/admin/juggle', href: '/admin/juggle', icon: 'swords', label: 'Jonglyor', badge: b.juggle },
       { id: '/admin/broadcast', href: '/admin/broadcast', icon: 'notifications_active', label: 'E’lon' },
       { id: '/admin/bookings', href: '/admin/bookings', icon: 'event_note', label: 'Bronlar' },
       { id: '/admin/audit', href: '/admin/audit', icon: 'history', label: 'Jurnal' },
@@ -95,6 +96,7 @@ export default function TopBar({ mode: forced }: { mode?: Mode }) {
         { id: '/discover', href: '/discover', icon: 'explore', label: 'Izlash' },
         { id: '/reels', href: '/reels', icon: 'smart_display', label: 'Reels' },
         { id: '/team', href: '/team', icon: 'groups', label: 'Jamoam' },
+        { id: '/battle', href: '/battle', icon: 'swords', label: 'Battle' },
         { id: '/messages', href: '/messages', icon: 'chat_bubble', label: 'Xabarlar', badge: unreadChats },
       ];
   // online.obyektivka – alohida ilova (nginx), shuning uchun oddiy <a>; har bir rol menyusida 2-o‘rinda (ko‘rinib tursin), qizil

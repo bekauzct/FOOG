@@ -9,6 +9,7 @@ import { errorHandler, HttpError } from './http';
 import { UPLOAD_ROOT } from './uploads';
 import { authRouter } from './routes/auth';
 import { adminBroadcastRouter } from './routes/broadcast';
+import { adminJuggleRouter, juggleRouter } from './routes/juggle';
 import { adminObyektivkaRouter, obyektivkaRouter } from './routes/obyektivka';
 import { stadiumsRouter } from './routes/stadiums';
 import { bookingsRouter } from './routes/bookings';
@@ -63,6 +64,8 @@ export function createApp() {
   v1.use('/obyektivka', obyektivkaRouter);
   v1.use('/admin/obyektivka', adminObyektivkaRouter);
   v1.use('/admin/broadcast', adminBroadcastRouter);
+  v1.use('/admin/juggle', adminJuggleRouter);
+  v1.use('/juggle', juggleRouter);
   v1.use('/admin', adminRouter);
   v1.use('/chats', chatRouter);
   v1.use('/reels', reelsRouter);

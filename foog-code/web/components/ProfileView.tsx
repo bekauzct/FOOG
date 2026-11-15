@@ -8,6 +8,7 @@ import { Verified, type MiniUser } from '@/components/social';
 import { useApi } from '@/lib/useApi';
 import { post } from '@/lib/api';
 import { useToast } from '@/lib/toast';
+import { JuggleProfileCard } from './juggle';
 import { AVAIL_LABEL, FOOT_LABEL, MONTHS_SHORT, POS_LABEL, SIZE_LABEL, SKILL_LABEL, compact, dayMonthShort, dec, num } from '@/lib/format';
 
 type Prof = {
@@ -192,7 +193,8 @@ export function ProfileView({ username }: { username: string }) {
                 {!!p.mutualCount && <span className="row c2" style={{ gap: 8 }}><span className="row">{p.mutual.map((m, i) => <span key={m.id} style={{ marginLeft: i ? -8 : 0, borderRadius: '50%', boxShadow: '0 0 0 2px var(--bg)', display: 'inline-flex' }}><Avatar name={m.name} url={m.avatarUrl} size={24} /></span>)}</span>{p.mutual.map((m) => m.name.split(' ')[0]).join(', ')}{p.mutualCount > p.mutual.length ? ` + ${p.mutualCount - p.mutual.length} umumiy` : ' umumiy'}</span>}
               </div>
             </div>
-            <div className="card col" style={{ padding: 20, gap: 14, alignSelf: 'start' }}>
+            <div className="col" style={{ gap: 16, alignSelf: 'start', minWidth: 0 }}>
+            <div className="card col" style={{ padding: 20, gap: 14 }}>
               <div className="row between">
                 <div className="row" style={{ gap: 12 }}><span style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--primary)', color: 'var(--on-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', font: '700 16px var(--font-mono)' }}>{u.level}</span><div className="col"><b>{SKILL_LABEL[u.skill ?? ''] ?? `${u.level}-daraja`}</b><span className="mono c2" style={{ fontSize: 12 }}>{num(u.xp)} / {num(p.nextXp)} XP</span></div></div>
                 <span className="label-sm c3">O‘yinchi darajasi</span>
@@ -201,6 +203,8 @@ export function ProfileView({ username }: { username: string }) {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 8 }}>
                 {([[p.stats.matches, 'O‘yin', ''], [p.stats.goals, 'Gol', 'ink'], [p.stats.assists, 'Assist', ''], [p.stats.mvp, 'MVP', '']] as const).map(([v, l, c]) => <div key={l} className="col"><span className={`mono ${c}`} style={{ fontSize: 24 }}>{v}</span><span className="c2 t-cap">{l}</span></div>)}
               </div>
+            </div>
+            {u.username && <JuggleProfileCard username={u.username} />}
             </div>
           </div>
           <div className="tabs scroll-x" role="tablist" style={{ marginTop: 8 }}>

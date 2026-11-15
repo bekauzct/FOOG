@@ -65,6 +65,7 @@ export const RU: Record<string, string> = {
   'O‘yin': 'Игры',
   'Gol': 'Голы',
   'Reyting': 'Рейтинг',
+  'Hammasi': 'Все',
   'GK kerak · Payshanba': 'Нужен GK · Четверг',
   'Jamoalarni ko‘rish': 'Смотреть команды',
   'Reels va hamjamiyat': 'Reels и сообщество',
@@ -204,4 +205,15 @@ export const RU: Record<string, string> = {
   'O‘rta': 'Средний',
   'Yuqori': 'Высокий',
   'Har qanday': 'Любой',
+  // ---------- Jonglyor Battle ----------
+  'Battle': 'Battle',
+  'Jonglyor': 'Чеканка',
+  'Jonglyor Battle': 'Чеканка Battle',
+  'To‘pni yerga tushirmang. Har bir zarba – 1 ball.': 'Не роняйте мяч. Каждое касание – 1 балл.',
+  'Jamoa ham, stadion ham kerak emas – faqat to‘p va telefon. Video sayt ichida yoziladi, moderator tasdiqlaydi, natija FOOG ID’ingizga yoziladi. Tuman va butun shahar reytingida o‘z o‘rningizni egallang.': 'Не нужны ни команда, ни стадион – только мяч и телефон. Видео записывается прямо на сайте, модератор проверяет, результат попадает в ваш FOOG ID. Займите своё место в рейтинге района и всего города.',
+  'Video faqat sayt ichida, kamerada yoziladi': 'Видео записывается только на сайте, камерой',
+  'Reyting shaxsiy rekord bo‘yicha': 'Рейтинг по личному рекорду',
+  'Haftalik reyting – «Jonglyor qiroli»': 'Недельный рейтинг – «Король чеканки»',
+  'Battle’ga qo‘shilish': 'Присоединиться к Battle',
+  'Reyting hali bo‘sh. Birinchi rekordni siz qo‘ying!': 'Рейтинг пока пуст. Поставьте первый рекорд!',
 };
